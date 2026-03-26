@@ -10,7 +10,7 @@ const { eyebrow, title, description, align = 'center' } = Astro.props;
 ---
 
 <div class={`flex flex-col gap-4 mb-12 ${align === 'center' ? 'items-center text-center' : 'items-start text-left'}`}>
-  {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+  {eyebrow && <span class="eyebrow tracking-widest">✦ {eyebrow}</span>}
   <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-ink-val)] tracking-tight">
     {title}
   </h2>

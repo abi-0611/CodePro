@@ -19,40 +19,31 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 ---
 <a href={slug ? `${baseUrl}courses/${slug}/` : '#'} class="block group h-full course-card" data-category={category}>
-  <div class="card p-6 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-primary)]/30 relative overflow-hidden">
-    
-    {badge === 'Popular' && (
-      <div class="absolute -right-12 top-6 bg-amber-400 text-amber-900 text-xs font-bold px-12 py-1 rotate-45 shadow-sm flex items-center justify-center gap-1 z-10">
-        <Star class="w-3 h-3 fill-current" /> {badge}
-      </div>
+  <div class="card p-6 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-primary)]/30 relative overflow-hidden border-t-4 border-t-[var(--color-primary)]">
+
+    {icon && (
+      <div class="text-4xl mb-2">{icon}</div>
     )}
-    
-    {badge && badge !== 'Popular' && (
-      <div class="absolute top-4 right-4 z-10">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20">
+
+    <div class="flex flex-wrap gap-2 mb-4">
+      {badge && (
+        <span class={badge === 'Popular'
+          ? 'inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 uppercase tracking-wider'
+          : 'inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20 uppercase tracking-wider'
+        }>
+          {badge === 'Popular' && <Star class="w-3 h-3 fill-current" />}
           {badge}
         </span>
-      </div>
-    )}
-
-    <div class="flex items-start mb-4">
-      {icon && (
-        <div class="w-12 h-12 rounded-full bg-[var(--color-surface-alt)] flex items-center justify-center text-2xl border border-[var(--color-border)]">
-          {icon}
-        </div>
       )}
+      {duration && <span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{duration}</span>}
+      {mode && <span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{mode}</span>}
+      {level && <span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{level}</span>}
     </div>
-    
-    <h3 class="text-xl font-bold font-heading text-[var(--color-ink)] mb-3 group-hover:text-[var(--color-primary)] transition-colors pr-8">{title}</h3>
-    
-    <div class="flex flex-wrap gap-2 mb-4">
-      {duration && <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{duration}</span>}
-      {mode && <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{mode}</span>}
-      {level && <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{level}</span>}
-    </div>
+
+    <h3 class="text-xl font-bold font-heading text-[var(--color-ink)] mb-3 group-hover:text-[var(--color-primary)] transition-colors">{title}</h3>
 
     {shortDescription && <p class="text-[var(--color-muted)] text-sm mb-6 flex-grow line-clamp-2">{shortDescription}</p>}
-    
+
     <div class="mt-auto pt-4 border-t border-[var(--color-border)] flex items-center text-[var(--color-primary)] font-medium text-sm group-hover:underline underline-offset-4">
       Know More <span class="ml-1 transition-transform group-hover:translate-x-1">→</span>
     </div>

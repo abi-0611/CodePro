@@ -8,6 +8,7 @@ export interface Props {
     label: string;
     icon: any;
   }[];
+  wrapperClass?: string;
 }
 
 const defaultStats = [
@@ -17,23 +18,44 @@ const defaultStats = [
   { value: 0, suffix: '', label: 'Learners', icon: Users },
 ];
 
-const { stats = defaultStats } = Astro.props;
+const { stats = defaultStats, wrapperClass = '' } = Astro.props;
+
+const accentClasses = [
+  {
+    container: 'bg-amber-500/15 text-amber-700 dark:text-amber-300',
+    dot: 'bg-amber-500',
+  },
+  {
+    container: 'bg-blue-500/12 text-blue-700 dark:text-blue-300',
+    dot: 'bg-blue-500',
+  },
+  {
+    container: 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300',
+    dot: 'bg-emerald-500',
+  },
+  {
+    container: 'bg-violet-500/12 text-violet-700 dark:text-violet-300',
+    dot: 'bg-violet-500',
+  },
+];
 
 const computedStats = stats.map((stat) => ({
   ...stat,
   isNumeric: typeof stat.value === 'number' && Number.isFinite(stat.value),
 }));
 ---
-<section class="py-12 border-y border-[var(--color-border-val)]">
+<section class={`py-12 border-y border-[var(--color-border-val)] ${wrapperClass}`}>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="glass rounded-[var(--radius-card)] px-2 py-6 sm:px-6">
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center" id="stats-container">
-      {computedStats.map(stat => (
+      {computedStats.map((stat, index) => {
+        const accent = accentClasses[index % accentClasses.length];
+        return (
         <div class="flex flex-col items-center p-4">
-          <div class="w-12 h-12 rounded-full bg-[var(--color-primary-val)]/10 text-[var(--color-primary-val)] flex items-center justify-center mb-4">
-            <stat.icon class="w-6 h-6" />
+          <div class={`w-12 h-12 rounded-full flex items-center justify-center mb-4 shadow-sm ${accent.container}`}>
+            <span class={`w-3 h-3 rounded-full ${accent.dot}`}></span>
           </div>
-          <div class="text-4xl font-bold font-heading text-[var(--color-ink-val)] mb-2 flex items-center justify-center">
+          <div class="text-5xl sm:text-6xl font-bold font-heading text-[var(--color-ink-val)] mb-2 flex items-center justify-center">
             {stat.isNumeric ? (
               <span class="stat-value" data-target={stat.value}>0</span>
             ) : (
@@ -43,7 +65,8 @@ const computedStats = stats.map((stat) => ({
           </div>
           <div class="text-sm font-medium text-[var(--color-muted-val)] uppercase tracking-wider">{stat.label}</div>
         </div>
-      ))}
+        );
+      })}
       </div>
     </div>
   </div>
