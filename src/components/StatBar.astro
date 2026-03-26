@@ -1,5 +1,6 @@
 ---
 import { BookOpen, Handshake, UserCheck, Users } from 'lucide-react';
+import { getCollection } from 'astro:content';
 
 export interface Props {
   stats?: {
@@ -11,11 +12,13 @@ export interface Props {
   wrapperClass?: string;
 }
 
+const courseCount = (await getCollection('courses')).length;
+
 const defaultStats = [
-  { value: 0, suffix: '', label: 'Courses', icon: BookOpen },
-  { value: 0, suffix: '', label: 'Partners', icon: Handshake },
-  { value: 0, suffix: '', label: 'Mentors', icon: UserCheck },
-  { value: 0, suffix: '', label: 'Learners', icon: Users },
+  { value: courseCount, suffix: '', label: 'Courses', icon: BookOpen },
+  { value: 5, suffix: '', label: 'Learners', icon: Users },
+  { value: 3, suffix: '', label: 'Mentors', icon: UserCheck },
+  { value: 2, suffix: '', label: 'Partners', icon: Handshake },
 ];
 
 const { stats = defaultStats, wrapperClass = '' } = Astro.props;

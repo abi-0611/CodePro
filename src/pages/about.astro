@@ -5,14 +5,7 @@ import StatBar from '../components/StatBar.astro';
 import LogoMarquee from '../components/LogoMarquee.astro';
 import BreadcrumbNav from '../components/BreadcrumbNav.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
-import { Target, Award, Users, BookOpen, Linkedin, Star, Rocket } from 'lucide-react';
-
-const aboutStats = [
-  { value: 0, suffix: '', label: 'Years of Excellence', icon: Star },
-  { value: 0, suffix: '', label: 'Programs', icon: BookOpen },
-  { value: 0, suffix: '', label: 'Students Trained', icon: Users },
-  { value: 0, suffix: '', label: 'Certifications', icon: Award },
-];
+import { Target, Award, Linkedin, Rocket } from 'lucide-react';
 
 const breadcrumbItems = [
   { label: 'About' }
@@ -58,7 +51,7 @@ const breadcrumbItems = [
   </div>
 
   {/* SECTION 3 — STATS */}
-  <StatBar stats={aboutStats} />
+  <StatBar />
 
   {/* SECTION 4 — OUR TEAM / TRAINERS */}
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
