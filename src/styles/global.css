@@ -62,6 +62,24 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.grid-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(var(--color-border-val) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--color-border-val) 1px, transparent 1px);
+  background-size: var(--grid-cell) var(--grid-cell);
+  background-position: center top;
+  opacity: 0.6;
+  z-index: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }
