@@ -11,10 +11,10 @@ export interface Props {
 }
 
 const defaultStats = [
-  { value: '[STAT_1_VALUE]', suffix: '[STAT_1_SUFFIX]', label: '[STAT_1_LABEL]', icon: BookOpen },
-  { value: '[STAT_2_VALUE]', suffix: '[STAT_2_SUFFIX]', label: '[STAT_2_LABEL]', icon: Handshake },
-  { value: '[STAT_3_VALUE]', suffix: '[STAT_3_SUFFIX]', label: '[STAT_3_LABEL]', icon: UserCheck },
-  { value: '[STAT_4_VALUE]', suffix: '[STAT_4_SUFFIX]', label: '[STAT_4_LABEL]', icon: Users },
+  { value: 0, suffix: '', label: '[STAT_1_LABEL]', icon: BookOpen },
+  { value: 0, suffix: '', label: '[STAT_2_LABEL]', icon: Handshake },
+  { value: 0, suffix: '', label: '[STAT_3_LABEL]', icon: UserCheck },
+  { value: 0, suffix: '', label: '[STAT_4_LABEL]', icon: Users },
 ];
 
 const { stats = defaultStats } = Astro.props;
