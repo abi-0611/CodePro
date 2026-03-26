@@ -31,19 +31,32 @@ if (relatedCourses.length < 3) {
   relatedCourses.push(...otherCourses.slice(0, 3 - relatedCourses.length));
 }
 
-const highlights = [
-  { icon: CheckCircle2, text: "[COURSE_HIGHLIGHT_1]" },
-  { icon: Briefcase, text: "[COURSE_HIGHLIGHT_2]" },
-  { icon: Target, text: "[COURSE_HIGHLIGHT_3]" },
-  { icon: PhoneCall, text: "[COURSE_HIGHLIGHT_4]" }
-];
+const highlightIcons = [CheckCircle2, Briefcase, Target, PhoneCall];
+const highlights = (course.data.highlights?.length
+  ? course.data.highlights
+  : [
+      'Mentor-led sessions with hands-on practice',
+      'Interview-focused learning path',
+      'Portfolio-ready project work',
+      'Guidance on resume and applications',
+    ]
+).slice(0, 4).map((text, index) => ({
+  icon: highlightIcons[index] || CheckCircle2,
+  text,
+}));
 
-const faqs = [
-  { q: "[FAQ_Q1 — e.g. What are the prerequisites for this course?]", a: "[FAQ_A1 — e.g. No prior experience is required. We start from the basics...]" },
-  { q: "[FAQ_Q2 — e.g. Do you provide placement assistance?]", a: "[FAQ_A2 — e.g. Yes, we have a dedicated placement cell that helps you with...]" },
-  { q: "[FAQ_Q3 — e.g. Can I pay the fees in installments?]", a: "[FAQ_A3 — e.g. Yes, we offer flexible EMI options for all our courses...]" },
-  { q: "[FAQ_Q4 — e.g. What if I miss a live class?]", a: "[FAQ_A4 — e.g. All live sessions are recorded and you will have lifetime access...]" }
-];
+const faqs = course.data.faqs?.length
+  ? course.data.faqs
+  : [
+      { q: 'Do I need prior experience?', a: 'No. We start from fundamentals and build up step-by-step. If you already know the basics, you can move faster through the early modules.' },
+      { q: 'Is this course project-based?', a: 'Yes. You’ll work on guided exercises and at least one portfolio-style project to reinforce each major topic.' },
+      { q: 'Do you provide placement support?', a: 'We provide interview prep guidance, resume feedback, and mock interviews. Outcomes depend on your effort, consistency, and market conditions.' },
+      { q: 'What if I miss a class?', a: 'You can catch up using session notes and practice tasks. If you’re learning live, ask the mentor for the next steps to stay on track.' },
+    ];
+
+const nextBatchText = course.data.nextBatch || 'Enquire for next batch';
+
+const curriculumTopicsFallback = ['Core concepts & patterns', 'Hands-on lab exercises', 'Mini assignment to practice'];
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -58,7 +71,7 @@ const breadcrumbItems = [
 <BaseLayout title={course.data.title} description={course.data.shortDescription}>
   
   {/* 1. COURSE HEADER */}
-  <div class="grid-overlay relative overflow-hidden bg-gradient-to-b from-[var(--course-hero-from-val)] to-[var(--course-hero-to-val)] pt-32 pb-16 border-b border-[var(--color-border-val)]">
+  <div class="grid-overlay relative overflow-visible bg-gradient-to-b from-[var(--course-hero-from-val)] to-[var(--course-hero-to-val)] pt-32 pb-16 border-b border-[var(--color-border-val)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       
       {/* Breadcrumb */}
@@ -107,12 +120,12 @@ const breadcrumbItems = [
             </div>
 
             <div class="flex flex-col gap-3">
-              <a href="#enquiry-form-section" class="button primary w-full py-4 text-lg">[COURSE_ENROLL_CTA]</a>
-              <button class="button secondary w-full py-4">[COURSE_SYLLABUS_CTA]</button>
+              <a href="#enquiry-form-section" class="button primary w-full py-4 text-lg">Enquire now</a>
+              <a href="#curriculum" class="button secondary w-full py-4">View syllabus</a>
             </div>
             
             <div class="mt-6 text-center text-sm font-medium text-[var(--color-ink)] bg-[var(--color-surface-alt)] py-2 rounded-lg border border-[var(--color-border)]">
-              🕐 Next Batch: <span class="text-[var(--color-primary)]">[NEXT_BATCH_DATE]</span>
+              🕐 Next batch: <span class="text-[var(--color-primary)]">{nextBatchText}</span>
             </div>
           </div>
         </div>
@@ -129,7 +142,7 @@ const breadcrumbItems = [
         
         {/* 2. COURSE HIGHLIGHTS */}
         <section>
-          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">[COURSE_HIGHLIGHTS_TITLE]</h2>
+          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">What you’ll get</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {highlights.map(highlight => (
               <div class="flex items-center gap-3 p-4 rounded-xl bg-[var(--color-surface-alt)] border border-[var(--color-border)]">
@@ -141,8 +154,8 @@ const breadcrumbItems = [
         </section>
 
         {/* 3. CURRICULUM SECTION */}
-        <section>
-          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">[COURSE_CURRICULUM_TITLE]</h2>
+        <section id="curriculum">
+          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">Curriculum</h2>
           <div class="flex flex-col gap-4 mb-8">
             {course.data.curriculum.map((module, index) => (
               <div class="accordion-item border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-surface)]">
@@ -158,16 +171,16 @@ const breadcrumbItems = [
                 <div class="accordion-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-[var(--color-surface-alt)]/50">
                   <div class="p-5 pl-17 border-t border-[var(--color-border)]">
                     <ul class="list-disc list-inside text-[var(--color-muted)] space-y-2">
-                      <li>[TOPIC_1_PLACEHOLDER]</li>
-                      <li>[TOPIC_2_PLACEHOLDER]</li>
-                      <li>[TOPIC_3_PLACEHOLDER]</li>
+                      {(course.data.curriculumTopics?.[index] || curriculumTopicsFallback).slice(0, 3).map((topic) => (
+                        <li>{topic}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <button class="button secondary flex items-center gap-2">[COURSE_DOWNLOAD_FULL_SYLLABUS_CTA]</button>
+          <button class="button secondary flex items-center gap-2">Download full syllabus</button>
         </section>
 
         {/* 4. COURSE CONTENT (MDX) */}
@@ -180,17 +193,17 @@ const breadcrumbItems = [
           <h2 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Your Instructor</h2>
           <div class="card p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden shrink-0">
-              <PlaceholderImage label="[PHOTO]" width={256} height={256} className="rounded-full" />
+              <PlaceholderImage label="Instructor photo" width={256} height={256} className="rounded-full" />
             </div>
             <div>
               <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-1">
-                [TRAINER_NAME]
+                CodePro Mentor Team
               </h3>
               <p class="text-[var(--color-primary-val)] font-medium mb-4">
-                [TRAINER_ROLE — e.g. Senior Software Engineer, 8 years exp]
+                Industry mentors • Project-focused guidance
               </p>
               <p class="text-[var(--color-muted-val)] leading-relaxed">
-                [TRAINER_BIO — 2 sentences describing the trainer's experience and teaching style.]
+                Learn from mentors who focus on clarity, hands-on practice, and real-world workflows. You’ll get feedback on assignments, guidance on best practices, and a structured path to build confidence.
               </p>
             </div>
           </div>
@@ -198,7 +211,7 @@ const breadcrumbItems = [
 
         {/* 6. FAQ SECTION */}
         <section>
-          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">[COURSE_FAQ_TITLE]</h2>
+          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">FAQs</h2>
           <div class="flex flex-col gap-4">
             {faqs.map((faq) => (
               <div class="accordion-item border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-surface)]">
@@ -227,7 +240,7 @@ const breadcrumbItems = [
   {/* 7. RELATED COURSES */}
   <section class="py-16 bg-[var(--color-surface-alt)] border-t border-[var(--color-border)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-10">[COURSE_RELATED_TITLE]</h2>
+      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-10">Related courses</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         {relatedCourses.map(rc => (
           <CourseCard 
@@ -250,8 +263,8 @@ const breadcrumbItems = [
   <div id="enquiry-form-section" class="py-16">
     <div class="max-w-3xl mx-auto px-4">
       <div class="card p-8">
-        <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-2 text-center">[COURSE_ENROLL_FORM_TITLE]</h2>
-        <p class="text-[var(--color-muted)] text-center mb-8">[COURSE_ENROLL_FORM_TEXT]</p>
+        <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-2 text-center">Enquire about this course</h2>
+        <p class="text-[var(--color-muted)] text-center mb-8">Share your details and we’ll get back with the next steps.</p>
         <EnquiryForm />
       </div>
     </div>

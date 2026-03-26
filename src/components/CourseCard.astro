@@ -19,7 +19,7 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 ---
 <a href={slug ? `${baseUrl}courses/${slug}/` : '#'} class="block group h-full course-card" data-category={category}>
-  <div class="card p-6 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-[var(--color-border)] hover:border-[var(--color-primary)]/30 relative overflow-hidden">
+  <div class="card p-6 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-primary)]/30 relative overflow-hidden">
     
     {badge === 'Popular' && (
       <div class="absolute -right-12 top-6 bg-amber-400 text-amber-900 text-xs font-bold px-12 py-1 rotate-45 shadow-sm flex items-center justify-center gap-1 z-10">

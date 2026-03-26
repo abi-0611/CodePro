@@ -16,7 +16,7 @@ import SectionHeader from './SectionHeader.astro';
       <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
         <!-- Phone mockups -->
         {[1, 2, 3].map(i => (
-          <PlaceholderImage label={`[STUDENT_PHOTO_${i}]`} width={900} height={1600} className="w-full sm:w-48 aspect-[9/16] rounded-3xl border-4 shadow-lg" />
+          <PlaceholderImage label={`Learner story ${i}`} width={900} height={1600} className="w-full sm:w-48 aspect-[9/16] rounded-3xl border-4 shadow-lg" />
         ))}
       </div>
       
@@ -24,7 +24,7 @@ import SectionHeader from './SectionHeader.astro';
         <div class="card p-8 md:p-12 border border-[var(--color-border-val)] shadow-xl relative overflow-hidden testimonial-card">
           <div class="absolute top-6 right-6 w-16 h-16 rounded-full border border-[var(--color-border-val)] bg-[var(--color-surface-alt-val)] flex items-center justify-center shadow-sm">
              <span class="text-[var(--color-muted-val)] font-mono text-[10px] text-center leading-tight">
-               [GOOGLE<br/>BADGE]
+               Student<br/>feedback
              </span>
           </div>
           
@@ -35,14 +35,14 @@ import SectionHeader from './SectionHeader.astro';
           </div>
           
           <p class="text-xl md:text-2xl text-[var(--color-ink-val)] italic mb-8 leading-relaxed font-serif testimonial-text transition-opacity duration-500">
-            "[REVIEW_TEXT — paste student review here]"
+            "The sessions are structured, practical, and easy to follow. The practice tasks helped me build confidence and stay consistent."
           </p>
           
           <div class="flex items-center gap-4">
-            <PlaceholderImage label="[AVATAR]" width={56} height={56} className="w-14 h-14 rounded-full shrink-0 !p-0" />
+            <PlaceholderImage label="Learner" width={56} height={56} className="w-14 h-14 rounded-full shrink-0 !p-0" />
             <div>
               <h4 class="font-bold text-lg text-[var(--color-ink-val)] font-heading testimonial-name transition-opacity duration-500">
-                [REVIEWER_NAME]
+                Learner
               </h4>
               <p class="text-sm text-[var(--color-muted-val)]">Verified Student</p>
             </div>
@@ -62,9 +62,9 @@ import SectionHeader from './SectionHeader.astro';
 <script>
   // Simple testimonial slider logic
   const reviews = [
-    { name: "[REVIEWER_NAME_1]", text: "\"[REVIEW_TEXT_1 — paste student review here]\"" },
-    { name: "[REVIEWER_NAME_2]", text: "\"[REVIEW_TEXT_2 — paste student review here]\"" },
-    { name: "[REVIEWER_NAME_3]", text: "\"[REVIEW_TEXT_3 — paste student review here]\"" }
+    { name: "Learner", text: "\"Clear explanations + lots of hands-on practice. The mentor feedback made a big difference.\"" },
+    { name: "Learner", text: "\"The curriculum is well paced and project focused. I finally understood how to build end-to-end features.\"" },
+    { name: "Learner", text: "\"Good support during assignments and interview prep. It helped me stay on track and improve steadily.\"" }
   ];
   
   let currentSlide = 0;

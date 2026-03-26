@@ -15,20 +15,20 @@ const aboutStats = [
 ];
 
 const breadcrumbItems = [
-  { label: '[ABOUT_BREADCRUMB_LABEL]' }
+  { label: 'About' }
 ];
 ---
 
-<BaseLayout title="[ABOUT_PAGE_TITLE]" description="[ABOUT_META_DESCRIPTION]">
+<BaseLayout title="About | CodePro.io" description="Learn about our mentor-led training approach and the team behind CodePro.io." >
   {/* SECTION 1 — PAGE HERO */}
   <div class="grid-overlay relative overflow-hidden pt-32 pb-16 bg-gradient-to-b from-[var(--page-hero-from-val)] to-[var(--page-hero-to-val)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <BreadcrumbNav items={breadcrumbItems} />
       <div class="text-center mt-8">
-        <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">[ABOUT_EYEBROW]</span>
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-[var(--color-ink-val)] mb-6">[ABOUT_H1]</h1>
+        <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">About</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Built for practical learning</h1>
         <p class="text-xl text-[var(--color-muted-val)] max-w-3xl mx-auto leading-relaxed">
-          [TAGLINE — 1 sentence about the institute's mission]
+          Mentor-led training that focuses on fundamentals, hands-on practice, and a clear path from learning to confidence.
         </p>
       </div>
     </div>
@@ -38,19 +38,19 @@ const breadcrumbItems = [
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <div>
-        <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-6">[ABOUT_STORY_TITLE]</h2>
+        <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Our story</h2>
         <div class="space-y-4 text-lg text-[var(--color-muted-val)] leading-relaxed mb-8">
-          <p>[STORY_PARA_1]</p>
-          <p>[STORY_PARA_2]</p>
-          <p>[STORY_PARA_3]</p>
+          <p>CodePro.io was created to make learning feel simple, practical, and achievable — especially for students who want real skills, not just theory.</p>
+          <p>Our trainers are B.Tech graduates with 3 years of teaching experience, so sessions stay structured, beginner-friendly, and focused on what matters most.</p>
+          <p>We teach through guided practice, clear explanations, and consistent feedback — helping learners build confidence step-by-step.</p>
         </div>
         <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[var(--color-surface-alt-val)] border border-[var(--color-border-val)] text-[var(--color-ink-val)] font-semibold">
           <Award class="w-5 h-5 text-[var(--color-primary-val)]" />
-          Est. [FOUNDING_YEAR]
+          B.Tech mentors • 3 years teaching experience
         </div>
       </div>
       <div class="relative">
-        <PlaceholderImage label="[ABOUT_PHOTO — institute building or classroom photo]" width={1280} height={720} className="aspect-video" />
+        <PlaceholderImage label="Classroom / training photo" width={1280} height={720} className="aspect-video" />
         <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-[var(--color-primary-val)]/10 rounded-full blur-2xl -z-10"></div>
         <div class="absolute -top-6 -right-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl -z-10"></div>
       </div>
@@ -63,20 +63,20 @@ const breadcrumbItems = [
   {/* SECTION 4 — OUR TEAM / TRAINERS */}
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
     <SectionHeader 
-      eyebrow="[ABOUT_TEAM_EYEBROW]"
-      title="[ABOUT_TEAM_TITLE]"
-      description="[ABOUT_TEAM_DESCRIPTION]"
+      eyebrow="Our team"
+      title="Mentors who teach with clarity"
+      description="Our trainers are B.Tech graduates with 3 years of teaching experience — focused on fundamentals, practice, and consistent guidance."
     />
     
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
       {[1, 2, 3, 4].map((i) => (
         <div class="card overflow-hidden group">
-          <PlaceholderImage label={`[TRAINER_PHOTO_${i}]`} width={600} height={600} className="aspect-square !rounded-none !border-0 !border-b border-[var(--color-border-val)]" />
+          <PlaceholderImage label={`Trainer photo ${i}`} width={600} height={600} className="aspect-square !rounded-none !border-0 !border-b border-[var(--color-border-val)]" />
           <div class="p-6 text-center">
-            <h4 class="text-xl font-bold font-heading text-[var(--color-ink-val)] mb-1">{`[TRAINER_NAME_${i}]`}</h4>
-            <p class="text-[var(--color-primary-val)] font-medium mb-2 text-sm">{`[TRAINER_DESIGNATION_${i}]`}</p>
-            <p class="text-xs text-[var(--color-muted-val)] mb-4">{`[TRAINER_EXP_${i}]`}</p>
-            <a href={`[TRAINER_LINKEDIN_URL_${i}]`} class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#0077b5]/10 text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-colors" aria-label="LinkedIn Profile">
+            <h4 class="text-xl font-bold font-heading text-[var(--color-ink-val)] mb-1">Mentor {i}</h4>
+            <p class="text-[var(--color-primary-val)] font-medium mb-2 text-sm">B.Tech Graduate</p>
+            <p class="text-xs text-[var(--color-muted-val)] mb-4">3 years teaching experience</p>
+            <a href="#" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#0077b5]/10 text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-colors" aria-label="LinkedIn Profile">
               <Linkedin class="w-4 h-4" />
             </a>
           </div>
@@ -88,17 +88,17 @@ const breadcrumbItems = [
   {/* SECTION 5 — HIRING PARTNERS */}
   <div class="bg-[var(--color-surface-alt-val)] py-20 border-y border-[var(--color-border-val)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-12 text-center">[ABOUT_PLACEMENTS_TITLE]</h2>
+      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-12 text-center">Hiring partners</h2>
       <LogoMarquee />
     </div>
   </div>
 
   {/* SECTION 6 — CERTIFICATIONS / ACCREDITATIONS */}
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-    <h2 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-10 text-center">[ABOUT_CERTIFICATIONS_TITLE]</h2>
+    <h2 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-10 text-center">Certifications & accreditations</h2>
     <div class="flex flex-wrap justify-center gap-8 md:gap-16">
       {[1, 2, 3, 4].map((i) => (
-        <PlaceholderImage label={`[CERT_LOGO_${i}]`} width={128} height={128} className="w-32 h-32 rounded-full" />
+        <PlaceholderImage label={`Certification logo ${i}`} width={128} height={128} className="w-32 h-32 rounded-full" />
       ))}
     </div>
   </div>
@@ -113,7 +113,7 @@ const breadcrumbItems = [
           </div>
           <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-4">🎯 Our Vision</h3>
           <p class="text-[var(--color-muted-val)] text-lg leading-relaxed">
-            [VISION_TEXT placeholder]
+            To help learners become confident, job-ready professionals through structured training, strong fundamentals, and consistent practice.
           </p>
         </div>
         <div class="card p-10 bg-white dark:bg-[var(--color-surface-val)]">
@@ -122,7 +122,7 @@ const breadcrumbItems = [
           </div>
           <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-4">🚀 Our Mission</h3>
           <p class="text-[var(--color-muted-val)] text-lg leading-relaxed">
-            [MISSION_TEXT placeholder]
+            Deliver mentor-led learning with real exercises, clear feedback, and practical guidance — so students can build skills that translate directly into projects and interviews.
           </p>
         </div>
       </div>

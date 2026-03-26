@@ -12,37 +12,37 @@ import { getCollection } from 'astro:content';
 
 const allCourses = await getCollection('courses');
 const featuredCourses = allCourses.sort((a, b) => (a.data.order || 99) - (b.data.order || 99)).slice(0, 3);
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
-<BaseLayout title="[HOME_PAGE_TITLE]" description="[HOME_META_DESCRIPTION]">
-  <Hero 
-    headline="[HERO_HEADLINE]" 
-    subheadline="[HERO_SUBHEADLINE]"
-    ctaText="[HERO_CTA_TEXT]"
-    ctaLink="[HERO_CTA_LINK]"
-  />
+<BaseLayout title="Home" description="Job-focused tech training with hands-on projects, mentorship, and placement support.">
+  <Hero />
   
   <StatBar />
 
   <EnquirySnippet />
 
-  <section class="py-20 bg-[var(--color-surface-alt-val)]">
+  <section class="py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <SectionHeader 
-        eyebrow="Why CodePro.io"
-        title="A training approach built for outcomes"
-        description="Industry-led sessions, hands-on mentorship, and portfolio projects—with placement support to help you get hired."
-      />
-      <FeatureGrid />
+      <div class="glass rounded-[var(--radius-card)] p-6 sm:p-10">
+        <SectionHeader 
+          eyebrow="Why CodePro.io"
+          title="A training approach built for outcomes"
+          description="Industry-led sessions, hands-on mentorship, and portfolio projects—with placement support to help you get hired."
+        />
+        <FeatureGrid />
+      </div>
     </div>
   </section>
 
   <section class="py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <SectionHeader 
-        eyebrow="[HOME_SECTION_2_EYEBROW]"
-        title="[HOME_SECTION_2_TITLE]"
-        description="[HOME_SECTION_2_DESCRIPTION]"
+        eyebrow="Courses"
+        title="Explore our most popular programs"
+        description="Pick a learning track and start building real skills with structured modules and hands-on practice."
       />
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {featuredCourses.map(course => (
@@ -59,15 +59,17 @@ const featuredCourses = allCourses.sort((a, b) => (a.data.order || 99) - (b.data
         ))}
       </div>
       <div class="mt-12 text-center">
-        <a href="[HOME_COURSES_CTA_LINK]" class="button secondary">[HOME_COURSES_CTA_TEXT]</a>
+        <a href={`${baseUrl}courses/`} class="button secondary">View all courses</a>
       </div>
     </div>
   </section>
 
-  <section class="py-20 bg-[var(--color-surface-alt-val)] border-y border-[var(--color-border-val)]">
+  <section class="py-20 border-y border-[var(--color-border-val)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-12 text-center">[HOME_PLACEMENTS_TITLE]</h2>
-      <LogoMarquee />
+      <div class="glass rounded-[var(--radius-card)] p-6 sm:p-10">
+        <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-12 text-center">Learning aligned with industry</h2>
+        <LogoMarquee />
+      </div>
     </div>
   </section>
 

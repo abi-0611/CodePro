@@ -16,6 +16,35 @@ import {
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+
+const withBase = (path: string) => `${baseUrl}${path.replace(/^\/+/, '')}`;
+
+const isBracketPlaceholder = (value: unknown) =>
+  typeof value === 'string' && /^\[[^\[\]\n]{2,}\]$/.test(value.trim());
+
+const safeText = (value: unknown, fallback: string) =>
+  typeof value === 'string' && value.trim() && !isBracketPlaceholder(value) ? value : fallback;
+
+const instituteName = safeText(INSTITUTE_NAME, 'CodePro');
+const siteTagline = safeText(SITE_TAGLINE, 'Practical training for modern careers.');
+
+const address = !isBracketPlaceholder(ADDRESS_PLACEHOLDER) ? ADDRESS_PLACEHOLDER : null;
+const phone = !isBracketPlaceholder(CONTACT_PHONE) ? CONTACT_PHONE : null;
+const email = !isBracketPlaceholder(CONTACT_EMAIL) ? CONTACT_EMAIL : null;
+
+const instagramUrl = !isBracketPlaceholder(SOCIAL_INSTAGRAM_URL) ? SOCIAL_INSTAGRAM_URL : null;
+const facebookUrl = !isBracketPlaceholder(SOCIAL_FACEBOOK_URL) ? SOCIAL_FACEBOOK_URL : null;
+const youtubeUrl = !isBracketPlaceholder(SOCIAL_YOUTUBE_URL) ? SOCIAL_YOUTUBE_URL : null;
+const linkedinUrl = !isBracketPlaceholder(SOCIAL_LINKEDIN_URL) ? SOCIAL_LINKEDIN_URL : null;
+const whatsappUrl = !isBracketPlaceholder(WHATSAPP_URL) ? WHATSAPP_URL : null;
+
+const contactHref = withBase('contact/');
+const links = {
+  home: withBase(''),
+  courses: withBase('courses/'),
+  about: withBase('about/'),
+  contact: contactHref,
+};
 ---
 
 <footer class="bg-[var(--footer-bg-val)] text-[var(--footer-fg-val)] pt-16 pb-8 border-t border-[var(--footer-border-val)]">
@@ -25,57 +54,74 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
       {/* Col 1 - Brand */}
       <div class="flex flex-col gap-4">
         <div class="text-2xl font-bold font-heading text-[var(--footer-heading-val)]">
-          {INSTITUTE_NAME}
+          {instituteName}
         </div>
         <p class="text-sm leading-relaxed">
-          {SITE_TAGLINE}
+          {siteTagline}
         </p>
-        <div class="flex items-center gap-4 mt-2">
-          <a href={SOCIAL_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Instagram"><Instagram class="w-5 h-5" /></a>
-          <a href={SOCIAL_FACEBOOK_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Facebook"><Facebook class="w-5 h-5" /></a>
-          <a href={SOCIAL_YOUTUBE_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="YouTube"><Youtube class="w-5 h-5" /></a>
-          <a href={SOCIAL_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="LinkedIn"><Linkedin class="w-5 h-5" /></a>
-        </div>
+        {(instagramUrl || facebookUrl || youtubeUrl || linkedinUrl) && (
+          <div class="flex items-center gap-4 mt-2">
+            {instagramUrl && (
+              <a href={instagramUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Instagram">
+                <Instagram class="w-5 h-5" />
+              </a>
+            )}
+            {facebookUrl && (
+              <a href={facebookUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Facebook">
+                <Facebook class="w-5 h-5" />
+              </a>
+            )}
+            {youtubeUrl && (
+              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="YouTube">
+                <Youtube class="w-5 h-5" />
+              </a>
+            )}
+            {linkedinUrl && (
+              <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="LinkedIn">
+                <Linkedin class="w-5 h-5" />
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Col 2 - Corporate Office */}
       <div class="flex flex-col gap-4">
-        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">[FOOTER_OFFICE_TITLE]</h3>
+        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">Contact</h3>
         <ul class="flex flex-col gap-3 text-sm">
           <li class="flex items-start gap-3">
             <MapPin class="w-5 h-5 shrink-0 text-[var(--color-primary-val)]" />
-            <span>{ADDRESS_PLACEHOLDER}</span>
+            {address ? <span>{address}</span> : <a href={contactHref} class="hover:text-[var(--color-primary-val)] transition-colors">Get directions & center details</a>}
           </li>
           <li class="flex items-center gap-3">
             <Phone class="w-5 h-5 shrink-0 text-[var(--color-primary-val)]" />
-            <span>{CONTACT_PHONE}</span>
+            {phone ? <a href={`tel:${phone}`} class="hover:text-[var(--color-primary-val)] transition-colors">{phone}</a> : <a href={contactHref} class="hover:text-[var(--color-primary-val)] transition-colors">Request a call back</a>}
           </li>
           <li class="flex items-center gap-3">
             <Mail class="w-5 h-5 shrink-0 text-[var(--color-primary-val)]" />
-            <span>{CONTACT_EMAIL}</span>
+            {email ? <a href={`mailto:${email}`} class="hover:text-[var(--color-primary-val)] transition-colors">{email}</a> : <a href={contactHref} class="hover:text-[var(--color-primary-val)] transition-colors">Send an enquiry</a>}
           </li>
         </ul>
       </div>
 
       {/* Col 3 - For Students */}
       <div class="flex flex-col gap-4">
-        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">[FOOTER_COL_3_TITLE]</h3>
+        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">Quick links</h3>
         <ul class="flex flex-col gap-2 text-sm">
-          <li><a href="[FOOTER_LINK_1_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_1_LABEL]</a></li>
-          <li><a href="[FOOTER_LINK_2_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_2_LABEL]</a></li>
-          <li><a href="[FOOTER_LINK_3_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_3_LABEL]</a></li>
-          <li><a href="[FOOTER_LINK_4_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_4_LABEL]</a></li>
-          <li><a href={`${baseUrl}courses/`} class="hover:text-[var(--color-primary-val)] transition-colors">Courses</a></li>
+          <li><a href={links.home} class="hover:text-[var(--color-primary-val)] transition-colors">Home</a></li>
+          <li><a href={links.courses} class="hover:text-[var(--color-primary-val)] transition-colors">Courses</a></li>
+          <li><a href={links.about} class="hover:text-[var(--color-primary-val)] transition-colors">About</a></li>
+          <li><a href={links.contact} class="hover:text-[var(--color-primary-val)] transition-colors">Contact</a></li>
         </ul>
       </div>
 
       {/* Col 4 - For Business */}
       <div class="flex flex-col gap-4">
-        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">[FOOTER_COL_4_TITLE]</h3>
+        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">Programs</h3>
         <ul class="flex flex-col gap-2 text-sm">
-          <li><a href="[FOOTER_LINK_5_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_5_LABEL]</a></li>
-          <li><a href="[FOOTER_LINK_6_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_6_LABEL]</a></li>
-          <li><a href="[FOOTER_LINK_7_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_7_LABEL]</a></li>
+          <li><a href={links.courses} class="hover:text-[var(--color-primary-val)] transition-colors">Career programs</a></li>
+          <li><a href={links.contact} class="hover:text-[var(--color-primary-val)] transition-colors">Workshops (enquire)</a></li>
+          <li><a href={links.contact} class="hover:text-[var(--color-primary-val)] transition-colors">Internships (enquire)</a></li>
         </ul>
       </div>
 
@@ -83,22 +129,24 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
     {/* Bottom Bar */}
     <div class="pt-8 border-t border-[var(--footer-border-val)] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--footer-subtle-val)]">
-      <p>&copy; {new Date().getFullYear()} {INSTITUTE_NAME}. All rights reserved.</p>
+      <p>&copy; {new Date().getFullYear()} {instituteName}. All rights reserved.</p>
       <div class="flex gap-4">
-        <a href="[PRIVACY_POLICY_URL]" class="hover:text-[var(--footer-heading-val)] transition-colors">[PRIVACY_POLICY_LABEL]</a>
-        <a href="[TERMS_OF_SERVICE_URL]" class="hover:text-[var(--footer-heading-val)] transition-colors">[TERMS_OF_SERVICE_LABEL]</a>
+        <a href={links.about} class="hover:text-[var(--footer-heading-val)] transition-colors">About</a>
+        <a href={links.contact} class="hover:text-[var(--footer-heading-val)] transition-colors">Contact</a>
       </div>
     </div>
   </div>
 
   {/* Floating WhatsApp Button */}
-  <a 
-    href={WHATSAPP_URL} 
-    target="_blank" 
-    rel="noopener noreferrer"
-    class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 hover:scale-110 transition-all z-50 flex items-center justify-center"
-    aria-label="Chat on WhatsApp"
-  >
-    <MessageCircle class="w-6 h-6" />
-  </a>
+  {whatsappUrl && (
+    <a 
+      href={whatsappUrl} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="fixed bottom-6 right-6 bg-[var(--color-primary-val)] text-white p-4 rounded-full shadow-lg hover:bg-[var(--color-primary-dark-val)] hover:scale-110 transition-all z-50 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary-val)]"
+      aria-label="Chat on WhatsApp"
+    >
+      <MessageCircle class="w-6 h-6" />
+    </a>
+  )}
 </footer>

@@ -36,9 +36,19 @@
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.07);
   --shadow-card-hover: 0 18px 55px rgba(0, 0, 0, 0.12);
 
+  /* Typography baseline */
+  --text-base: clamp(16px, 0.25vw + 15px, 18px);
+  --text-sm: clamp(14px, 0.15vw + 13px, 16px);
+  --text-lg: clamp(18px, 0.35vw + 16px, 20px);
+  --text-xl: clamp(20px, 0.6vw + 18px, 24px);
+  --leading-body: 1.7;
+  --leading-head: 1.12;
   /* Glassmorphism (derived from existing theme colors) */
-  --glass-bg-val: color-mix(in srgb, var(--color-surface-val) 78%, transparent);
-  --glass-border-val: color-mix(in srgb, var(--color-border-val) 90%, transparent);
+  /* More translucent so the grid/background shows through */
+  --glass-bg-val: color-mix(in srgb, var(--color-surface-val) 50%, transparent);
+  --glass-border-val: color-mix(in srgb, var(--color-border-val) 75%, transparent);
+  --glass-highlight-val: color-mix(in srgb, var(--color-surface-val) 35%, transparent);
+  --glass-inset-val: color-mix(in srgb, var(--color-surface-val) 22%, transparent);
 
   --banner-offset: 0px;
 
@@ -91,8 +101,10 @@
   --footer-subtle-val: rgba(255, 255, 255, 0.50);
 
   /* Glassmorphism in dark (slightly more opaque for readability) */
-  --glass-bg-val: color-mix(in srgb, var(--color-surface-val) 88%, transparent);
-  --glass-border-val: color-mix(in srgb, var(--color-border-val) 95%, transparent);
+  --glass-bg-val: color-mix(in srgb, var(--color-surface-val) 66%, transparent);
+  --glass-border-val: color-mix(in srgb, var(--color-border-val) 92%, transparent);
+  --glass-highlight-val: color-mix(in srgb, var(--color-ink-val) 18%, transparent);
+  --glass-inset-val: color-mix(in srgb, var(--color-ink-val) 10%, transparent);
 }
 
 body {
@@ -105,11 +117,13 @@ body {
   background-size: var(--grid-cell) var(--grid-cell);
   background-position: center top;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  text-rendering: optimizeLegibility;
 }
 
 .grid-overlay {
   position: relative;
-  overflow: hidden;
 }
 
 .grid-overlay::before {
@@ -131,6 +145,50 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  line-height: var(--leading-head);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+small {
+  font-size: var(--text-sm);
+}
+
+/* Better default spacing for long-form content */
+.prose {
+  color: var(--color-muted-val);
+  line-height: 1.8;
+}
+
+.prose :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.prose :where(h2, h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  color: var(--color-ink-val);
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+
+.prose :where(ul, ol):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin: 0.8em 0 1.2em;
+  padding-left: 1.2em;
+}
+
+.prose :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin: 0.35em 0;
+}
+
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  color: var(--color-primary-val);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
 }
 
 .eyebrow {
@@ -180,18 +238,30 @@ h1, h2, h3, h4, h5, h6 {
 
 .glass {
   background-color: var(--glass-bg-val);
+  background-image: linear-gradient(135deg, var(--glass-highlight-val), transparent 55%);
   border: 1px solid var(--glass-border-val);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 var(--glass-inset-val);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+}
+
+/* Use when the *section background* should be glassy (no boxed border) */
+.glass-bg {
+  background-color: var(--glass-bg-val);
+  background-image: linear-gradient(135deg, var(--glass-highlight-val), transparent 55%);
+  box-shadow: inset 0 1px 0 var(--glass-inset-val);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
 }
 
 .card {
   background-color: var(--glass-bg-val);
+  background-image: linear-gradient(135deg, var(--glass-highlight-val), transparent 55%);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--glass-border-val);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   overflow: hidden;
 }

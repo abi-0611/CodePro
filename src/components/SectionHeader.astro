@@ -11,11 +11,11 @@ const { eyebrow, title, description, align = 'center' } = Astro.props;
 
 <div class={`flex flex-col gap-4 mb-12 ${align === 'center' ? 'items-center text-center' : 'items-start text-left'}`}>
   {eyebrow && <span class="eyebrow">{eyebrow}</span>}
-  <h2 class="text-3xl md:text-4xl font-bold text-[var(--color-ink-val)] tracking-tight">
+  <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-ink-val)] tracking-tight">
     {title}
   </h2>
   {description && (
-    <p class="text-[var(--color-muted-val)] max-w-2xl text-lg">
+    <p class="text-[var(--color-muted-val)] max-w-2xl text-lg leading-relaxed">
       {description}
     </p>
   )}

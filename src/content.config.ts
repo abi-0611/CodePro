@@ -17,6 +17,10 @@ const coursesCollection = defineCollection({
     featured: z.boolean().optional(),
     category: z.string(),
     curriculum: z.array(z.string()),
+    curriculumTopics: z.array(z.array(z.string())).optional(),
+    highlights: z.array(z.string()).optional(),
+    nextBatch: z.string().optional(),
+    faqs: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
   }),
 });
 
