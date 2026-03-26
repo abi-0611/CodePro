@@ -8,18 +8,18 @@
         <p class="text-[var(--color-muted-val)]">Drop your details and we'll call you back.</p>
       </div>
       
-      <form id="snippet-form" class="w-full md:w-2/3 flex flex-col sm:flex-row gap-4" novalidate>
-        <div class="flex-1 relative">
+      <form id="snippet-form" class="w-full md:w-2/3 flex flex-col sm:flex-row sm:flex-wrap gap-4" novalidate>
+        <div class="flex-1 min-w-0 relative">
           <label for="snippet-name" class="sr-only">Your Name</label>
           <input type="text" id="snippet-name" required placeholder="Your Name" class="w-full px-4 py-3 rounded-full bg-[var(--color-surface-val)] border border-[var(--color-border-val)] text-[var(--color-ink-val)] placeholder:text-[var(--color-muted-val)] focus:outline-none focus:border-[var(--color-primary-val)] transition-all" />
           <span class="error-message text-red-400 text-xs absolute -bottom-5 left-4 hidden">Required</span>
         </div>
-        <div class="flex-1 relative">
+        <div class="flex-1 min-w-0 relative">
           <label for="snippet-phone" class="sr-only">Phone Number</label>
           <input type="tel" id="snippet-phone" required pattern="[0-9]{10}" placeholder="Phone Number" class="w-full px-4 py-3 rounded-full bg-[var(--color-surface-val)] border border-[var(--color-border-val)] text-[var(--color-ink-val)] placeholder:text-[var(--color-muted-val)] focus:outline-none focus:border-[var(--color-primary-val)] transition-all" />
           <span class="error-message text-red-400 text-xs absolute -bottom-5 left-4 hidden">Valid 10-digit number</span>
         </div>
-        <button type="submit" class="button primary whitespace-nowrap rounded-full px-8">
+        <button type="submit" class="button primary w-full sm:w-auto whitespace-nowrap rounded-full px-8">
           Call Me Back
         </button>
       </form>

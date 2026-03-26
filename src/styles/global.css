@@ -79,6 +79,7 @@ body {
   background-color: var(--color-paper-val);
   color: var(--color-ink-val);
   font-family: var(--font-sans);
+  overflow-x: clip;
   background-image: linear-gradient(var(--color-border-val) 1px, transparent 1px),
                     linear-gradient(90deg, var(--color-border-val) 1px, transparent 1px);
   background-size: var(--grid-cell) var(--grid-cell);

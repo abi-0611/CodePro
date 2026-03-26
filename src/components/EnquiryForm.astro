@@ -80,8 +80,8 @@ const courses = await getCollection('courses');
 </div>
 
 <script>
-  const form = document.getElementById('enquiry-form-element') as HTMLFormElement;
-  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const form = /** @type {HTMLFormElement | null} */ (document.getElementById('enquiry-form-element'));
+  const submitBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('submit-btn'));
   const btnText = submitBtn?.querySelector('.btn-text');
   const spinner = submitBtn?.querySelector('.spinner');
   const successMessage = document.getElementById('success-message');
@@ -94,7 +94,7 @@ const courses = await getCollection('courses');
       
       const inputs = form.querySelectorAll('input, select, textarea');
       inputs.forEach((input) => {
-        const htmlInput = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        const htmlInput = /** @type {HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement} */ (input);
         const errorSpan = /** @type {HTMLElement | null} */ (htmlInput.nextElementSibling);
         if (htmlInput.hasAttribute('required') && !htmlInput.checkValidity()) {
           isValid = false;
@@ -111,6 +111,7 @@ const courses = await getCollection('courses');
       });
 
       if (isValid) {
+        if (!submitBtn) return;
         // Show loading state
         submitBtn.disabled = true;
         if (btnText) btnText.textContent = 'Sending...';
@@ -133,7 +134,7 @@ const courses = await getCollection('courses');
 
     const inputs = form.querySelectorAll('input, select, textarea');
     inputs.forEach((input) => {
-      const htmlInput = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+      const htmlInput = /** @type {HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement} */ (input);
       htmlInput.addEventListener('input', () => {
         const errorSpan = /** @type {HTMLElement | null} */ (htmlInput.nextElementSibling);
         if (htmlInput.checkValidity()) {

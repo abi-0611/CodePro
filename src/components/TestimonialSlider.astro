@@ -72,7 +72,7 @@ import SectionHeader from './SectionHeader.astro';
   const nameEl = document.querySelector('.testimonial-name');
   const dots = document.querySelectorAll('.testimonial-dots button');
   
-  function updateSlide(index: number) {
+  function updateSlide(index) {
     if(!textEl || !nameEl) return;
     
     textEl.classList.add('opacity-0');
