@@ -37,6 +37,18 @@
   --shadow-card-hover: 0 18px 55px rgba(0, 0, 0, 0.12);
 
   --banner-offset: 0px;
+
+  /* Section theming (driven by [data-theme="dark"]) */
+  --hero-gradient-from-val: var(--color-surface-val);
+  --hero-gradient-to-val: var(--color-surface-alt-val);
+  --enquiry-gradient-from-val: var(--color-surface-val);
+  --enquiry-gradient-to-val: var(--color-surface-alt-val);
+
+  --footer-bg-val: var(--color-surface-val);
+  --footer-fg-val: var(--color-muted-val);
+  --footer-heading-val: var(--color-ink-val);
+  --footer-border-val: var(--color-border-val);
+  --footer-subtle-val: var(--color-subtle-val);
 }
 
 [data-theme="dark"] {
@@ -49,6 +61,18 @@
   --color-border-val: rgba(247, 247, 249, 0.10);
   --color-dark-bg-val: #010409;
   --color-dark-surface-val: #0d1117;
+
+  /* Keep existing dark appearance for these sections */
+  --hero-gradient-from-val: var(--color-dark-bg-val);
+  --hero-gradient-to-val: var(--color-dark-surface-val);
+  --enquiry-gradient-from-val: var(--color-dark-bg-val);
+  --enquiry-gradient-to-val: var(--color-dark-surface-val);
+
+  --footer-bg-val: var(--color-dark-bg-val);
+  --footer-fg-val: rgba(255, 255, 255, 0.8);
+  --footer-heading-val: #ffffff;
+  --footer-border-val: rgba(255, 255, 255, 0.10);
+  --footer-subtle-val: rgba(255, 255, 255, 0.50);
 }
 
 body {

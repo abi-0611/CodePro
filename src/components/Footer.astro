@@ -18,13 +18,13 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 ---
 
-<footer class="bg-[var(--color-dark-bg-val)] text-white/80 pt-16 pb-8 border-t border-white/10">
+<footer class="bg-[var(--footer-bg-val)] text-[var(--footer-fg-val)] pt-16 pb-8 border-t border-[var(--footer-border-val)]">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
       
       {/* Col 1 - Brand */}
       <div class="flex flex-col gap-4">
-        <div class="text-2xl font-bold font-heading text-white">
+        <div class="text-2xl font-bold font-heading text-[var(--footer-heading-val)]">
           {INSTITUTE_NAME}
         </div>
         <p class="text-sm leading-relaxed">
@@ -40,7 +40,7 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
       {/* Col 2 - Corporate Office */}
       <div class="flex flex-col gap-4">
-        <h3 class="text-lg font-semibold text-white font-heading">[FOOTER_OFFICE_TITLE]</h3>
+        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">[FOOTER_OFFICE_TITLE]</h3>
         <ul class="flex flex-col gap-3 text-sm">
           <li class="flex items-start gap-3">
             <MapPin class="w-5 h-5 shrink-0 text-[var(--color-primary-val)]" />
@@ -59,7 +59,7 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
       {/* Col 3 - For Students */}
       <div class="flex flex-col gap-4">
-        <h3 class="text-lg font-semibold text-white font-heading">[FOOTER_COL_3_TITLE]</h3>
+        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">[FOOTER_COL_3_TITLE]</h3>
         <ul class="flex flex-col gap-2 text-sm">
           <li><a href="[FOOTER_LINK_1_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_1_LABEL]</a></li>
           <li><a href="[FOOTER_LINK_2_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_2_LABEL]</a></li>
@@ -71,7 +71,7 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
       {/* Col 4 - For Business */}
       <div class="flex flex-col gap-4">
-        <h3 class="text-lg font-semibold text-white font-heading">[FOOTER_COL_4_TITLE]</h3>
+        <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">[FOOTER_COL_4_TITLE]</h3>
         <ul class="flex flex-col gap-2 text-sm">
           <li><a href="[FOOTER_LINK_5_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_5_LABEL]</a></li>
           <li><a href="[FOOTER_LINK_6_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_6_LABEL]</a></li>
@@ -82,11 +82,11 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
     </div>
 
     {/* Bottom Bar */}
-    <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/50">
+    <div class="pt-8 border-t border-[var(--footer-border-val)] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--footer-subtle-val)]">
       <p>&copy; {new Date().getFullYear()} {INSTITUTE_NAME}. All rights reserved.</p>
       <div class="flex gap-4">
-        <a href="[PRIVACY_POLICY_URL]" class="hover:text-white transition-colors">[PRIVACY_POLICY_LABEL]</a>
-        <a href="[TERMS_OF_SERVICE_URL]" class="hover:text-white transition-colors">[TERMS_OF_SERVICE_LABEL]</a>
+        <a href="[PRIVACY_POLICY_URL]" class="hover:text-[var(--footer-heading-val)] transition-colors">[PRIVACY_POLICY_LABEL]</a>
+        <a href="[TERMS_OF_SERVICE_URL]" class="hover:text-[var(--footer-heading-val)] transition-colors">[TERMS_OF_SERVICE_LABEL]</a>
       </div>
     </div>
   </div>
