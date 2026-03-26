@@ -12,6 +12,8 @@ import {
   SOCIAL_LINKEDIN_URL,
   WHATSAPP_URL,
 } from '../utils/consts';
+
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <footer class="bg-[var(--color-dark-bg-val)] text-white/80 pt-16 pb-8 border-t border-white/10">
@@ -61,7 +63,7 @@ import {
           <li><a href="[FOOTER_LINK_2_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_2_LABEL]</a></li>
           <li><a href="[FOOTER_LINK_3_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_3_LABEL]</a></li>
           <li><a href="[FOOTER_LINK_4_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_4_LABEL]</a></li>
-          <li><a href="/courses" class="hover:text-[var(--color-primary-val)] transition-colors">Courses</a></li>
+          <li><a href={`${baseUrl}courses/`} class="hover:text-[var(--color-primary-val)] transition-colors">Courses</a></li>
         </ul>
       </div>
 

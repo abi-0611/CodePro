@@ -3,23 +3,27 @@ import { Rocket, Menu, X } from 'lucide-react';
 import { INSTITUTE_NAME, CONTACT_PHONE } from '../utils/consts';
 import ThemeToggle from './ThemeToggle.astro';
 
+const baseUrl = import.meta.env.BASE_URL;
+const withBase = (path: string) => `${baseUrl}${path.replace(/^\//, '')}`;
+
 const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'Courses', href: '/courses' },
-  { name: 'About Us', href: '/about' },
+  { name: 'Home', href: withBase('') },
+  { name: 'Courses', href: withBase('courses/') },
+  { name: 'About Us', href: withBase('about/') },
   { name: 'Workshop', href: '#' },
   { name: 'Internship', href: '#' },
-  { name: 'Contact Us', href: '/contact' },
+  { name: 'Contact Us', href: withBase('contact/') },
 ];
 
 const currentPath = Astro.url.pathname;
+const homeHref = withBase('');
 ---
 
 <header id="main-header" class="fixed top-[var(--banner-offset)] left-0 right-0 z-50 transition-all duration-300 bg-[var(--color-surface-val)]/80 backdrop-blur-md border-b border-[var(--color-border-val)]">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
     
     {/* Logo */}
-    <a href="/" class="flex items-center gap-2 text-xl font-bold font-heading text-[var(--color-ink-val)]">
+    <a href={homeHref} class="flex items-center gap-2 text-xl font-bold font-heading text-[var(--color-ink-val)]">
       <Rocket className="w-6 h-6 text-[var(--color-primary-val)]" />
       <span>{INSTITUTE_NAME}</span>
     </a>
@@ -29,7 +33,7 @@ const currentPath = Astro.url.pathname;
       {navLinks.map(link => (
         <a 
           href={link.href} 
-          class={`text-sm font-medium transition-colors hover:text-[var(--color-primary-val)] ${currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)) ? 'text-[var(--color-primary-val)] font-semibold' : 'text-[var(--color-muted-val)]'}`}
+          class={`text-sm font-medium transition-colors hover:text-[var(--color-primary-val)] ${currentPath === link.href || (link.href !== homeHref && currentPath.startsWith(link.href)) ? 'text-[var(--color-primary-val)] font-semibold' : 'text-[var(--color-muted-val)]'}`}
         >
           {link.name}
         </a>
@@ -42,7 +46,7 @@ const currentPath = Astro.url.pathname;
       <div class="text-sm font-medium text-[var(--color-ink-val)] hidden lg:block">
         {CONTACT_PHONE}
       </div>
-      <a href="/contact" class="button primary text-sm py-2 px-4">
+      <a href={withBase('contact/')} class="button primary text-sm py-2 px-4">
         Enquire Now
       </a>
     </div>
@@ -72,7 +76,7 @@ const currentPath = Astro.url.pathname;
         <div class="text-sm font-medium text-[var(--color-ink-val)]">
           {CONTACT_PHONE}
         </div>
-        <a href="/contact" class="button primary text-center w-full">
+        <a href={withBase('contact/')} class="button primary text-center w-full">
           Enquire Now
         </a>
       </div>
