@@ -3,8 +3,10 @@ import { Rocket, Menu, X } from 'lucide-react';
 import { INSTITUTE_NAME, CONTACT_PHONE } from '../utils/consts';
 import ThemeToggle from './ThemeToggle.astro';
 
-const baseUrl = import.meta.env.BASE_URL;
-const withBase = (path: string) => `${baseUrl}${path.replace(/^\//, '')}`;
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const withBase = (path: string) => `${baseUrl}${path.replace(/^\/+/, '')}`;
 
 const navLinks = [
   { name: 'Home', href: withBase('') },

@@ -45,8 +45,12 @@ const faqs = [
   { q: "[FAQ_Q4 — e.g. What if I miss a live class?]", a: "[FAQ_A4 — e.g. All live sessions are recorded and you will have lifetime access...]" }
 ];
 
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
 const breadcrumbItems = [
-  { label: 'Courses', href: `${import.meta.env.BASE_URL}courses/` },
+  { label: 'Courses', href: `${baseUrl}courses/` },
   { label: course.data.title }
 ];
 ---

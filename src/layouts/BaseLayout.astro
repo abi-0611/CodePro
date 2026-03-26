@@ -30,10 +30,14 @@ interface Props {
   image?: string;
 }
 
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
 const { 
   title,
   description = DEFAULT_META_DESCRIPTION,
-  image = `${import.meta.env.BASE_URL}favicon.svg`,
+  image = `${baseUrl}favicon.svg`,
 } = Astro.props;
 
 const siteOrigin = (Astro.site?.toString() ?? SITE_URL).replace(/\/$/, '');
@@ -63,7 +67,7 @@ const jsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Font Preloads -->
