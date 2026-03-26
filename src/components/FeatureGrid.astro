@@ -20,21 +20,23 @@ const features = [
   }
 ];
 ---
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
-  <div class="order-2 lg:order-1">
-    <PlaceholderImage label="[TEAM_PHOTO — 400x300px classroom/team image]" width={400} height={300} className="aspect-[4/3] w-full" />
-  </div>
-  <div class="order-1 lg:order-2 flex flex-col gap-8">
-    {features.map(feature => (
-      <div class="flex gap-6">
-        <div class="w-14 h-14 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center shrink-0">
-          <feature.icon class="w-7 h-7" />
+<div class="glass rounded-[var(--radius-card)] p-6 sm:p-8 mt-12">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div class="order-2 lg:order-1">
+      <PlaceholderImage label="[TEAM_PHOTO — 400x300px classroom/team image]" width={400} height={300} className="aspect-[4/3] w-full" />
+    </div>
+    <div class="order-1 lg:order-2 flex flex-col gap-8">
+      {features.map(feature => (
+        <div class="flex gap-6">
+          <div class="w-14 h-14 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+            <feature.icon class="w-7 h-7" />
+          </div>
+          <div>
+            <h3 class="text-xl font-bold font-heading text-[var(--color-ink)] mb-2">{feature.title}</h3>
+            <p class="text-[var(--color-muted)] leading-relaxed">{feature.description}</p>
+          </div>
         </div>
-        <div>
-          <h3 class="text-xl font-bold font-heading text-[var(--color-ink)] mb-2">{feature.title}</h3>
-          <p class="text-[var(--color-muted)] leading-relaxed">{feature.description}</p>
-        </div>
-      </div>
-    ))}
+      ))}
+    </div>
   </div>
 </div>

@@ -10,10 +10,10 @@ const logos = [
   '[LOGO_TCS]',
 ];
 ---
-<div class="overflow-hidden whitespace-nowrap relative py-8">
-  <div class="absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-[var(--color-surface-alt)] to-transparent z-10"></div>
-  <div class="absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-[var(--color-surface-alt)] to-transparent z-10"></div>
-  
+<div class="glass rounded-[var(--radius-card)] overflow-hidden whitespace-nowrap relative py-8 px-4 sm:px-8">
+  <div class="absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-[var(--glass-bg-val)] to-transparent z-10"></div>
+  <div class="absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-[var(--glass-bg-val)] to-transparent z-10"></div>
+
   <div class="inline-flex animate-marquee items-center gap-16">
     {[...logos, ...logos].map((logo) => (
       <div class="text-xl sm:text-2xl font-bold text-[var(--color-muted)] opacity-50 hover:opacity-100 transition-opacity">

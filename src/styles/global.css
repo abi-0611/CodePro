@@ -36,6 +36,10 @@
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.07);
   --shadow-card-hover: 0 18px 55px rgba(0, 0, 0, 0.12);
 
+  /* Glassmorphism (derived from existing theme colors) */
+  --glass-bg-val: color-mix(in srgb, var(--color-surface-val) 78%, transparent);
+  --glass-border-val: color-mix(in srgb, var(--color-border-val) 90%, transparent);
+
   --banner-offset: 0px;
 
   /* Section theming (driven by [data-theme="dark"]) */
@@ -85,6 +89,10 @@
   --footer-heading-val: #ffffff;
   --footer-border-val: rgba(255, 255, 255, 0.10);
   --footer-subtle-val: rgba(255, 255, 255, 0.50);
+
+  /* Glassmorphism in dark (slightly more opaque for readability) */
+  --glass-bg-val: color-mix(in srgb, var(--color-surface-val) 88%, transparent);
+  --glass-border-val: color-mix(in srgb, var(--color-border-val) 95%, transparent);
 }
 
 body {
@@ -170,11 +178,20 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--color-surface-alt-val);
 }
 
+.glass {
+  background-color: var(--glass-bg-val);
+  border: 1px solid var(--glass-border-val);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
 .card {
-  background-color: var(--color-surface-val);
+  background-color: var(--glass-bg-val);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  border: 1px solid var(--color-border-val);
+  border: 1px solid var(--glass-border-val);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   overflow: hidden;
 }
