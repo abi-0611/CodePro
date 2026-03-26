@@ -2,7 +2,12 @@
 import { Moon, Sun } from 'lucide-react';
 ---
 
-<button class="theme-toggle p-2 rounded-full hover:bg-[var(--color-surface-alt-val)] text-[var(--color-ink-val)] transition-colors" aria-label="Toggle dark mode">
+<button
+  class="theme-toggle inline-flex items-center justify-center h-10 w-10 rounded-full border border-[var(--color-border-val)] bg-[var(--color-surface-val)] hover:bg-[var(--color-surface-alt-val)] text-[var(--color-ink-val)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-val)]"
+  type="button"
+  aria-label="Toggle theme"
+  title="Toggle theme"
+>
   <Sun className="w-5 h-5 hidden dark-icon" />
   <Moon className="w-5 h-5 light-icon" />
 </button>
@@ -17,21 +22,37 @@ import { Moon, Sun } from 'lucide-react';
 </style>
 
 <script>
-  const handleToggleClick = () => {
-    const element = document.documentElement;
-    element.classList.toggle("dark");
-    
-    const isDark = element.hasAttribute("data-theme");
-    if (isDark) {
-      element.removeAttribute("data-theme");
-      localStorage.setItem("theme", "light");
-    } else {
-      element.setAttribute("data-theme", "dark");
-      localStorage.setItem("theme", "dark");
-    }
-  }
+  const root = document.documentElement;
 
-  document.querySelectorAll(".theme-toggle").forEach(btn => {
-    btn.addEventListener("click", handleToggleClick);
+  const setTheme = (nextTheme) => {
+    if (nextTheme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      root.classList.add('dark');
+      window.localStorage.setItem('theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+      root.classList.remove('dark');
+      window.localStorage.setItem('theme', 'light');
+    }
+  };
+
+  const getTheme = () => (root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+  const syncToggleA11y = () => {
+    const isDark = getTheme() === 'dark';
+    document.querySelectorAll('.theme-toggle').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(isDark));
+    });
+  };
+
+  const handleToggleClick = () => {
+    const currentTheme = getTheme();
+    setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    syncToggleA11y();
+  };
+
+  document.querySelectorAll('.theme-toggle').forEach((btn) => {
+    btn.addEventListener('click', handleToggleClick);
   });
+  syncToggleA11y();
 </script>
