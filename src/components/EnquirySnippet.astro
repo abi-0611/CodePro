@@ -1,6 +1,6 @@
 ---
 ---
-<section class="bg-[var(--color-ink)] py-12" id="enquiry-section">
+<section class="bg-[var(--color-dark-bg-val)] py-12" id="enquiry-section">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row items-center justify-between gap-8">
       <div class="text-white md:w-1/3">
@@ -11,12 +11,12 @@
       <form id="snippet-form" class="w-full md:w-2/3 flex flex-col sm:flex-row gap-4" novalidate>
         <div class="flex-1 relative">
           <label for="snippet-name" class="sr-only">Your Name</label>
-          <input type="text" id="snippet-name" required placeholder="Your Name" class="w-full px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white/20 transition-all" />
+          <input type="text" id="snippet-name" required placeholder="Your Name" class="w-full px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[var(--color-primary-val)] focus:bg-white/20 transition-all" />
           <span class="error-message text-red-400 text-xs absolute -bottom-5 left-4 hidden">Required</span>
         </div>
         <div class="flex-1 relative">
           <label for="snippet-phone" class="sr-only">Phone Number</label>
-          <input type="tel" id="snippet-phone" required pattern="[0-9]{10}" placeholder="Phone Number" class="w-full px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white/20 transition-all" />
+          <input type="tel" id="snippet-phone" required pattern="[0-9]{10}" placeholder="Phone Number" class="w-full px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[var(--color-primary-val)] focus:bg-white/20 transition-all" />
           <span class="error-message text-red-400 text-xs absolute -bottom-5 left-4 hidden">Valid 10-digit number</span>
         </div>
         <button type="submit" class="button primary whitespace-nowrap rounded-full px-8">
@@ -28,7 +28,7 @@
 </section>
 
 <script>
-  const snippetForm = document.getElementById('snippet-form') as HTMLFormElement;
+  const snippetForm = /** @type {HTMLFormElement | null} */ (document.getElementById('snippet-form'));
   if (snippetForm) {
     snippetForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -36,7 +36,7 @@
       
       const inputs = snippetForm.querySelectorAll('input');
       inputs.forEach((input) => {
-        const htmlInput = input as HTMLInputElement;
+        const htmlInput = /** @type {HTMLInputElement} */ (input);
         const errorSpan = /** @type {HTMLElement | null} */ (htmlInput.nextElementSibling);
         if (!htmlInput.checkValidity()) {
           isValid = false;
@@ -49,7 +49,8 @@
       });
 
       if (isValid) {
-        const btn = snippetForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const btn = /** @type {HTMLButtonElement | null} */ (snippetForm.querySelector('button[type="submit"]'));
+        if (!btn) return;
         const originalText = btn.textContent;
         btn.textContent = 'Sent!';
         btn.classList.add('bg-green-500');
@@ -63,7 +64,7 @@
 
     const inputs = snippetForm.querySelectorAll('input');
     inputs.forEach((input) => {
-      const htmlInput = input as HTMLInputElement;
+      const htmlInput = /** @type {HTMLInputElement} */ (input);
       htmlInput.addEventListener('input', () => {
         const errorSpan = /** @type {HTMLElement | null} */ (htmlInput.nextElementSibling);
         if (htmlInput.checkValidity()) {
