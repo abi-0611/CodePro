@@ -44,6 +44,12 @@
   --enquiry-gradient-from-val: var(--color-surface-val);
   --enquiry-gradient-to-val: var(--color-surface-alt-val);
 
+  /* Page hero gradients (avoid Tailwind `dark:` dependency) */
+  --page-hero-from-val: var(--color-surface-val);
+  --page-hero-to-val: var(--color-surface-alt-val);
+  --course-hero-from-val: var(--color-surface-alt-val);
+  --course-hero-to-val: var(--color-surface-val);
+
   --footer-bg-val: var(--color-surface-val);
   --footer-fg-val: var(--color-muted-val);
   --footer-heading-val: var(--color-ink-val);
@@ -67,6 +73,12 @@
   --hero-gradient-to-val: var(--color-dark-surface-val);
   --enquiry-gradient-from-val: var(--color-dark-bg-val);
   --enquiry-gradient-to-val: var(--color-dark-surface-val);
+
+  /* Match previous page hero gradients in dark */
+  --page-hero-from-val: var(--color-dark-bg-val);
+  --page-hero-to-val: var(--color-dark-surface-val);
+  --course-hero-from-val: var(--color-dark-bg-val);
+  --course-hero-to-val: var(--color-dark-surface-val);
 
   --footer-bg-val: var(--color-dark-bg-val);
   --footer-fg-val: rgba(255, 255, 255, 0.8);
