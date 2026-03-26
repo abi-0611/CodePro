@@ -1,1 +1,0 @@
-<iframe src="https://my.spline.design/spherenoiseherocopycopy-XOVaZzUz5WBIt96E3FbbhcEs-SvF/" frameborder="0" width="100%" height="100%"></iframe>
