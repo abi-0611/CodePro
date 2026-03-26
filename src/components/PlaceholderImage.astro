@@ -8,10 +8,10 @@ interface Props {
 const { label, width, height, className = "" } = Astro.props;
 ---
 <div 
-  class={`bg-[var(--color-surface-alt-val)] border-2 border-dashed border-[var(--color-border-val)] flex items-center justify-center text-[var(--color-muted-val)] text-center p-4 rounded-lg ${className}`}
+  class={`flex items-center justify-center text-center bg-[var(--color-surface-alt-val)] text-[var(--color-muted-val)] rounded-[var(--radius-card)] ${className} border border-dashed border-[var(--color-border-val)] shadow-none p-3 sm:p-4`}
   style={`aspect-ratio: ${width} / ${height};`}
   role="img"
   aria-label={label}
 >
-  <span class="font-mono text-sm">{label}</span>
+  <span class="font-mono text-[11px] sm:text-xs leading-snug break-words max-w-[42ch] opacity-80">{label}</span>
 </div>

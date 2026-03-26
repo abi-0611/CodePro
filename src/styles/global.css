@@ -183,6 +183,23 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--color-border-val);
 }
 
+/* Bracket placeholders like [HOME_TITLE] */
+.placeholder-token {
+  display: inline-block;
+  padding: 0.15em 0.5em;
+  border-radius: var(--radius-pill);
+  border: 1px dashed var(--color-border-val);
+  background-color: var(--color-surface-alt-val);
+  color: var(--color-muted-val);
+  font-size: 0.65em;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  vertical-align: baseline;
+  max-width: 100%;
+  word-break: break-word;
+}
+
 *:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--color-paper-val), 0 0 0 4px var(--color-primary-val);

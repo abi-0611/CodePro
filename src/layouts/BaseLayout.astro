@@ -136,5 +136,57 @@ const jsonLd = {
     
     <FloatingEnquiryButton />
     <ScrollToTop />
+
+    <script is:inline>
+      (() => {
+        const root = document.body;
+        if (!root) return;
+
+        const isInExcludedContainer = (node) => {
+          const parent = node.parentElement;
+          if (!parent) return true;
+          return Boolean(parent.closest('script, style, pre, code, textarea, input, select, option'));
+        };
+
+        const hasBracketPlaceholder = /\[[^\[\]\n]{2,}\]/;
+        const splitBracketPlaceholder = /(\[[^\[\]\n]{2,}\])/g;
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const nodesToProcess = [];
+
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          if (!node || !node.nodeValue) continue;
+          if (!hasBracketPlaceholder.test(node.nodeValue)) continue;
+          if (isInExcludedContainer(node)) continue;
+          nodesToProcess.push(node);
+        }
+
+        for (const node of nodesToProcess) {
+          const text = node.nodeValue;
+          if (!text) continue;
+
+          const parts = text.split(splitBracketPlaceholder);
+          if (parts.length === 1) continue;
+
+          const frag = document.createDocumentFragment();
+          for (const part of parts) {
+            if (!part) continue;
+            if (part.startsWith('[') && part.endsWith(']')) {
+              const span = document.createElement('span');
+              span.className = 'placeholder-token';
+              span.textContent = part;
+              frag.appendChild(span);
+            } else {
+              frag.appendChild(document.createTextNode(part));
+            }
+          }
+
+          const parent = node.parentNode;
+          if (!parent) continue;
+          parent.replaceChild(frag, node);
+        }
+      })();
+    </script>
   </body>
 </html>
