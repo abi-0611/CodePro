@@ -1,0 +1,40 @@
+---
+import { Trophy, Users, BookOpen } from 'lucide-react';
+import PlaceholderImage from './PlaceholderImage.astro';
+
+const features = [
+  {
+    icon: Trophy,
+    title: "[FEATURE_1_TITLE]",
+    description: "[WHY_EXCELLENCE_DESC — e.g. flourishing in the industry 7+ years...]"
+  },
+  {
+    icon: Users,
+    title: "[FEATURE_2_TITLE]",
+    description: "[WHY_PROFESSIONALS_DESC — experienced facilitators from corporate...]"
+  },
+  {
+    icon: BookOpen,
+    title: "[FEATURE_3_TITLE]",
+    description: "[WHY_COURSES_DESC — discover talent with thousands of hours of content...]"
+  }
+];
+---
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
+  <div class="order-2 lg:order-1">
+    <PlaceholderImage label="[TEAM_PHOTO — 400x300px classroom/team image]" width={400} height={300} className="aspect-[4/3] w-full" />
+  </div>
+  <div class="order-1 lg:order-2 flex flex-col gap-8">
+    {features.map(feature => (
+      <div class="flex gap-6">
+        <div class="w-14 h-14 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+          <feature.icon class="w-7 h-7" />
+        </div>
+        <div>
+          <h3 class="text-xl font-bold font-heading text-[var(--color-ink)] mb-2">{feature.title}</h3>
+          <p class="text-[var(--color-muted)] leading-relaxed">{feature.description}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,10 @@
+node_modules/
+build/
+dist/
+coverage/
+.astro/
+.DS_Store
+*.log
+*.zip
+.env*
+!.env.example

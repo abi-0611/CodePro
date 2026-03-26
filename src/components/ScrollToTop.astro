@@ -1,0 +1,30 @@
+---
+import { ArrowUp } from 'lucide-react';
+---
+<button 
+  id="scroll-to-top" 
+  class="fixed bottom-24 right-6 z-40 bg-[var(--color-surface-val)] text-[var(--color-ink-val)] border border-[var(--color-border-val)] p-3 rounded-full shadow-md opacity-0 translate-y-10 pointer-events-none transition-all duration-300 hover:bg-[var(--color-surface-alt-val)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-val)]"
+  aria-label="Scroll to top"
+>
+  <ArrowUp class="w-5 h-5" />
+</button>
+
+<script>
+  const scrollBtn = document.getElementById('scroll-to-top');
+  
+  if (scrollBtn) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        scrollBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+        scrollBtn.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        scrollBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+        scrollBtn.classList.remove('opacity-100', 'translate-y-0');
+      }
+    });
+
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>

@@ -1,0 +1,136 @@
+---
+import '@fontsource/space-grotesk';
+import '@fontsource/inter';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import NotificationBanner from '../components/NotificationBanner.astro';
+import FloatingEnquiryButton from '../components/FloatingEnquiryButton.astro';
+import ScrollToTop from '../components/ScrollToTop.astro';
+import {
+  ADDRESS_PLACEHOLDER,
+  CONTACT_PHONE,
+  DEFAULT_META_DESCRIPTION,
+  INSTITUTE_NAME,
+  SITE_TAGLINE,
+  SITE_TITLE,
+  SITE_URL,
+  SOCIAL_FACEBOOK_URL,
+  SOCIAL_INSTAGRAM_URL,
+} from '../utils/consts';
+
+import interLatin400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import interLatin600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
+import spaceGroteskLatin400 from '@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2?url';
+import spaceGroteskLatin700 from '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { 
+  title,
+  description = DEFAULT_META_DESCRIPTION,
+  image = "/favicon.svg",
+} = Astro.props;
+
+const siteOrigin = (Astro.site?.toString() ?? SITE_URL).replace(/\/$/, '');
+const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
+const formattedTitle = title ? `${title} | ${INSTITUTE_NAME}` : SITE_TITLE;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": SITE_TITLE,
+  "url": siteOrigin,
+  "telephone": CONTACT_PHONE,
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": ADDRESS_PLACEHOLDER,
+  },
+  "description": SITE_TAGLINE,
+  "sameAs": [
+    SOCIAL_FACEBOOK_URL,
+    SOCIAL_INSTAGRAM_URL,
+  ]
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Font Preloads -->
+    <link rel="preload" href={spaceGroteskLatin400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={spaceGroteskLatin700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interLatin400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interLatin600} as="font" type="font/woff2" crossorigin />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary Meta Tags -->
+    <title>{formattedTitle}</title>
+    <meta name="title" content={formattedTitle} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={formattedTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, canonicalURL)} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={formattedTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, canonicalURL)} />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+    
+      if (theme === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.classList.add('dark');
+      }
+      window.localStorage.setItem('theme', theme);
+    </script>
+  </head>
+  <body class="antialiased min-h-screen flex flex-col relative">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-[var(--color-primary-val)] text-white px-4 py-2 z-[60] rounded-md outline-none">
+      Skip to content
+    </a>
+    
+    <NotificationBanner />
+    <Header />
+    <main id="main-content" class="flex-grow outline-none" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    
+    <FloatingEnquiryButton />
+    <ScrollToTop />
+  </body>
+</html>

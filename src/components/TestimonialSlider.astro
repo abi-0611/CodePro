@@ -1,0 +1,111 @@
+---
+import { Star } from 'lucide-react';
+import PlaceholderImage from './PlaceholderImage.astro';
+import SectionHeader from './SectionHeader.astro';
+---
+<section class="py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionHeader 
+      eyebrow="Success Stories"
+      title="Hear From Our Alumni"
+      description="Discover how our programs have helped students achieve their career goals."
+      align="center"
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <!-- Phone mockups -->
+        {[1, 2, 3].map(i => (
+          <PlaceholderImage label={`[STUDENT_PHOTO_${i}]`} width={900} height={1600} className="w-full sm:w-48 aspect-[9/16] rounded-3xl border-4 shadow-lg" />
+        ))}
+      </div>
+      
+      <div class="relative">
+        <div class="card p-8 md:p-12 border border-[var(--color-border-val)] shadow-xl relative overflow-hidden testimonial-card">
+          <div class="absolute top-6 right-6 w-16 h-16 rounded-full border border-[var(--color-border-val)] bg-[var(--color-surface-alt-val)] flex items-center justify-center shadow-sm">
+             <span class="text-[var(--color-muted-val)] font-mono text-[10px] text-center leading-tight">
+               [GOOGLE<br/>BADGE]
+             </span>
+          </div>
+          
+          <div class="flex gap-1 mb-6 text-[var(--color-primary-val)]">
+            {Array.from({ length: 5 }).map(() => (
+              <Star class="w-6 h-6 fill-current" />
+            ))}
+          </div>
+          
+          <p class="text-xl md:text-2xl text-[var(--color-ink-val)] italic mb-8 leading-relaxed font-serif testimonial-text transition-opacity duration-500">
+            "[REVIEW_TEXT — paste student review here]"
+          </p>
+          
+          <div class="flex items-center gap-4">
+            <PlaceholderImage label="[AVATAR]" width={56} height={56} className="w-14 h-14 rounded-full shrink-0 !p-0" />
+            <div>
+              <h4 class="font-bold text-lg text-[var(--color-ink-val)] font-heading testimonial-name transition-opacity duration-500">
+                [REVIEWER_NAME]
+              </h4>
+              <p class="text-sm text-[var(--color-muted-val)]">Verified Student</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-center gap-2 mt-8 testimonial-dots">
+          <button class="w-3 h-3 rounded-full bg-[var(--color-primary-val)] transition-all" aria-label="Go to slide 1"></button>
+          <button class="w-3 h-3 rounded-full bg-[var(--color-border-val)] hover:bg-[var(--color-primary-val)]/50 transition-all" aria-label="Go to slide 2"></button>
+          <button class="w-3 h-3 rounded-full bg-[var(--color-border-val)] hover:bg-[var(--color-primary-val)]/50 transition-all" aria-label="Go to slide 3"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Simple testimonial slider logic
+  const reviews = [
+    { name: "[REVIEWER_NAME_1]", text: "\"[REVIEW_TEXT_1 — paste student review here]\"" },
+    { name: "[REVIEWER_NAME_2]", text: "\"[REVIEW_TEXT_2 — paste student review here]\"" },
+    { name: "[REVIEWER_NAME_3]", text: "\"[REVIEW_TEXT_3 — paste student review here]\"" }
+  ];
+  
+  let currentSlide = 0;
+  const textEl = document.querySelector('.testimonial-text');
+  const nameEl = document.querySelector('.testimonial-name');
+  const dots = document.querySelectorAll('.testimonial-dots button');
+  
+  function updateSlide(index: number) {
+    if(!textEl || !nameEl) return;
+    
+    textEl.classList.add('opacity-0');
+    nameEl.classList.add('opacity-0');
+    
+    setTimeout(() => {
+      textEl.textContent = reviews[index].text;
+      nameEl.textContent = reviews[index].name;
+      
+      textEl.classList.remove('opacity-0');
+      nameEl.classList.remove('opacity-0');
+      
+      dots.forEach((dot, i) => {
+        if(i === index) {
+          dot.classList.replace('bg-[var(--color-border-val)]', 'bg-[var(--color-primary-val)]');
+          dot.classList.remove('hover:bg-[var(--color-primary-val)]/50');
+        } else {
+          dot.classList.replace('bg-[var(--color-primary-val)]', 'bg-[var(--color-border-val)]');
+          dot.classList.add('hover:bg-[var(--color-primary-val)]/50');
+        }
+      });
+    }, 300);
+  }
+  
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      currentSlide = index;
+      updateSlide(currentSlide);
+    });
+  });
+  
+  setInterval(() => {
+    currentSlide = (currentSlide + 1) % reviews.length;
+    updateSlide(currentSlide);
+  }, 5000);
+</script>

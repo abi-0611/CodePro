@@ -1,0 +1,105 @@
+---
+import { Rocket, Menu, X } from 'lucide-react';
+import { INSTITUTE_NAME, CONTACT_PHONE } from '../utils/consts';
+import ThemeToggle from './ThemeToggle.astro';
+
+const navLinks = [
+  { name: 'Home', href: '/' },
+  { name: 'Courses', href: '/courses' },
+  { name: 'About Us', href: '/about' },
+  { name: 'Workshop', href: '#' },
+  { name: 'Internship', href: '#' },
+  { name: 'Contact Us', href: '/contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header id="main-header" class="fixed top-[var(--banner-offset)] left-0 right-0 z-50 transition-all duration-300 bg-[var(--color-surface-val)]/80 backdrop-blur-md border-b border-[var(--color-border-val)]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+    
+    {/* Logo */}
+    <a href="/" class="flex items-center gap-2 text-xl font-bold font-heading text-[var(--color-ink-val)]">
+      <Rocket className="w-6 h-6 text-[var(--color-primary-val)]" />
+      <span>{INSTITUTE_NAME}</span>
+    </a>
+
+    {/* Desktop Nav */}
+    <nav class="hidden md:flex items-center gap-6">
+      {navLinks.map(link => (
+        <a 
+          href={link.href} 
+          class={`text-sm font-medium transition-colors hover:text-[var(--color-primary-val)] ${currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)) ? 'text-[var(--color-primary-val)] font-semibold' : 'text-[var(--color-muted-val)]'}`}
+        >
+          {link.name}
+        </a>
+      ))}
+    </nav>
+
+    {/* Right Actions */}
+    <div class="hidden md:flex items-center gap-4">
+      <ThemeToggle />
+      <div class="text-sm font-medium text-[var(--color-ink-val)] hidden lg:block">
+        {CONTACT_PHONE}
+      </div>
+      <a href="/contact" class="button primary text-sm py-2 px-4">
+        Enquire Now
+      </a>
+    </div>
+
+    {/* Mobile Menu Toggle */}
+    <div class="flex items-center gap-4 md:hidden">
+      <ThemeToggle />
+      <button id="mobile-menu-btn" class="p-2 text-[var(--color-ink-val)]" aria-label="Toggle menu">
+        <Menu className="w-6 h-6" id="menu-icon" />
+        <X className="w-6 h-6 hidden" id="close-icon" />
+      </button>
+    </div>
+  </div>
+
+  {/* Mobile Nav */}
+  <div id="mobile-menu" class="hidden md:hidden bg-[var(--color-surface-val)] border-b border-[var(--color-border-val)]">
+    <nav class="flex flex-col px-4 py-4 gap-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
+      {navLinks.map(link => (
+        <a 
+          href={link.href} 
+          class="text-base font-medium text-[var(--color-ink-val)] hover:text-[var(--color-primary-val)]"
+        >
+          {link.name}
+        </a>
+      ))}
+      <div class="pt-4 border-t border-[var(--color-border-val)] flex flex-col gap-4">
+        <div class="text-sm font-medium text-[var(--color-ink-val)]">
+          {CONTACT_PHONE}
+        </div>
+        <a href="/contact" class="button primary text-center w-full">
+          Enquire Now
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('main-header');
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+
+  // Scroll effect
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      header?.classList.add('shadow-md');
+    } else {
+      header?.classList.remove('shadow-md');
+    }
+  });
+
+  // Mobile menu toggle
+  mobileBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+    menuIcon?.classList.toggle('hidden');
+    closeIcon?.classList.toggle('hidden');
+  });
+</script>

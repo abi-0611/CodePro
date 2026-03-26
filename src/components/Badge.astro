@@ -1,0 +1,19 @@
+---
+interface Props {
+  text: string;
+  variant?: 'primary' | 'secondary' | 'outline';
+}
+
+const { text, variant = 'primary' } = Astro.props;
+
+const baseClasses = "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border";
+const variants = {
+  primary: "bg-[var(--color-primary-val)]/10 text-[var(--color-primary-dark-val)] border-[var(--color-primary-val)]/20",
+  secondary: "bg-[var(--color-surface-alt-val)] text-[var(--color-ink-val)] border-[var(--color-border-val)]",
+  outline: "bg-transparent text-[var(--color-ink-val)] border-[var(--color-border-val)]"
+};
+---
+
+<span class={`${baseClasses} ${variants[variant]}`}>
+  {text}
+</span>

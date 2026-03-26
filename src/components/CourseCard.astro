@@ -1,0 +1,57 @@
+---
+import { Star } from 'lucide-react';
+
+interface Props {
+  title: string;
+  shortDescription?: string;
+  duration?: string;
+  mode?: string;
+  level?: string;
+  slug?: string;
+  badge?: string;
+  icon?: string;
+  category?: string;
+}
+
+const { title, shortDescription, duration, mode, level, slug, badge, icon, category } = Astro.props;
+---
+<a href={slug ? `/courses/${slug}` : '#'} class="block group h-full course-card" data-category={category}>
+  <div class="card p-6 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-[var(--color-border)] hover:border-[var(--color-primary)]/30 relative overflow-hidden">
+    
+    {badge === 'Popular' && (
+      <div class="absolute -right-12 top-6 bg-amber-400 text-amber-900 text-xs font-bold px-12 py-1 rotate-45 shadow-sm flex items-center justify-center gap-1 z-10">
+        <Star class="w-3 h-3 fill-current" /> {badge}
+      </div>
+    )}
+    
+    {badge && badge !== 'Popular' && (
+      <div class="absolute top-4 right-4 z-10">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20">
+          {badge}
+        </span>
+      </div>
+    )}
+
+    <div class="flex items-start mb-4">
+      {icon && (
+        <div class="w-12 h-12 rounded-full bg-[var(--color-surface-alt)] flex items-center justify-center text-2xl border border-[var(--color-border)]">
+          {icon}
+        </div>
+      )}
+    </div>
+    
+    <h3 class="text-xl font-bold font-heading text-[var(--color-ink)] mb-3 group-hover:text-[var(--color-primary)] transition-colors pr-8">{title}</h3>
+    
+    <div class="flex flex-wrap gap-2 mb-4">
+      {duration && <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{duration}</span>}
+      {mode && <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{mode}</span>}
+      {level && <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-surface-alt)] text-[var(--color-muted)] border border-[var(--color-border)] uppercase tracking-wider">{level}</span>}
+    </div>
+
+    {shortDescription && <p class="text-[var(--color-muted)] text-sm mb-6 flex-grow line-clamp-2">{shortDescription}</p>}
+    
+    <div class="mt-auto pt-4 border-t border-[var(--color-border)] flex items-center text-[var(--color-primary)] font-medium text-sm group-hover:underline underline-offset-4">
+      Know More <span class="ml-1 transition-transform group-hover:translate-x-1">→</span>
+    </div>
+  </div>
+</a>

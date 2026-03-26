@@ -1,0 +1,37 @@
+---
+import { Moon, Sun } from 'lucide-react';
+---
+
+<button class="theme-toggle p-2 rounded-full hover:bg-[var(--color-surface-alt-val)] text-[var(--color-ink-val)] transition-colors" aria-label="Toggle dark mode">
+  <Sun className="w-5 h-5 hidden dark-icon" />
+  <Moon className="w-5 h-5 light-icon" />
+</button>
+
+<style>
+  :global([data-theme="dark"]) .dark-icon {
+    display: block;
+  }
+  :global([data-theme="dark"]) .light-icon {
+    display: none;
+  }
+</style>
+
+<script>
+  const handleToggleClick = () => {
+    const element = document.documentElement;
+    element.classList.toggle("dark");
+    
+    const isDark = element.hasAttribute("data-theme");
+    if (isDark) {
+      element.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+    } else {
+      element.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+    }
+  }
+
+  document.querySelectorAll(".theme-toggle").forEach(btn => {
+    btn.addEventListener("click", handleToggleClick);
+  });
+</script>

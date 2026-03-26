@@ -1,0 +1,89 @@
+---
+import { BookOpen, Handshake, UserCheck, Users } from 'lucide-react';
+
+export interface Props {
+  stats?: {
+    value: number | string;
+    suffix: string;
+    label: string;
+    icon: any;
+  }[];
+}
+
+const defaultStats = [
+  { value: '[STAT_1_VALUE]', suffix: '[STAT_1_SUFFIX]', label: '[STAT_1_LABEL]', icon: BookOpen },
+  { value: '[STAT_2_VALUE]', suffix: '[STAT_2_SUFFIX]', label: '[STAT_2_LABEL]', icon: Handshake },
+  { value: '[STAT_3_VALUE]', suffix: '[STAT_3_SUFFIX]', label: '[STAT_3_LABEL]', icon: UserCheck },
+  { value: '[STAT_4_VALUE]', suffix: '[STAT_4_SUFFIX]', label: '[STAT_4_LABEL]', icon: Users },
+];
+
+const { stats = defaultStats } = Astro.props;
+
+const computedStats = stats.map((stat) => ({
+  ...stat,
+  isNumeric: typeof stat.value === 'number' && Number.isFinite(stat.value),
+}));
+---
+<section class="py-12 bg-[var(--color-surface-alt-val)] border-y border-[var(--color-border-val)]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center" id="stats-container">
+      {computedStats.map(stat => (
+        <div class="flex flex-col items-center p-4">
+          <div class="w-12 h-12 rounded-full bg-[var(--color-primary-val)]/10 text-[var(--color-primary-val)] flex items-center justify-center mb-4">
+            <stat.icon class="w-6 h-6" />
+          </div>
+          <div class="text-4xl font-bold font-heading text-[var(--color-ink-val)] mb-2 flex items-center justify-center">
+            {stat.isNumeric ? (
+              <span class="stat-value" data-target={stat.value}>0</span>
+            ) : (
+              <span class="stat-static">{stat.value}</span>
+            )}
+            {stat.suffix}
+          </div>
+          <div class="text-sm font-medium text-[var(--color-muted-val)] uppercase tracking-wider">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const counters = entry.target.querySelectorAll('.stat-value[data-target]');
+        counters.forEach((counter) => {
+          const htmlCounter = /** @type {HTMLElement} */ (counter);
+          const target = +(htmlCounter.getAttribute('data-target') || 0);
+          if (!Number.isFinite(target) || target <= 0) return;
+          const duration = 2000; // ms
+          const step = target / (duration / 16); // 60fps
+          
+          let current = 0;
+          const updateCounter = () => {
+            current += step;
+            if (current < target) {
+              htmlCounter.innerText = Math.ceil(current).toString();
+              requestAnimationFrame(updateCounter);
+            } else {
+              htmlCounter.innerText = target.toString();
+            }
+          };
+          updateCounter();
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  const statsContainer = document.getElementById('stats-container');
+  if (statsContainer) {
+    observer.observe(statsContainer);
+  }
+</script>

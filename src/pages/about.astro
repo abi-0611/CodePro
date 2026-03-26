@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import StatBar from '../components/StatBar.astro';
+import LogoMarquee from '../components/LogoMarquee.astro';
+import BreadcrumbNav from '../components/BreadcrumbNav.astro';
+import PlaceholderImage from '../components/PlaceholderImage.astro';
+import { Target, Award, Users, BookOpen, Linkedin, Star, Rocket } from 'lucide-react';
+
+const aboutStats = [
+  { value: '[ABOUT_STAT_1_VALUE]', suffix: '', label: '[ABOUT_STAT_1_LABEL]', icon: Star },
+  { value: '[ABOUT_STAT_2_VALUE]', suffix: '', label: '[ABOUT_STAT_2_LABEL]', icon: BookOpen },
+  { value: '[ABOUT_STAT_3_VALUE]', suffix: '', label: '[ABOUT_STAT_3_LABEL]', icon: Users },
+  { value: '[ABOUT_STAT_4_VALUE]', suffix: '', label: '[ABOUT_STAT_4_LABEL]', icon: Award },
+];
+
+const breadcrumbItems = [
+  { label: '[ABOUT_BREADCRUMB_LABEL]' }
+];
+---
+
+<BaseLayout title="[ABOUT_PAGE_TITLE]" description="[ABOUT_META_DESCRIPTION]">
+  {/* SECTION 1 — PAGE HERO */}
+  <div class="pt-32 pb-16 bg-gradient-to-b from-white to-[var(--color-surface-alt-val)] dark:from-[var(--color-dark-bg-val)] dark:to-[var(--color-dark-surface-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <BreadcrumbNav items={breadcrumbItems} />
+      <div class="text-center mt-8">
+        <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">[ABOUT_EYEBROW]</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-[var(--color-ink-val)] mb-6">[ABOUT_H1]</h1>
+        <p class="text-xl text-[var(--color-muted-val)] max-w-3xl mx-auto leading-relaxed">
+          [TAGLINE — 1 sentence about the institute's mission]
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {/* SECTION 2 — INSTITUTE STORY (2-column) */}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-6">[ABOUT_STORY_TITLE]</h2>
+        <div class="space-y-4 text-lg text-[var(--color-muted-val)] leading-relaxed mb-8">
+          <p>[STORY_PARA_1]</p>
+          <p>[STORY_PARA_2]</p>
+          <p>[STORY_PARA_3]</p>
+        </div>
+        <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[var(--color-surface-alt-val)] border border-[var(--color-border-val)] text-[var(--color-ink-val)] font-semibold">
+          <Award class="w-5 h-5 text-[var(--color-primary-val)]" />
+          Est. [FOUNDING_YEAR]
+        </div>
+      </div>
+      <div class="relative">
+        <PlaceholderImage label="[ABOUT_PHOTO — institute building or classroom photo]" width={1280} height={720} className="aspect-video" />
+        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-[var(--color-primary-val)]/10 rounded-full blur-2xl -z-10"></div>
+        <div class="absolute -top-6 -right-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl -z-10"></div>
+      </div>
+    </div>
+  </div>
+
+  {/* SECTION 3 — STATS */}
+  <StatBar stats={aboutStats} />
+
+  {/* SECTION 4 — OUR TEAM / TRAINERS */}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <SectionHeader 
+      eyebrow="[ABOUT_TEAM_EYEBROW]"
+      title="[ABOUT_TEAM_TITLE]"
+      description="[ABOUT_TEAM_DESCRIPTION]"
+    />
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+      {[1, 2, 3, 4].map((i) => (
+        <div class="card overflow-hidden group">
+          <PlaceholderImage label={`[TRAINER_PHOTO_${i}]`} width={600} height={600} className="aspect-square !rounded-none !border-0 !border-b border-[var(--color-border-val)]" />
+          <div class="p-6 text-center">
+            <h4 class="text-xl font-bold font-heading text-[var(--color-ink-val)] mb-1">{`[TRAINER_NAME_${i}]`}</h4>
+            <p class="text-[var(--color-primary-val)] font-medium mb-2 text-sm">{`[TRAINER_DESIGNATION_${i}]`}</p>
+            <p class="text-xs text-[var(--color-muted-val)] mb-4">{`[TRAINER_EXP_${i}]`}</p>
+            <a href={`[TRAINER_LINKEDIN_URL_${i}]`} class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#0077b5]/10 text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-colors" aria-label="LinkedIn Profile">
+              <Linkedin class="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* SECTION 5 — HIRING PARTNERS */}
+  <div class="bg-[var(--color-surface-alt-val)] py-20 border-y border-[var(--color-border-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-12 text-center">[ABOUT_PLACEMENTS_TITLE]</h2>
+      <LogoMarquee />
+    </div>
+  </div>
+
+  {/* SECTION 6 — CERTIFICATIONS / ACCREDITATIONS */}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <h2 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-10 text-center">[ABOUT_CERTIFICATIONS_TITLE]</h2>
+    <div class="flex flex-wrap justify-center gap-8 md:gap-16">
+      {[1, 2, 3, 4].map((i) => (
+        <PlaceholderImage label={`[CERT_LOGO_${i}]`} width={128} height={128} className="w-32 h-32 rounded-full" />
+      ))}
+    </div>
+  </div>
+
+  {/* SECTION 7 — VISION & MISSION */}
+  <div class="bg-[var(--color-surface-alt-val)] py-20 border-t border-[var(--color-border-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="card p-10 bg-white dark:bg-[var(--color-surface-val)]">
+          <div class="w-14 h-14 rounded-2xl bg-[var(--color-primary-val)]/10 text-[var(--color-primary-val)] flex items-center justify-center mb-6">
+            <Target class="w-8 h-8" />
+          </div>
+          <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-4">🎯 Our Vision</h3>
+          <p class="text-[var(--color-muted-val)] text-lg leading-relaxed">
+            [VISION_TEXT placeholder]
+          </p>
+        </div>
+        <div class="card p-10 bg-white dark:bg-[var(--color-surface-val)]">
+          <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-6">
+            <Rocket class="w-8 h-8" />
+          </div>
+          <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-4">🚀 Our Mission</h3>
+          <p class="text-[var(--color-muted-val)] text-lg leading-relaxed">
+            [MISSION_TEXT placeholder]
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

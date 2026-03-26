@@ -1,0 +1,37 @@
+---
+import { ChevronRight, Home } from 'lucide-react';
+
+interface Props {
+  items: {
+    label: string;
+    href?: string;
+  }[];
+}
+
+const { items } = Astro.props;
+---
+<nav aria-label="Breadcrumb" class="py-4">
+  <ol class="flex items-center space-x-2 text-sm text-[var(--color-muted-val)]" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
+      <a href="/" class="hover:text-[var(--color-primary-val)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-val)] rounded" itemprop="item">
+        <Home class="w-4 h-4" />
+        <span class="sr-only" itemprop="name">Home</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    
+    {items.map((item, index) => (
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
+        <ChevronRight class="w-4 h-4 mx-1 opacity-50" />
+        {item.href ? (
+          <a href={item.href} class="hover:text-[var(--color-primary-val)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-val)] rounded" itemprop="item">
+            <span itemprop="name">{item.label}</span>
+          </a>
+        ) : (
+          <span class="text-[var(--color-ink-val)] font-medium" itemprop="name" aria-current="page">{item.label}</span>
+        )}
+        <meta itemprop="position" content={`${index + 2}`} />
+      </li>
+    ))}
+  </ol>
+</nav>

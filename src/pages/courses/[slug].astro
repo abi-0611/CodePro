@@ -1,0 +1,287 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Badge from '../../components/Badge.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import BreadcrumbNav from '../../components/BreadcrumbNav.astro';
+import PlaceholderImage from '../../components/PlaceholderImage.astro';
+import { Clock, MonitorPlay, BarChart, ChevronRight, CheckCircle2, Briefcase, Target, PhoneCall, ChevronDown } from 'lucide-react';
+
+export async function getStaticPaths() {
+  const courses = await getCollection('courses');
+  return courses.map(course => ({
+    params: { slug: course.id },
+    props: { course },
+  }));
+}
+
+const { course } = Astro.props;
+const { Content } = await render(course);
+
+// Get related courses (same category, excluding current)
+const allCourses = await getCollection('courses');
+const relatedCourses = allCourses
+  .filter(c => c.data.category === course.data.category && c.id !== course.id)
+  .slice(0, 3);
+
+// If not enough related in category, just grab some others
+if (relatedCourses.length < 3) {
+  const otherCourses = allCourses.filter(c => c.id !== course.id && !relatedCourses.find(rc => rc.id === c.id));
+  relatedCourses.push(...otherCourses.slice(0, 3 - relatedCourses.length));
+}
+
+const highlights = [
+  { icon: CheckCircle2, text: "[COURSE_HIGHLIGHT_1]" },
+  { icon: Briefcase, text: "[COURSE_HIGHLIGHT_2]" },
+  { icon: Target, text: "[COURSE_HIGHLIGHT_3]" },
+  { icon: PhoneCall, text: "[COURSE_HIGHLIGHT_4]" }
+];
+
+const faqs = [
+  { q: "[FAQ_Q1 — e.g. What are the prerequisites for this course?]", a: "[FAQ_A1 — e.g. No prior experience is required. We start from the basics...]" },
+  { q: "[FAQ_Q2 — e.g. Do you provide placement assistance?]", a: "[FAQ_A2 — e.g. Yes, we have a dedicated placement cell that helps you with...]" },
+  { q: "[FAQ_Q3 — e.g. Can I pay the fees in installments?]", a: "[FAQ_A3 — e.g. Yes, we offer flexible EMI options for all our courses...]" },
+  { q: "[FAQ_Q4 — e.g. What if I miss a live class?]", a: "[FAQ_A4 — e.g. All live sessions are recorded and you will have lifetime access...]" }
+];
+
+const breadcrumbItems = [
+  { label: 'Courses', href: '/courses' },
+  { label: course.data.title }
+];
+---
+
+<BaseLayout title={course.data.title} description={course.data.shortDescription}>
+  
+  {/* 1. COURSE HEADER */}
+  <div class="bg-gradient-to-b from-[var(--color-surface-alt-val)] to-white dark:from-[var(--color-dark-bg-val)] dark:to-[var(--color-dark-surface-val)] pt-32 pb-16 border-b border-[var(--color-border-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Breadcrumb */}
+      <div class="mb-4">
+        <BreadcrumbNav items={breadcrumbItems} />
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        
+        {/* Left: Title & Description */}
+        <div class="lg:col-span-2">
+          <div class="flex items-center gap-6 mb-6">
+            <div class="w-16 h-16 rounded-2xl bg-white dark:bg-[var(--color-surface-alt)] border border-[var(--color-border)] shadow-sm flex items-center justify-center text-3xl shrink-0">
+              {course.data.icon}
+            </div>
+            <div>
+              {course.data.badge && <div class="mb-2"><Badge text={course.data.badge} variant="primary" /></div>}
+              <h1 class="text-4xl md:text-5xl font-bold font-heading text-[var(--color-ink)]">{course.data.title}</h1>
+            </div>
+          </div>
+          <p class="text-xl text-[var(--color-muted)] leading-relaxed max-w-3xl">
+            {course.data.shortDescription}
+          </p>
+        </div>
+
+        {/* Right: Sticky Enrollment Card (Desktop) */}
+        <div class="lg:col-span-1 relative">
+          <div class="card p-8 lg:absolute lg:top-0 lg:w-full lg:shadow-2xl border-t-4 border-t-[var(--color-primary)] z-20">
+            <div class="text-4xl font-bold text-[var(--color-ink)] mb-6 font-heading">
+              {course.data.price}
+            </div>
+            
+            <div class="flex flex-col gap-4 mb-8">
+              <div class="flex items-center gap-3 text-[var(--color-ink)]">
+                <Clock class="w-5 h-5 text-[var(--color-primary)]" />
+                <span class="font-medium">Duration:</span> <span class="text-[var(--color-muted)]">{course.data.duration}</span>
+              </div>
+              <div class="flex items-center gap-3 text-[var(--color-ink)]">
+                <MonitorPlay class="w-5 h-5 text-[var(--color-primary)]" />
+                <span class="font-medium">Mode:</span> <span class="text-[var(--color-muted)]">{course.data.mode}</span>
+              </div>
+              <div class="flex items-center gap-3 text-[var(--color-ink)]">
+                <BarChart class="w-5 h-5 text-[var(--color-primary)]" />
+                <span class="font-medium">Level:</span> <span class="text-[var(--color-muted)]">{course.data.level}</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <a href="#enquiry-form-section" class="button primary w-full py-4 text-lg">[COURSE_ENROLL_CTA]</a>
+              <button class="button secondary w-full py-4">[COURSE_SYLLABUS_CTA]</button>
+            </div>
+            
+            <div class="mt-6 text-center text-sm font-medium text-[var(--color-ink)] bg-[var(--color-surface-alt)] py-2 rounded-lg border border-[var(--color-border)]">
+              🕐 Next Batch: <span class="text-[var(--color-primary)]">[NEXT_BATCH_DATE]</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      
+      {/* Main Content Area */}
+      <div class="lg:col-span-2 flex flex-col gap-16">
+        
+        {/* 2. COURSE HIGHLIGHTS */}
+        <section>
+          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">[COURSE_HIGHLIGHTS_TITLE]</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {highlights.map(highlight => (
+              <div class="flex items-center gap-3 p-4 rounded-xl bg-[var(--color-surface-alt)] border border-[var(--color-border)]">
+                <highlight.icon class="w-6 h-6 text-[var(--color-primary)] shrink-0" />
+                <span class="font-medium text-[var(--color-ink)]">{highlight.text}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 3. CURRICULUM SECTION */}
+        <section>
+          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">[COURSE_CURRICULUM_TITLE]</h2>
+          <div class="flex flex-col gap-4 mb-8">
+            {course.data.curriculum.map((module, index) => (
+              <div class="accordion-item border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-surface)]">
+                <button class="accordion-header w-full flex items-center justify-between p-5 text-left hover:bg-[var(--color-surface-alt)] transition-colors focus:outline-none">
+                  <div class="flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center font-bold text-sm shrink-0">
+                      {index + 1}
+                    </div>
+                    <span class="font-bold text-[var(--color-ink)] text-lg">{module}</span>
+                  </div>
+                  <ChevronDown class="w-5 h-5 text-[var(--color-muted)] transition-transform duration-300 accordion-icon" />
+                </button>
+                <div class="accordion-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-[var(--color-surface-alt)]/50">
+                  <div class="p-5 pl-17 border-t border-[var(--color-border)]">
+                    <ul class="list-disc list-inside text-[var(--color-muted)] space-y-2">
+                      <li>[TOPIC_1_PLACEHOLDER]</li>
+                      <li>[TOPIC_2_PLACEHOLDER]</li>
+                      <li>[TOPIC_3_PLACEHOLDER]</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button class="button secondary flex items-center gap-2">[COURSE_DOWNLOAD_FULL_SYLLABUS_CTA]</button>
+        </section>
+
+        {/* 4. COURSE CONTENT (MDX) */}
+        <section class="prose prose-lg dark:prose-invert max-w-none prose-headings:font-heading prose-a:text-[var(--color-primary)]">
+          <Content />
+        </section>
+
+        {/* 5. TRAINER SECTION */}
+        <section>
+          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Your Instructor</h2>
+          <div class="card p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-start">
+            <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden shrink-0">
+              <PlaceholderImage label="[PHOTO]" width={256} height={256} className="rounded-full" />
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-1">
+                [TRAINER_NAME]
+              </h3>
+              <p class="text-[var(--color-primary-val)] font-medium mb-4">
+                [TRAINER_ROLE — e.g. Senior Software Engineer, 8 years exp]
+              </p>
+              <p class="text-[var(--color-muted-val)] leading-relaxed">
+                [TRAINER_BIO — 2 sentences describing the trainer's experience and teaching style.]
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. FAQ SECTION */}
+        <section>
+          <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">[COURSE_FAQ_TITLE]</h2>
+          <div class="flex flex-col gap-4">
+            {faqs.map((faq) => (
+              <div class="accordion-item border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-surface)]">
+                <button class="accordion-header w-full flex items-center justify-between p-5 text-left hover:bg-[var(--color-surface-alt)] transition-colors focus:outline-none">
+                  <span class="font-bold text-[var(--color-ink)]">{faq.q}</span>
+                  <ChevronDown class="w-5 h-5 text-[var(--color-muted)] transition-transform duration-300 accordion-icon shrink-0 ml-4" />
+                </button>
+                <div class="accordion-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-[var(--color-surface-alt)]/50">
+                  <div class="p-5 border-t border-[var(--color-border)] text-[var(--color-muted)]">
+                    {faq.a}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+      </div>
+      
+      {/* Right Sidebar Spacer for Desktop */}
+      <div class="hidden lg:block lg:col-span-1"></div>
+      
+    </div>
+  </div>
+
+  {/* 7. RELATED COURSES */}
+  <section class="py-16 bg-[var(--color-surface-alt)] border-t border-[var(--color-border)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-10">[COURSE_RELATED_TITLE]</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {relatedCourses.map(rc => (
+          <CourseCard 
+            title={rc.data.title}
+            shortDescription={rc.data.shortDescription}
+            duration={rc.data.duration}
+            mode={rc.data.mode}
+            level={rc.data.level}
+            slug={rc.id}
+            badge={rc.data.badge}
+            icon={rc.data.icon}
+            category={rc.data.category}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Hidden Enquiry Form Target for smooth scroll */}
+  <div id="enquiry-form-section" class="py-16">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="card p-8">
+        <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-2 text-center">[COURSE_ENROLL_FORM_TITLE]</h2>
+        <p class="text-[var(--color-muted)] text-center mb-8">[COURSE_ENROLL_FORM_TEXT]</p>
+        <EnquiryForm />
+      </div>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<script>
+  // Accordion Logic
+  const accordionHeaders = document.querySelectorAll('.accordion-header');
+  
+  accordionHeaders.forEach(header => {
+    header.addEventListener('click', () => {
+      const content = /** @type {HTMLElement} */ (header.nextElementSibling);
+      const icon = header.querySelector('.accordion-icon');
+      
+      // Close all other accordions
+      accordionHeaders.forEach(otherHeader => {
+        if (otherHeader !== header) {
+          const otherContent = /** @type {HTMLElement} */ (otherHeader.nextElementSibling);
+          const otherIcon = otherHeader.querySelector('.accordion-icon');
+          otherContent.style.maxHeight = '0px';
+          if(otherIcon) otherIcon.classList.remove('rotate-180');
+        }
+      });
+
+      // Toggle current
+      if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+        content.style.maxHeight = '0px';
+        if(icon) icon.classList.remove('rotate-180');
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        if(icon) icon.classList.add('rotate-180');
+      }
+    });
+  });
+</script>

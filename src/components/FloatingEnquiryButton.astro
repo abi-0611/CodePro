@@ -1,0 +1,58 @@
+---
+import { X } from 'lucide-react';
+import EnquiryForm from './EnquiryForm.astro';
+---
+<div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
+  <button id="floating-enquiry-btn" class="bg-[var(--color-primary-val)] text-white px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 hover:bg-[var(--color-primary-dark-val)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary-val)]" aria-label="Quick Enquiry">
+    <span aria-hidden="true">📞</span>
+    <span>Quick Enquiry</span>
+  </button>
+</div>
+
+<div id="enquiry-modal" class="fixed inset-0 z-40 hidden" role="dialog" aria-modal="true" aria-labelledby="enquiry-modal-title">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="enquiry-modal-backdrop"></div>
+  <div class="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-val)] rounded-t-3xl p-6 transform transition-transform translate-y-full" id="enquiry-modal-content">
+    <div class="flex justify-between items-center mb-6">
+      <h3 id="enquiry-modal-title" class="text-xl font-bold font-heading text-[var(--color-ink-val)]">Quick Enquiry</h3>
+      <button id="close-enquiry-modal" class="p-2 text-[var(--color-muted-val)] hover:text-[var(--color-ink-val)] rounded-full bg-[var(--color-surface-alt-val)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-val)]" aria-label="Close modal">
+        <X class="w-5 h-5" />
+      </button>
+    </div>
+    <div class="max-h-[70vh] overflow-y-auto pb-8">
+      <EnquiryForm />
+    </div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('floating-enquiry-btn');
+  const modal = document.getElementById('enquiry-modal');
+  const backdrop = document.getElementById('enquiry-modal-backdrop');
+  const content = document.getElementById('enquiry-modal-content');
+  const closeBtn = document.getElementById('close-enquiry-modal');
+
+  function openModal() {
+    if (modal && content) {
+      modal.classList.remove('hidden');
+      // Small delay to allow display:block to apply before animating transform
+      setTimeout(() => {
+        content.classList.remove('translate-y-full');
+      }, 10);
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeModal() {
+    if (modal && content) {
+      content.classList.add('translate-y-full');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }, 300); // match transition duration
+    }
+  }
+
+  btn?.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+  backdrop?.addEventListener('click', closeModal);
+</script>

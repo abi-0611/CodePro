@@ -1,0 +1,100 @@
+---
+import { Instagram, Facebook, Youtube, Linkedin, MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
+import {
+  INSTITUTE_NAME,
+  SITE_TAGLINE,
+  ADDRESS_PLACEHOLDER,
+  CONTACT_PHONE,
+  CONTACT_EMAIL,
+  SOCIAL_INSTAGRAM_URL,
+  SOCIAL_FACEBOOK_URL,
+  SOCIAL_YOUTUBE_URL,
+  SOCIAL_LINKEDIN_URL,
+  WHATSAPP_URL,
+} from '../utils/consts';
+---
+
+<footer class="bg-[var(--color-dark-bg-val)] text-white/80 pt-16 pb-8 border-t border-white/10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      
+      {/* Col 1 - Brand */}
+      <div class="flex flex-col gap-4">
+        <div class="text-2xl font-bold font-heading text-white">
+          {INSTITUTE_NAME}
+        </div>
+        <p class="text-sm leading-relaxed">
+          {SITE_TAGLINE}
+        </p>
+        <div class="flex items-center gap-4 mt-2">
+          <a href={SOCIAL_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Instagram"><Instagram class="w-5 h-5" /></a>
+          <a href={SOCIAL_FACEBOOK_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Facebook"><Facebook class="w-5 h-5" /></a>
+          <a href={SOCIAL_YOUTUBE_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="YouTube"><Youtube class="w-5 h-5" /></a>
+          <a href={SOCIAL_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="LinkedIn"><Linkedin class="w-5 h-5" /></a>
+        </div>
+      </div>
+
+      {/* Col 2 - Corporate Office */}
+      <div class="flex flex-col gap-4">
+        <h3 class="text-lg font-semibold text-white font-heading">[FOOTER_OFFICE_TITLE]</h3>
+        <ul class="flex flex-col gap-3 text-sm">
+          <li class="flex items-start gap-3">
+            <MapPin class="w-5 h-5 shrink-0 text-[var(--color-primary-val)]" />
+            <span>{ADDRESS_PLACEHOLDER}</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <Phone class="w-5 h-5 shrink-0 text-[var(--color-primary-val)]" />
+            <span>{CONTACT_PHONE}</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <Mail class="w-5 h-5 shrink-0 text-[var(--color-primary-val)]" />
+            <span>{CONTACT_EMAIL}</span>
+          </li>
+        </ul>
+      </div>
+
+      {/* Col 3 - For Students */}
+      <div class="flex flex-col gap-4">
+        <h3 class="text-lg font-semibold text-white font-heading">[FOOTER_COL_3_TITLE]</h3>
+        <ul class="flex flex-col gap-2 text-sm">
+          <li><a href="[FOOTER_LINK_1_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_1_LABEL]</a></li>
+          <li><a href="[FOOTER_LINK_2_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_2_LABEL]</a></li>
+          <li><a href="[FOOTER_LINK_3_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_3_LABEL]</a></li>
+          <li><a href="[FOOTER_LINK_4_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_4_LABEL]</a></li>
+          <li><a href="/courses" class="hover:text-[var(--color-primary-val)] transition-colors">Courses</a></li>
+        </ul>
+      </div>
+
+      {/* Col 4 - For Business */}
+      <div class="flex flex-col gap-4">
+        <h3 class="text-lg font-semibold text-white font-heading">[FOOTER_COL_4_TITLE]</h3>
+        <ul class="flex flex-col gap-2 text-sm">
+          <li><a href="[FOOTER_LINK_5_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_5_LABEL]</a></li>
+          <li><a href="[FOOTER_LINK_6_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_6_LABEL]</a></li>
+          <li><a href="[FOOTER_LINK_7_URL]" class="hover:text-[var(--color-primary-val)] transition-colors">[FOOTER_LINK_7_LABEL]</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    {/* Bottom Bar */}
+    <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/50">
+      <p>&copy; {new Date().getFullYear()} {INSTITUTE_NAME}. All rights reserved.</p>
+      <div class="flex gap-4">
+        <a href="[PRIVACY_POLICY_URL]" class="hover:text-white transition-colors">[PRIVACY_POLICY_LABEL]</a>
+        <a href="[TERMS_OF_SERVICE_URL]" class="hover:text-white transition-colors">[TERMS_OF_SERVICE_LABEL]</a>
+      </div>
+    </div>
+  </div>
+
+  {/* Floating WhatsApp Button */}
+  <a 
+    href={WHATSAPP_URL} 
+    target="_blank" 
+    rel="noopener noreferrer"
+    class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 hover:scale-110 transition-all z-50 flex items-center justify-center"
+    aria-label="Chat on WhatsApp"
+  >
+    <MessageCircle class="w-6 h-6" />
+  </a>
+</footer>

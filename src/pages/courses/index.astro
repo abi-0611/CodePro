@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import { getCollection } from 'astro:content';
+
+const allCourses = await getCollection('courses');
+const sortedCourses = allCourses.sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+
+const categories = ['All', ...Array.from(new Set(sortedCourses.map((course) => course.data.category)))];
+---
+
+<BaseLayout title="[COURSES_PAGE_TITLE]" description="[COURSES_META_DESCRIPTION]">
+  <div class="pt-32 pb-12 bg-gradient-to-b from-white to-[var(--color-surface-alt-val)] dark:from-[var(--color-dark-bg-val)] dark:to-[var(--color-dark-surface-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">[COURSES_EYEBROW]</span>
+      <h1 class="text-4xl md:text-5xl font-bold font-heading text-[var(--color-ink-val)] mb-6">[COURSES_H1]</h1>
+      <p class="text-xl text-[var(--color-muted-val)] max-w-2xl mx-auto">
+        [COURSES_DESC_PLACEHOLDER — Discover our industry-aligned programs designed to accelerate your tech career.]
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    {/* Filter Bar */}
+    <div class="flex flex-wrap justify-center gap-3 mb-12" id="course-filters">
+      {categories.map((category, index) => (
+        <button 
+          class={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${index === 0 ? 'bg-[var(--color-primary-val)] text-white border-[var(--color-primary-val)]' : 'bg-[var(--color-surface-val)] text-[var(--color-ink-val)] border-[var(--color-border-val)] hover:border-[var(--color-primary-val)]/50'}`}
+          data-filter={category}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
+    
+    {/* Course Grid */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="course-grid">
+      {sortedCourses.map(course => (
+        <div class="course-item transition-all duration-500" data-category={course.data.category}>
+          <CourseCard 
+            title={course.data.title}
+            shortDescription={course.data.shortDescription}
+            duration={course.data.duration}
+            mode={course.data.mode}
+            level={course.data.level}
+            slug={course.id}
+            badge={course.data.badge}
+            icon={course.data.icon}
+            category={course.data.category}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const filterButtons = document.querySelectorAll('#course-filters button');
+  const courseItems = document.querySelectorAll('.course-item');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Update active button styling
+      filterButtons.forEach(btn => {
+        btn.classList.remove('bg-[var(--color-primary-val)]', 'text-white', 'border-[var(--color-primary-val)]');
+        btn.classList.add('bg-[var(--color-surface-val)]', 'text-[var(--color-ink-val)]', 'border-[var(--color-border-val)]');
+      });
+      button.classList.remove('bg-[var(--color-surface-val)]', 'text-[var(--color-ink-val)]', 'border-[var(--color-border-val)]');
+      button.classList.add('bg-[var(--color-primary-val)]', 'text-white', 'border-[var(--color-primary-val)]');
+
+      const filterValue = button.getAttribute('data-filter');
+
+      // Filter courses
+      courseItems.forEach((item) => {
+        const htmlItem = /** @type {HTMLElement} */ (item);
+        const category = htmlItem.getAttribute('data-category');
+        
+        if (filterValue === 'All' || filterValue === category) {
+          htmlItem.style.display = 'block';
+          // Small delay to allow display:block to apply before animating opacity
+          setTimeout(() => {
+            htmlItem.style.opacity = '1';
+            htmlItem.style.transform = 'scale(1)';
+          }, 10);
+        } else {
+          htmlItem.style.opacity = '0';
+          htmlItem.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            htmlItem.style.display = 'none';
+          }, 300); // match transition duration
+        }
+      });
+    });
+  });
+</script>

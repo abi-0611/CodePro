@@ -1,0 +1,29 @@
+---
+import PlaceholderImage from './PlaceholderImage.astro';
+---
+<section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-b from-white to-[var(--color-surface-alt-val)] dark:from-[var(--color-dark-bg-val)] dark:to-[var(--color-dark-surface-val)]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="text-left">
+        <div class="inline-flex items-center px-4 py-2 rounded-full bg-[var(--color-surface-alt-val)] border border-[var(--color-border-val)] text-sm font-medium text-[var(--color-ink-val)] mb-6">
+          Get trained by Industry Experts via
+        </div>
+        <h1 class="text-5xl lg:text-6xl font-extrabold font-heading tracking-tight mb-6 leading-tight">
+          <span class="text-[var(--color-ink-val)]">Classroom Training or</span><br/>
+          <span class="text-[var(--color-primary-val)]">Instructor-led Live Online</span>
+        </h1>
+        <p class="text-xl text-[var(--color-muted-val)] mb-8 max-w-2xl">
+          with 100% Placement Support
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#enquiry-section" class="button primary text-lg px-8 py-4 rounded-full">
+            Enquire Now
+          </a>
+        </div>
+      </div>
+      <div class="hidden md:block relative">
+        <PlaceholderImage label="[HERO_IMAGE — paste your hero illustration here]" width={800} height={600} className="aspect-square md:aspect-[4/3]" />
+      </div>
+    </div>
+  </div>
+</section>

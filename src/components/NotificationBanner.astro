@@ -1,0 +1,33 @@
+---
+import { X } from 'lucide-react';
+import { PROMO_TEXT } from '../utils/consts';
+---
+<div id="notification-banner" class="hidden bg-[var(--color-primary-val)] text-white px-4 py-3 fixed top-0 left-0 right-0 z-[60]">
+  <div class="max-w-7xl mx-auto flex items-center justify-center pr-8">
+    <p class="text-sm font-medium text-center">
+      {PROMO_TEXT}
+    </p>
+  </div>
+  <button id="close-banner" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white" aria-label="Close notification">
+    <X class="w-5 h-5" />
+  </button>
+</div>
+
+<script>
+  const banner = document.getElementById('notification-banner');
+  const closeBtn = document.getElementById('close-banner');
+  
+  if (banner && closeBtn) {
+    const isDismissed = sessionStorage.getItem('notification-dismissed');
+    if (!isDismissed) {
+      banner.classList.remove('hidden');
+      document.documentElement.style.setProperty('--banner-offset', `${banner.offsetHeight}px`);
+    }
+    
+    closeBtn.addEventListener('click', () => {
+      banner.classList.add('hidden');
+      sessionStorage.setItem('notification-dismissed', 'true');
+      document.documentElement.style.setProperty('--banner-offset', '0px');
+    });
+  }
+</script>

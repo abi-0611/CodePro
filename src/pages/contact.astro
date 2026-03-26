@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import PlaceholderImage from '../components/PlaceholderImage.astro';
+import { MapPin, Phone, Mail, Instagram, Facebook, Youtube, Linkedin, Calendar, Download, MessageCircle } from 'lucide-react';
+import {
+  ADDRESS_PLACEHOLDER,
+  CONTACT_PHONE,
+  CONTACT_EMAIL,
+  GOOGLE_MAPS_URL,
+  SOCIAL_INSTAGRAM_URL,
+  SOCIAL_FACEBOOK_URL,
+  SOCIAL_YOUTUBE_URL,
+  SOCIAL_LINKEDIN_URL,
+  WORKING_HOURS,
+  BROCHURE_PDF_URL,
+  WHATSAPP_URL,
+} from '../utils/consts';
+---
+
+<BaseLayout title="[CONTACT_PAGE_TITLE]" description="[CONTACT_META_DESCRIPTION]">
+  <div class="pt-32 pb-20">
+    <SectionHeader 
+      eyebrow="[CONTACT_EYEBROW]"
+      title="[CONTACT_TITLE]"
+      description="[CONTACT_DESCRIPTION]"
+      align="center"
+    />
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Contact Info (60%) */}
+      <div class="lg:col-span-7 flex flex-col gap-10">
+        <div class="flex flex-col gap-6">
+          <div class="card p-6 flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-[var(--color-surface-alt-val)] flex items-center justify-center text-[var(--color-primary-val)] shrink-0">
+              <MapPin class="w-6 h-6" />
+            </div>
+            <div>
+              <h4 class="font-bold text-[var(--color-ink-val)] mb-2">[CONTACT_VISIT_TITLE]</h4>
+              <p class="text-[var(--color-muted-val)] mb-3">{ADDRESS_PLACEHOLDER}</p>
+              <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" class="text-[var(--color-primary-val)] font-medium hover:underline flex items-center gap-1">
+                [CONTACT_DIRECTIONS_CTA]
+              </a>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="card p-6 flex flex-col gap-4">
+              <div class="w-12 h-12 rounded-full bg-[var(--color-surface-alt-val)] flex items-center justify-center text-[var(--color-primary-val)] shrink-0">
+                <Phone class="w-6 h-6" />
+              </div>
+              <div>
+                <h4 class="font-bold text-[var(--color-ink-val)] mb-1">[CONTACT_CALL_TITLE]</h4>
+                <p class="text-[var(--color-muted-val)]">[CONTACT_CALL_TEXT] {CONTACT_PHONE}</p>
+              </div>
+            </div>
+            
+            <div class="card p-6 flex flex-col gap-4">
+              <div class="w-12 h-12 rounded-full bg-[var(--color-surface-alt-val)] flex items-center justify-center text-[var(--color-primary-val)] shrink-0">
+                <Mail class="w-6 h-6" />
+              </div>
+              <div>
+                <h4 class="font-bold text-[var(--color-ink-val)] mb-1">[CONTACT_EMAIL_TITLE]</h4>
+                <p class="text-[var(--color-muted-val)]">[CONTACT_EMAIL_TEXT] {CONTACT_EMAIL}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card p-6">
+            <h4 class="font-bold text-[var(--color-ink-val)] mb-2">[CONTACT_HOURS_TITLE]</h4>
+            <p class="text-[var(--color-muted-val)]">[CONTACT_HOURS_TEXT] {WORKING_HOURS}</p>
+          </div>
+        </div>
+
+        {/* Map Placeholder */}
+        <PlaceholderImage label="[GOOGLE_MAPS_EMBED — paste your iframe here]" width={1200} height={400} className="w-full h-[400px] !rounded-[var(--radius-card)]" />
+
+        {/* Social Media Links */}
+        <div>
+          <h4 class="font-bold text-[var(--color-ink-val)] mb-4">[CONTACT_SOCIALS_TITLE]</h4>
+          <div class="flex flex-wrap gap-4">
+            <a href={SOCIAL_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border-val)] hover:border-[var(--color-primary-val)] hover:text-[var(--color-primary-val)] transition-colors">
+              <Instagram class="w-5 h-5" />
+              <span>[SOCIAL_INSTAGRAM_LABEL]</span>
+            </a>
+            <a href={SOCIAL_FACEBOOK_URL} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border-val)] hover:border-[var(--color-primary-val)] hover:text-[var(--color-primary-val)] transition-colors">
+              <Facebook class="w-5 h-5" />
+              <span>[SOCIAL_FACEBOOK_LABEL]</span>
+            </a>
+            <a href={SOCIAL_YOUTUBE_URL} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border-val)] hover:border-[var(--color-primary-val)] hover:text-[var(--color-primary-val)] transition-colors">
+              <Youtube class="w-5 h-5" />
+              <span>[SOCIAL_YOUTUBE_LABEL]</span>
+            </a>
+            <a href={SOCIAL_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border-val)] hover:border-[var(--color-primary-val)] hover:text-[var(--color-primary-val)] transition-colors">
+              <Linkedin class="w-5 h-5" />
+              <span>[SOCIAL_LINKEDIN_LABEL]</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Form (40%) */}
+      <div class="lg:col-span-5">
+        <div class="card p-8 sticky top-24">
+          <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-6">[CONTACT_FORM_TITLE]</h3>
+          <EnquiryForm />
+        </div>
+      </div>
+      
+    </div>
+
+    {/* Quick Links Section */}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
+      <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-8 text-center">[CONTACT_QUICK_LINKS_TITLE]</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="[CONTACT_BOOK_DEMO_LINK]" class="card p-8 flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform group">
+          <div class="w-16 h-16 rounded-full bg-[var(--color-surface-alt-val)] flex items-center justify-center text-[var(--color-primary-val)] group-hover:scale-110 transition-transform">
+            <Calendar class="w-8 h-8" />
+          </div>
+          <h4 class="font-bold text-lg text-[var(--color-ink-val)]">[CONTACT_QUICKLINK_1_TITLE]</h4>
+          <p class="text-[var(--color-muted-val)] text-sm">[CONTACT_QUICKLINK_1_TEXT]</p>
+        </a>
+        
+        <a href={BROCHURE_PDF_URL} target="_blank" rel="noopener noreferrer" class="card p-8 flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform group">
+          <div class="w-16 h-16 rounded-full bg-[var(--color-surface-alt-val)] flex items-center justify-center text-[var(--color-primary-val)] group-hover:scale-110 transition-transform">
+            <Download class="w-8 h-8" />
+          </div>
+          <h4 class="font-bold text-lg text-[var(--color-ink-val)]">[CONTACT_QUICKLINK_2_TITLE]</h4>
+          <p class="text-[var(--color-muted-val)] text-sm">[CONTACT_QUICKLINK_2_TEXT]</p>
+        </a>
+        
+        <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" class="card p-8 flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform group">
+          <div class="w-16 h-16 rounded-full bg-[var(--color-surface-alt-val)] flex items-center justify-center text-[var(--color-primary-val)] group-hover:scale-110 transition-transform">
+            <MessageCircle class="w-8 h-8" />
+          </div>
+          <h4 class="font-bold text-lg text-[var(--color-ink-val)]">[CONTACT_QUICKLINK_3_TITLE]</h4>
+          <p class="text-[var(--color-muted-val)] text-sm">[CONTACT_QUICKLINK_3_TEXT]</p>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</BaseLayout>

@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import StatBar from '../components/StatBar.astro';
+import EnquirySnippet from '../components/EnquirySnippet.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import CourseCard from '../components/CourseCard.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import LogoMarquee from '../components/LogoMarquee.astro';
+import TestimonialSlider from '../components/TestimonialSlider.astro';
+import { getCollection } from 'astro:content';
+
+const allCourses = await getCollection('courses');
+const featuredCourses = allCourses.sort((a, b) => (a.data.order || 99) - (b.data.order || 99)).slice(0, 3);
+---
+
+<BaseLayout title="[HOME_PAGE_TITLE]" description="[HOME_META_DESCRIPTION]">
+  <Hero 
+    headline="[HERO_HEADLINE]" 
+    subheadline="[HERO_SUBHEADLINE]"
+    ctaText="[HERO_CTA_TEXT]"
+    ctaLink="[HERO_CTA_LINK]"
+  />
+  
+  <StatBar />
+
+  <EnquirySnippet />
+
+  <section class="py-20 bg-[var(--color-surface-alt-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <SectionHeader 
+        eyebrow="[HOME_SECTION_1_EYEBROW]"
+        title="[HOME_SECTION_1_TITLE]"
+        description="[HOME_SECTION_1_DESCRIPTION]"
+      />
+      <FeatureGrid />
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <SectionHeader 
+        eyebrow="[HOME_SECTION_2_EYEBROW]"
+        title="[HOME_SECTION_2_TITLE]"
+        description="[HOME_SECTION_2_DESCRIPTION]"
+      />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuredCourses.map(course => (
+          <CourseCard 
+            title={course.data.title}
+            shortDescription={course.data.shortDescription}
+            duration={course.data.duration}
+            mode={course.data.mode}
+            level={course.data.level}
+            slug={course.id}
+            badge={course.data.badge}
+            icon={course.data.icon}
+          />
+        ))}
+      </div>
+      <div class="mt-12 text-center">
+        <a href="[HOME_COURSES_CTA_LINK]" class="button secondary">[HOME_COURSES_CTA_TEXT]</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-[var(--color-surface-alt-val)] border-y border-[var(--color-border-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-12 text-center">[HOME_PLACEMENTS_TITLE]</h2>
+      <LogoMarquee />
+    </div>
+  </section>
+
+  <TestimonialSlider />
+</BaseLayout>

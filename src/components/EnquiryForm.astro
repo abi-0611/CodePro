@@ -1,0 +1,155 @@
+---
+import { getCollection } from 'astro:content';
+
+const courses = await getCollection('courses');
+---
+<div id="form-container" class="relative">
+  <form id="enquiry-form-element" class="flex flex-col gap-5" novalidate>
+    <div class="flex flex-col gap-1">
+      <label for="name" class="text-sm font-semibold text-[var(--color-ink)]">Full Name <span class="text-red-500">*</span></label>
+      <input type="text" id="name" name="name" required class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" placeholder="Enter your full name" />
+      <span class="error-message text-red-500 text-xs hidden">Please enter your full name.</span>
+    </div>
+    
+    <div class="flex flex-col gap-1">
+      <label for="email" class="text-sm font-semibold text-[var(--color-ink)]">Email Address <span class="text-red-500">*</span></label>
+      <input type="email" id="email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" placeholder="Enter your email address" />
+      <span class="error-message text-red-500 text-xs hidden">Please enter a valid email address.</span>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label for="phone" class="text-sm font-semibold text-[var(--color-ink)]">Phone Number <span class="text-red-500">*</span></label>
+      <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}" class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" placeholder="Enter 10 digit phone number" />
+      <span class="error-message text-red-500 text-xs hidden">Please enter a valid 10-digit phone number.</span>
+    </div>
+    
+    <div class="flex flex-col gap-1">
+      <label for="course" class="text-sm font-semibold text-[var(--color-ink)]">Course Interested <span class="text-red-500">*</span></label>
+      <select id="course" name="course" required class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all appearance-none">
+        <option value="" disabled selected>Select a course</option>
+        {courses.map(course => (
+          <option value={course.slug}>{course.data.title}</option>
+        ))}
+      </select>
+      <span class="error-message text-red-500 text-xs hidden">Please select a course.</span>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label for="mode" class="text-sm font-semibold text-[var(--color-ink)]">Preferred Mode <span class="text-red-500">*</span></label>
+      <select id="mode" name="mode" required class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all appearance-none">
+        <option value="" disabled selected>Select training mode</option>
+        <option value="online">Online</option>
+        <option value="offline">Offline</option>
+        <option value="hybrid">Hybrid</option>
+      </select>
+      <span class="error-message text-red-500 text-xs hidden">Please select a training mode.</span>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label for="timing" class="text-sm font-semibold text-[var(--color-ink)]">Preferred Timing</label>
+      <select id="timing" name="timing" class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all appearance-none">
+        <option value="" disabled selected>Select preferred timing</option>
+        <option value="morning">Morning</option>
+        <option value="evening">Evening</option>
+        <option value="weekend">Weekend</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label for="message" class="text-sm font-semibold text-[var(--color-ink)]">Message</label>
+      <textarea id="message" name="message" rows="3" class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all resize-y" placeholder="Any specific requirements?"></textarea>
+    </div>
+    
+    <button type="submit" id="submit-btn" class="button primary w-full py-4 text-lg mt-2 flex justify-center items-center gap-2">
+      <span class="btn-text">Send Enquiry</span>
+      <svg class="spinner hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+    </button>
+  </form>
+
+  <div id="success-message" class="hidden absolute inset-0 bg-[var(--color-surface)] flex flex-col items-center justify-center text-center p-6 rounded-[var(--radius-card)] border border-green-200 bg-green-50">
+    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h3 class="text-xl font-bold text-green-800 mb-2">✅ Thank you!</h3>
+    <p class="text-green-700">We'll contact you within 24 hours.</p>
+    <button id="reset-btn" class="mt-6 text-green-700 font-medium hover:underline">Submit another enquiry</button>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('enquiry-form-element') as HTMLFormElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const btnText = submitBtn?.querySelector('.btn-text');
+  const spinner = submitBtn?.querySelector('.spinner');
+  const successMessage = document.getElementById('success-message');
+  const resetBtn = document.getElementById('reset-btn');
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let isValid = true;
+      
+      const inputs = form.querySelectorAll('input, select, textarea');
+      inputs.forEach((input) => {
+        const htmlInput = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        const errorSpan = /** @type {HTMLElement | null} */ (htmlInput.nextElementSibling);
+        if (htmlInput.hasAttribute('required') && !htmlInput.checkValidity()) {
+          isValid = false;
+          htmlInput.classList.add('border-red-500');
+          if (errorSpan && errorSpan.classList.contains('error-message')) {
+            errorSpan.classList.remove('hidden');
+          }
+        } else {
+          htmlInput.classList.remove('border-red-500');
+          if (errorSpan && errorSpan.classList.contains('error-message')) {
+            errorSpan.classList.add('hidden');
+          }
+        }
+      });
+
+      if (isValid) {
+        // Show loading state
+        submitBtn.disabled = true;
+        if (btnText) btnText.textContent = 'Sending...';
+        if (spinner) spinner.classList.remove('hidden');
+
+        // Simulate API call
+        setTimeout(() => {
+          form.classList.add('hidden');
+          if (successMessage) successMessage.classList.remove('hidden');
+          
+          // Reset button state
+          submitBtn.disabled = false;
+          if (btnText) btnText.textContent = 'Send Enquiry';
+          if (spinner) spinner.classList.add('hidden');
+          
+          form.reset();
+        }, 1000);
+      }
+    });
+
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach((input) => {
+      const htmlInput = input as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+      htmlInput.addEventListener('input', () => {
+        const errorSpan = /** @type {HTMLElement | null} */ (htmlInput.nextElementSibling);
+        if (htmlInput.checkValidity()) {
+          htmlInput.classList.remove('border-red-500');
+          if (errorSpan && errorSpan.classList.contains('error-message')) {
+            errorSpan.classList.add('hidden');
+          }
+        }
+      });
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (successMessage) successMessage.classList.add('hidden');
+      if (form) form.classList.remove('hidden');
+    });
+  }
+</script>
