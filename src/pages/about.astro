@@ -21,8 +21,8 @@ const breadcrumbItems = [
 
 <BaseLayout title="[ABOUT_PAGE_TITLE]" description="[ABOUT_META_DESCRIPTION]">
   {/* SECTION 1 — PAGE HERO */}
-  <div class="pt-32 pb-16 bg-gradient-to-b from-[var(--page-hero-from-val)] to-[var(--page-hero-to-val)]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="grid-overlay relative overflow-hidden pt-32 pb-16 bg-gradient-to-b from-[var(--page-hero-from-val)] to-[var(--page-hero-to-val)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <BreadcrumbNav items={breadcrumbItems} />
       <div class="text-center mt-8">
         <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">[ABOUT_EYEBROW]</span>
