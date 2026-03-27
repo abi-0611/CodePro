@@ -16,6 +16,15 @@ export default defineConfig({
   integrations: [react(), mdx(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          assetFileNames: '_assets/[name].[hash][extname]',
+          chunkFileNames: '_assets/[name].[hash].js',
+          entryFileNames: '_assets/[name].[hash].js',
+        },
+      },
+    },
   },
   server: {
     port: 3000,

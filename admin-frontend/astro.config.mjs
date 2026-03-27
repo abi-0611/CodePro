@@ -10,6 +10,16 @@ export default defineConfig({
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Content-hashed filenames for CDN cache-busting
+      rollupOptions: {
+        output: {
+          assetFileNames: '_assets/[name].[hash][extname]',
+          chunkFileNames: '_assets/[name].[hash].js',
+          entryFileNames: '_assets/[name].[hash].js',
+        },
+      },
+    },
     server: {
       fs: {
         allow: ['..'],

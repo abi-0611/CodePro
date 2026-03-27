@@ -1,6 +1,5 @@
 import logging
 import time
-from collections import defaultdict
 
 import uvicorn
 from fastapi import FastAPI, Request, status
@@ -8,9 +7,11 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import settings
+from app.core.redis import check_rate_limit, close_redis
 from app.database import engine
 from app.routers import auth, contact_info, courses, enquiries, site_content
 
@@ -88,8 +89,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 
-# ── Rate Limiter for Auth Endpoints ──────────────────
-_login_attempts: dict[str, list[float]] = defaultdict(list)
+# ── Rate Limiter for Auth Endpoints (Redis-backed) ───
 _LOGIN_WINDOW = 300  # 5 minutes
 _LOGIN_LIMIT = 10    # max attempts per window
 
@@ -98,15 +98,13 @@ class AuthRateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.url.path == "/api/auth/login" and request.method == "POST":
             ip = request.client.host if request.client else "unknown"
-            now = time.time()
-            _login_attempts[ip] = [t for t in _login_attempts[ip] if now - t < _LOGIN_WINDOW]
-            if len(_login_attempts[ip]) >= _LOGIN_LIMIT:
+            allowed = await check_rate_limit(f"rl:login:{ip}", _LOGIN_LIMIT, _LOGIN_WINDOW)
+            if not allowed:
                 logger.warning("Rate limit exceeded for login ip=%s", ip)
                 return JSONResponse(
                     status_code=429,
                     content={"error": True, "message": "Too many login attempts. Please try again later.", "code": "RATE_LIMITED"},
                 )
-            _login_attempts[ip].append(now)
         return await call_next(request)
 
 
@@ -182,8 +180,15 @@ app.include_router(site_content.router)
 app.include_router(contact_info.router)
 app.include_router(enquiries.router)
 
+# ── Prometheus Metrics ───────────────────────────────
+Instrumentator(
+    should_group_status_codes=True,
+    should_ignore_untemplated=True,
+    excluded_handlers=["/health", "/metrics"],
+).instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
-# ── Startup: seed admin user ─────────────────────────
+
+# ── Startup / Shutdown ───────────────────────────────
 @app.on_event("startup")
 async def seed_admin_user():
     """Create the default admin user from .env if it doesn't exist."""
@@ -206,21 +211,45 @@ async def seed_admin_user():
             logger.info("Seeded admin user: %s", settings.ADMIN_USERNAME)
 
 
+@app.on_event("shutdown")
+async def shutdown_redis():
+    await close_redis()
+
+
 # ── Health ───────────────────────────────────────────
 @app.get("/health", tags=["health"])
 async def health_check():
-    """Check API and DB connectivity."""
+    """Check API, DB, and Redis connectivity."""
+    import sqlalchemy as sa
+    from app.core.redis import get_redis
+
+    db_ok = False
+    redis_ok = False
+
     try:
         async with engine.connect() as conn:
-            await conn.execute(
-                __import__("sqlalchemy").text("SELECT 1")
-            )
-        return {"status": "ok", "database": "connected"}
+            await conn.execute(sa.text("SELECT 1"))
+        db_ok = True
     except Exception:
-        return JSONResponse(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            content={"status": "error", "database": "disconnected"},
-        )
+        pass
+
+    try:
+        r = await get_redis()
+        if r:
+            await r.ping()
+            redis_ok = True
+    except Exception:
+        pass
+
+    status_code = 200 if db_ok else 503
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "status": "ok" if db_ok else "degraded",
+            "database": "connected" if db_ok else "disconnected",
+            "redis": "connected" if redis_ok else "disconnected",
+        },
+    )
 
 
 # ── Entrypoint ──────────────────────────────────────
