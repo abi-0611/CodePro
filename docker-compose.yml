@@ -19,17 +19,32 @@ services:
     ports: ["3000:3000"]
     environment:
       API_URL: http://api:8000
-      CACHE_BUST_SECRET: ${CACHE_BUST_SECRET:-codepro-cache-bust-secret-change-me}
-    depends_on: [api]
+      SITE_URL: ${SITE_URL:-http://localhost:3000}
+      CACHE_BUST_SECRET: ${CACHE_BUST_SECRET}
+    depends_on:
+      api:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   admin-frontend:
     build:
       context: ./admin-frontend
     ports: ["4322:4322"]
     environment:
-      PUBLIC_API_URL: http://localhost:8000
+      PUBLIC_API_URL: http://api:8000
       MAIN_SITE_URL: http://main-site:3000
-      CACHE_BUST_SECRET: ${CACHE_BUST_SECRET:-codepro-cache-bust-secret-change-me}
-    depends_on: [api]
+      CACHE_BUST_SECRET: ${CACHE_BUST_SECRET}
+    depends_on:
+      api:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4322/admin/login"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

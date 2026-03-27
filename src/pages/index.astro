@@ -12,7 +12,13 @@ import FaqAccordion from '../components/FaqAccordion.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 import { getAllCourses, getSiteConfig, getContent, getContentJson } from '../lib/api';
 
-const [allCourses, config] = await Promise.all([getAllCourses(), getSiteConfig()]);
+let allCourses: any[] = [];
+let config: any = {};
+try {
+  [allCourses, config] = await Promise.all([getAllCourses(), getSiteConfig()]);
+} catch {
+  // Graceful degradation — use defaults on API failure
+}
 const featuredCourses = allCourses.slice(0, 3);
 
 const section1Eyebrow = getContent(config, 'home', 'section1_eyebrow', 'Top Courses');

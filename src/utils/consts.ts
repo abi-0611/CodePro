@@ -6,7 +6,7 @@ export const CONTACT_PHONE = '+91 91762 41244';
 export const CONTACT_EMAIL = 'humairasiraj0985@gmail.com';
 export const ADDRESS_PLACEHOLDER = 'Madambakkam, Chennai, Tamil Nadu, India';
 
-export const SITE_URL = 'http://localhost:3000';
+export const SITE_URL = import.meta.env.SITE_URL || 'http://localhost:3000';
 export const DEFAULT_META_DESCRIPTION = 'CodePro.io - Master the code, Become a pro';
 
 export const SOCIAL_FACEBOOK_URL = 'https://facebook.com/';

@@ -68,16 +68,20 @@ async def upsert_content(
 
 async def bulk_update_content(db: AsyncSession, items: list[dict]) -> list[SiteContent]:
     results: list[SiteContent] = []
-    for item in items:
-        content = await upsert_content(
-            db,
-            section=item["section"],
-            key=item["key"],
-            value=item.get("value"),
-            value_json=item.get("value_json"),
-            content_type=item.get("content_type", "text"),
-        )
-        results.append(content)
+    try:
+        for item in items:
+            content = await upsert_content(
+                db,
+                section=item["section"],
+                key=item["key"],
+                value=item.get("value"),
+                value_json=item.get("value_json"),
+                content_type=item.get("content_type", "text"),
+            )
+            results.append(content)
+    except Exception:
+        await db.rollback()
+        raise
     return results
 
 

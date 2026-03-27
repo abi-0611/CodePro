@@ -1,5 +1,6 @@
 import logging
 import time
+from collections import defaultdict
 
 import uvicorn
 from fastapi import FastAPI, Request, status
@@ -11,7 +12,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import settings
 from app.database import engine
-from app.routers import auth, contact_info, courses, site_content
+from app.routers import auth, contact_info, courses, enquiries, site_content
 
 # ── Logging ──────────────────────────────────────────
 logging.basicConfig(
@@ -33,6 +34,7 @@ app = FastAPI(
         {"name": "courses", "description": "Course CRUD — public GET, protected write"},
         {"name": "content", "description": "Site content management by section/key"},
         {"name": "contact", "description": "Contact info and social links"},
+        {"name": "enquiries", "description": "Public enquiry submissions & admin listing"},
     ],
 )
 
@@ -72,6 +74,60 @@ class CacheHeaderMiddleware(BaseHTTPMiddleware):
         return response
 
 
+# ── Security Headers Middleware ───────────────────────
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        if settings.APP_ENV != "development":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        return response
+
+
+# ── Rate Limiter for Auth Endpoints ──────────────────
+_login_attempts: dict[str, list[float]] = defaultdict(list)
+_LOGIN_WINDOW = 300  # 5 minutes
+_LOGIN_LIMIT = 10    # max attempts per window
+
+
+class AuthRateLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path == "/api/auth/login" and request.method == "POST":
+            ip = request.client.host if request.client else "unknown"
+            now = time.time()
+            _login_attempts[ip] = [t for t in _login_attempts[ip] if now - t < _LOGIN_WINDOW]
+            if len(_login_attempts[ip]) >= _LOGIN_LIMIT:
+                logger.warning("Rate limit exceeded for login ip=%s", ip)
+                return JSONResponse(
+                    status_code=429,
+                    content={"error": True, "message": "Too many login attempts. Please try again later.", "code": "RATE_LIMITED"},
+                )
+            _login_attempts[ip].append(now)
+        return await call_next(request)
+
+
+# ── Request Size Limit Middleware ────────────────────
+_MAX_BODY_SIZE = 10 * 1024 * 1024  # 10 MB
+
+
+class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > _MAX_BODY_SIZE:
+            return JSONResponse(
+                status_code=413,
+                content={"error": True, "message": "Request body too large", "code": "PAYLOAD_TOO_LARGE"},
+            )
+        return await call_next(request)
+
+
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(AuthRateLimitMiddleware)
+app.add_middleware(RequestSizeLimitMiddleware)
 app.add_middleware(CacheHeaderMiddleware)
 app.add_middleware(RequestLogMiddleware)
 
@@ -124,6 +180,7 @@ app.include_router(auth.router)
 app.include_router(courses.router)
 app.include_router(site_content.router)
 app.include_router(contact_info.router)
+app.include_router(enquiries.router)
 
 
 # ── Startup: seed admin user ─────────────────────────

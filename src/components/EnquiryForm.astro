@@ -71,7 +71,7 @@ const uid = randomUUID();
     </button>
   </form>
 
-  <div class="hidden absolute inset-0 bg-[var(--color-surface)] flex flex-col items-center justify-center text-center p-6 rounded-[var(--radius-card)] border border-green-200 bg-green-50" data-enquiry-success>
+  <div class="hidden absolute inset-0 bg-[var(--color-surface)] flex flex-col items-center justify-center text-center p-6 rounded-[var(--radius-card)] border border-green-200 bg-green-50" data-enquiry-success role="status" aria-live="polite">
     <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
     </div>
@@ -92,7 +92,7 @@ const uid = randomUUID();
     const resetBtn = /** @type {HTMLButtonElement | null} */ (root.querySelector('button[data-enquiry-reset]'));
 
     if (form instanceof HTMLFormElement) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         let isValid = true;
         
@@ -122,18 +122,53 @@ const uid = randomUUID();
           if (btnText) btnText.textContent = 'Sending...';
           if (spinner) spinner.classList.remove('hidden');
 
-          // Simulate API call
-          setTimeout(() => {
+          // Submit to API
+          const API_BASE = (typeof window !== 'undefined' && window.location.hostname !== 'localhost')
+            ? `${window.location.protocol}//${window.location.hostname}:8000`
+            : 'http://localhost:8000';
+
+          const formData = new FormData(form);
+          const payload = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            course: formData.get('course'),
+            mode: formData.get('mode'),
+            timing: formData.get('timing') || null,
+            message: formData.get('message') || null,
+          };
+
+          try {
+            const res = await fetch(`${API_BASE}/api/enquiries/`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+              const err = await res.json().catch(() => null);
+              throw new Error(err?.message || err?.detail || 'Submission failed');
+            }
+
             form.classList.add('hidden');
             if (successMessage) successMessage.classList.remove('hidden');
-            
-            // Reset button state
+            form.reset();
+          } catch (err) {
+            // Show inline error
+            let errorDiv = form.querySelector('[data-enquiry-error]');
+            if (!errorDiv) {
+              errorDiv = document.createElement('div');
+              errorDiv.setAttribute('data-enquiry-error', '');
+              errorDiv.setAttribute('role', 'alert');
+              errorDiv.className = 'text-red-600 text-sm font-medium bg-red-50 border border-red-200 rounded-lg p-3 mt-2';
+              form.appendChild(errorDiv);
+            }
+            errorDiv.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+          } finally {
             submitBtn.disabled = false;
             if (btnText) btnText.textContent = 'Send Enquiry';
             if (spinner) spinner.classList.add('hidden');
-            
-            form.reset();
-          }, 1000);
+          }
         }
       });
 
