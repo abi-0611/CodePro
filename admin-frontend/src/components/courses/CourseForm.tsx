@@ -311,9 +311,11 @@ export default function CourseForm({ mode, initialData }: CourseFormProps) {
               style={{
                 padding: '0.75rem 1.25rem',
                 border: 'none',
-                background: 'none',
+                background: activeTab === i
+                  ? 'linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 12%, transparent), color-mix(in srgb, var(--color-primary) 6%, transparent))'
+                  : 'none',
                 cursor: 'pointer',
-                fontWeight: activeTab === i ? 600 : 400,
+                fontWeight: activeTab === i ? 700 : 400,
                 fontSize: '0.875rem',
                 color: activeTab === i ? 'var(--color-primary)' : 'var(--text-secondary)',
                 borderBottom: activeTab === i ? '2px solid var(--color-primary)' : '2px solid transparent',
@@ -322,6 +324,8 @@ export default function CourseForm({ mode, initialData }: CourseFormProps) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
+                borderRadius: activeTab === i ? 'var(--radius-input) var(--radius-input) 0 0' : '0',
+                transition: 'all 0.2s ease',
               }}
             >
               {tab}
@@ -690,8 +694,10 @@ export default function CourseForm({ mode, initialData }: CourseFormProps) {
       <div style={{
         position: 'sticky',
         bottom: 0,
-        background: 'var(--bg-page)',
-        borderTop: '1px solid var(--border-color)',
+        background: 'var(--glass-bg)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderTop: '1px solid var(--glass-border)',
         padding: '1rem 0',
         display: 'flex',
         gap: '0.75rem',
@@ -702,15 +708,7 @@ export default function CourseForm({ mode, initialData }: CourseFormProps) {
           type="button"
           onClick={(e) => handleSubmit(e as unknown as FormEvent, true)}
           disabled={isSubmitting}
-          style={{
-            padding: '0.625rem 1.25rem',
-            border: '1px solid var(--border-color)',
-            borderRadius: '8px',
-            background: 'white',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: '0.875rem',
-          }}
+          className="admin-btn-secondary"
         >
           Save as Draft
         </button>
@@ -718,7 +716,7 @@ export default function CourseForm({ mode, initialData }: CourseFormProps) {
           type="submit"
           disabled={isSubmitting}
           className="admin-btn-primary"
-          style={{ padding: '0.625rem 1.5rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          style={{ padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}
         >
           {isSubmitting && <span className="admin-spinner" />}
           {mode === 'create' ? 'Create Course' : 'Save Changes'}

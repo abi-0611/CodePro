@@ -46,50 +46,54 @@ try {
 
 <AdminLayout title="Dashboard" activeNav="dashboard">
   <!-- Stats Row -->
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-bottom:2rem">
-    <div class="admin-stat-card">
-      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Total Courses</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--color-primary)">{totalCourses}</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.25rem;margin-bottom:2rem">
+    <div class="admin-stat-card admin-card-lift admin-reveal delay-1">
+      <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600">Total Courses</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2.25rem;font-weight:800;background:linear-gradient(135deg,var(--color-primary),#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent"
+           data-count-to={totalCourses} data-suffix="">0</div>
     </div>
-    <div class="admin-stat-card">
-      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Published</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:#22c55e">{publishedCourses}</div>
+    <div class="admin-stat-card admin-card-lift admin-reveal delay-2">
+      <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600">Published</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2.25rem;font-weight:800;color:#22c55e"
+           data-count-to={publishedCourses} data-suffix="">0</div>
     </div>
-    <div class="admin-stat-card">
-      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Drafts</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:#6b7280">{draftCourses}</div>
+    <div class="admin-stat-card admin-card-lift admin-reveal delay-3">
+      <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600">Drafts</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2.25rem;font-weight:800;color:var(--text-secondary)"
+           data-count-to={draftCourses} data-suffix="">0</div>
     </div>
-    <div class="admin-stat-card">
-      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Content Sections</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--color-primary)">{totalSections}</div>
+    <div class="admin-stat-card admin-card-lift admin-reveal delay-4">
+      <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600">Content Sections</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2.25rem;font-weight:800;background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent"
+           data-count-to={totalSections} data-suffix="">0</div>
     </div>
   </div>
 
   <!-- Quick Actions -->
   <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">Quick Actions</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem">
-    <a href="/admin/dashboard/courses/new" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+    <a href="/admin/dashboard/courses/new" class="admin-card admin-card-lift admin-reveal delay-1" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem">
       <span style="font-size:1.5rem">📚</span>
       <div>
         <div style="font-weight:600;color:var(--text-primary)">Add New Course</div>
         <div style="font-size:0.75rem;color:var(--text-secondary)">Create a new training program</div>
       </div>
     </a>
-    <a href="/admin/dashboard/home-content" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+    <a href="/admin/dashboard/home-content" class="admin-card admin-card-lift admin-reveal delay-2" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem">
       <span style="font-size:1.5rem">🏠</span>
       <div>
         <div style="font-weight:600;color:var(--text-primary)">Edit Homepage</div>
         <div style="font-size:0.75rem;color:var(--text-secondary)">Update hero, stats, and content</div>
       </div>
     </a>
-    <a href="/admin/dashboard/contact" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+    <a href="/admin/dashboard/contact" class="admin-card admin-card-lift admin-reveal delay-3" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem">
       <span style="font-size:1.5rem">📞</span>
       <div>
         <div style="font-weight:600;color:var(--text-primary)">Update Contact Info</div>
         <div style="font-size:0.75rem;color:var(--text-secondary)">Phone, email, social links</div>
       </div>
     </a>
-    <a href="/" target="_blank" rel="noopener" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+    <a href="/" target="_blank" rel="noopener" class="admin-card admin-card-lift admin-reveal delay-4" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem">
       <span style="font-size:1.5rem">🌐</span>
       <div>
         <div style="font-weight:600;color:var(--text-primary)">View Live Site</div>
@@ -102,7 +106,7 @@ try {
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
     <div>
       <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">Recent Activity</h2>
-      <div class="admin-card">
+      <div class="admin-card admin-reveal">
         <div style="display:flex;flex-direction:column;gap:0.75rem">
           <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
             <span style="color:var(--color-primary);font-size:0.75rem">●</span>
@@ -120,7 +124,7 @@ try {
 
     <div>
       <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">Content Health</h2>
-      <div class="admin-card">
+      <div class="admin-card admin-reveal">
         <div style="display:flex;flex-direction:column;gap:0.625rem">
           <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
             <span style={`color:${hasSections.home ? '#22c55e' : '#eab308'}`}>{hasSections.home ? '✓' : '⚠'}</span>
