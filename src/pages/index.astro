@@ -7,7 +7,6 @@ import CourseCard from '../components/CourseCard.astro';
 import CoursesCarousel from '../components/CoursesCarousel.astro';
 import WhyChooseUs from '../components/WhyChooseUs.astro';
 import ProcessSteps from '../components/ProcessSteps.astro';
-import LogoMarquee from '../components/LogoMarquee.astro';
 import TestimonialsGrid from '../components/TestimonialsGrid.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
@@ -77,14 +76,6 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
   <!-- Process Steps -->
   <ProcessSteps />
-
-  <!-- Logo Marquee -->
-  <section class="py-16 border-y border-[var(--color-border-val)] overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <p class="text-center text-sm text-[var(--color-muted-val)] uppercase tracking-widest mb-8 reveal">Industries our graduates work in</p>
-      <LogoMarquee />
-    </div>
-  </section>
 
   <!-- Testimonials -->
   <TestimonialsGrid />
