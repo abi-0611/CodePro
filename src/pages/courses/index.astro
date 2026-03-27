@@ -13,17 +13,19 @@ const categories = ['All', ...Array.from(new Set(sortedCourses.map((course) => c
 <BaseLayout title="Courses | CodePro.io" description="Browse our job-focused courses in development, testing, design, and business tools." >
   <div class="grid-overlay relative overflow-hidden pt-32 pb-12 bg-gradient-to-b from-[var(--page-hero-from-val)] to-[var(--page-hero-to-val)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-      <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">Courses</span>
-      <h1 class="text-4xl md:text-5xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Choose a course that fits your goals</h1>
-      <p class="text-xl text-[var(--color-muted-val)] max-w-2xl mx-auto">
-        Practical, mentor-led training with hands-on projects and clear learning paths — from fundamentals to job-ready skills.
-      </p>
+      <div class="reveal">
+        <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">Courses</span>
+        <h1 class="text-4xl md:text-5xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Choose a course that fits your goals</h1>
+        <p class="text-xl text-[var(--color-muted-val)] max-w-2xl mx-auto">
+          Practical, mentor-led training with hands-on projects and clear learning paths — from fundamentals to job-ready skills.
+        </p>
+      </div>
     </div>
   </div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     {/* Filter Bar */}
-    <div class="flex flex-wrap justify-center gap-3 mb-12" id="course-filters">
+    <div class="flex flex-wrap justify-center gap-3 mb-12 reveal delay-1" id="course-filters">
       {categories.map((category, index) => (
         <button 
           class={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${index === 0 ? 'bg-[var(--color-primary-val)] text-white border-[var(--color-primary-val)]' : 'bg-[var(--color-surface-val)] text-[var(--color-ink-val)] border-[var(--color-border-val)] hover:border-[var(--color-primary-val)]/50'}`}
@@ -36,8 +38,8 @@ const categories = ['All', ...Array.from(new Set(sortedCourses.map((course) => c
     
     {/* Course Grid */}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="course-grid">
-      {sortedCourses.map(course => (
-        <div class="course-item transition-all duration-500" data-category={course.data.category}>
+      {sortedCourses.map((course, i) => (
+        <div class={`course-item transition-all duration-500 reveal delay-${Math.min(5, i + 1)} card-lift`} data-category={course.data.category}>
           <CourseCard 
             title={course.data.title}
             shortDescription={course.data.shortDescription}

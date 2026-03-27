@@ -52,7 +52,7 @@ const links = {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
       
       {/* Col 1 - Brand */}
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 reveal">
         <div class="text-2xl font-bold font-heading text-[var(--footer-heading-val)]">
           {instituteName}
         </div>
@@ -62,22 +62,22 @@ const links = {
         {(instagramUrl || facebookUrl || youtubeUrl || linkedinUrl) && (
           <div class="flex items-center gap-4 mt-2">
             {instagramUrl && (
-              <a href={instagramUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Instagram">
+              <a href={instagramUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors hover:scale-125 transition-transform" aria-label="Instagram">
                 <Instagram class="w-5 h-5" />
               </a>
             )}
             {facebookUrl && (
-              <a href={facebookUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="Facebook">
+              <a href={facebookUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors hover:scale-125 transition-transform" aria-label="Facebook">
                 <Facebook class="w-5 h-5" />
               </a>
             )}
             {youtubeUrl && (
-              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="YouTube">
+              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors hover:scale-125 transition-transform" aria-label="YouTube">
                 <Youtube class="w-5 h-5" />
               </a>
             )}
             {linkedinUrl && (
-              <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors" aria-label="LinkedIn">
+              <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-primary-val)] transition-colors hover:scale-125 transition-transform" aria-label="LinkedIn">
                 <Linkedin class="w-5 h-5" />
               </a>
             )}
@@ -86,7 +86,7 @@ const links = {
       </div>
 
       {/* Col 2 - Corporate Office */}
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 reveal delay-1">
         <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">Contact</h3>
         <ul class="flex flex-col gap-3 text-sm">
           <li class="flex items-start gap-3">
@@ -105,7 +105,7 @@ const links = {
       </div>
 
       {/* Col 3 - For Students */}
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 reveal delay-2">
         <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">Quick links</h3>
         <ul class="flex flex-col gap-2 text-sm">
           <li><a href={links.home} class="hover:text-[var(--color-primary-val)] transition-colors">Home</a></li>
@@ -116,7 +116,7 @@ const links = {
       </div>
 
       {/* Col 4 - For Business */}
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 reveal delay-3">
         <h3 class="text-lg font-semibold text-[var(--footer-heading-val)] font-heading">Programs</h3>
         <ul class="flex flex-col gap-2 text-sm">
           <li><a href={links.courses} class="hover:text-[var(--color-primary-val)] transition-colors">Career programs</a></li>

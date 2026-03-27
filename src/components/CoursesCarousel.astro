@@ -1,0 +1,112 @@
+---
+import CourseCard from './CourseCard.astro';
+import { getCollection } from 'astro:content';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const courses = (await getCollection('courses'))
+  .sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+---
+<div class="relative group/carousel reveal">
+  <button
+    id="carousel-prev"
+    class="hidden md:flex items-center justify-center absolute -left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-[var(--color-border-val)] bg-[var(--color-surface-val)] text-[var(--color-ink-val)] shadow-md opacity-0 group-hover/carousel:opacity-100 transition-opacity"
+    aria-label="Previous courses"
+  >
+    <ChevronLeft className="w-5 h-5" />
+  </button>
+  <button
+    id="carousel-next"
+    class="hidden md:flex items-center justify-center absolute -right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-[var(--color-border-val)] bg-[var(--color-surface-val)] text-[var(--color-ink-val)] shadow-md opacity-0 group-hover/carousel:opacity-100 transition-opacity"
+    aria-label="Next courses"
+  >
+    <ChevronRight className="w-5 h-5" />
+  </button>
+
+  <div
+    id="carousel-track"
+    class="scroll-track pb-6 cursor-grab active:cursor-grabbing"
+  >
+    {courses.map((course) => (
+      <div class="w-[320px] md:w-[360px]">
+        <CourseCard
+          title={course.data.title}
+          shortDescription={course.data.shortDescription}
+          duration={course.data.duration}
+          mode={course.data.mode}
+          level={course.data.level}
+          slug={course.id}
+          badge={course.data.badge}
+          icon={course.data.icon}
+          category={course.data.category}
+        />
+      </div>
+    ))}
+  </div>
+
+  <div id="carousel-dots" class="flex justify-center gap-2 mt-4"></div>
+</div>
+
+<script>
+  const track = /** @type {HTMLElement | null} */ (document.getElementById('carousel-track'));
+  const prevBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('carousel-prev'));
+  const nextBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('carousel-next'));
+  const dotsContainer = /** @type {HTMLElement | null} */ (document.getElementById('carousel-dots'));
+
+  if (!track || !dotsContainer) {
+    // no-op
+  } else {
+    const cardWidth = 360 + 24;
+    const totalCards = track.children.length;
+
+    for (let i = 0; i < totalCards; i++) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'w-2.5 h-2.5 rounded-full bg-[var(--color-border-val)] transition-colors';
+      dot.setAttribute('aria-label', `Go to course ${i + 1}`);
+      dot.addEventListener('click', () => scrollToCard(i));
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateDots() {
+      const idx = Math.round(track.scrollLeft / cardWidth);
+      Array.from(dotsContainer.children).forEach((child, i) => {
+        child.classList.toggle('bg-[var(--color-primary-val)]', i === idx);
+        child.classList.toggle('bg-[var(--color-border-val)]', i !== idx);
+      });
+    }
+
+    function scrollToCard(idx) {
+      track.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
+    }
+
+    prevBtn?.addEventListener('click', () => {
+      const idx = Math.max(0, Math.round(track.scrollLeft / cardWidth) - 1);
+      scrollToCard(idx);
+    });
+    nextBtn?.addEventListener('click', () => {
+      const idx = Math.min(totalCards - 1, Math.round(track.scrollLeft / cardWidth) + 1);
+      scrollToCard(idx);
+    });
+
+    track.addEventListener('scroll', updateDots, { passive: true });
+    updateDots();
+
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    track.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX;
+      scrollLeft = track.scrollLeft;
+    });
+    track.addEventListener('mouseleave', () => { isDown = false; });
+    track.addEventListener('mouseup', () => { isDown = false; });
+    track.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX;
+      track.scrollLeft = scrollLeft - (x - startX) * 1.5;
+    });
+  }
+</script>

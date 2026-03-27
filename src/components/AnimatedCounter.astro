@@ -1,0 +1,61 @@
+---
+interface Props {
+  value: number;
+  suffix?: string;
+  duration?: number;
+}
+
+const { value, suffix = '', duration = 2000 } = Astro.props;
+---
+<span class="counter-val" data-target={value} data-duration={duration} data-suffix={suffix}>0{suffix}</span>
+
+<script>
+  if (window.__codeproAnimatedCounterInit) {
+    // already initialized
+  } else {
+    window.__codeproAnimatedCounterInit = true;
+
+    const counters = document.querySelectorAll('.counter-val');
+
+    const animateCounter = (el) => {
+    const target = Number(el.getAttribute('data-target') || 0);
+    const duration = Number(el.getAttribute('data-duration') || 2000);
+    const suffix = el.getAttribute('data-suffix') || '';
+
+    if (!Number.isFinite(target) || target <= 0 || !Number.isFinite(duration) || duration <= 0) {
+      el.textContent = `${target}${suffix}`;
+      return;
+    }
+
+    const start = performance.now();
+    const from = 0;
+
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = Math.round(from + (target - from) * eased);
+      el.textContent = `${val}${suffix}`;
+      if (t < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  };
+
+    const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        if (!(el instanceof HTMLElement)) return;
+        if (el.dataset.animated === 'true') return;
+        el.dataset.animated = 'true';
+        animateCounter(el);
+        obs.unobserve(el);
+      });
+    },
+    { threshold: 0.3 }
+  );
+
+    counters.forEach((c) => obs.observe(c));
+  }
+</script>

@@ -7,6 +7,7 @@ import Footer from '../components/Footer.astro';
 import NotificationBanner from '../components/NotificationBanner.astro';
 import FloatingEnquiryButton from '../components/FloatingEnquiryButton.astro';
 import ScrollToTop from '../components/ScrollToTop.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
 import {
   ADDRESS_PLACEHOLDER,
   CONTACT_PHONE,
@@ -71,6 +72,11 @@ const jsonLd = {
     <link rel="apple-touch-icon" href={`${baseUrl}logo.png`} />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Resource hints -->
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <meta name="theme-color" content="#b45309" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#92400e" media="(prefers-color-scheme: dark)" />
+
     <!-- Font Preloads -->
     <link rel="preload" href={spaceGroteskLatin400} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={spaceGroteskLatin700} as="font" type="font/woff2" crossorigin />
@@ -124,6 +130,22 @@ const jsonLd = {
     </script>
   </head>
   <body class="antialiased min-h-screen flex flex-col relative">
+    <div id="page-loader" class="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--color-paper-val)] transition-opacity duration-500">
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-12 h-12 rounded-full border-4 border-[var(--color-border-val)] border-t-[var(--color-primary-val)] animate-spin"></div>
+        <span class="text-sm font-medium text-[var(--color-muted-val)]">Loading...</span>
+      </div>
+    </div>
+    <script is:inline>
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('page-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.remove(), 500);
+        }
+      });
+    </script>
+
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-[var(--color-primary-val)] text-white px-4 py-2 z-[60] rounded-md outline-none">
       Skip to content
     </a>
@@ -137,6 +159,7 @@ const jsonLd = {
     
     <FloatingEnquiryButton />
     <ScrollToTop />
+    <ScrollReveal />
 
     <script is:inline>
       (() => {

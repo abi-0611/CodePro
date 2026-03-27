@@ -1,0 +1,47 @@
+---
+const { faqs, title = 'Frequently Asked Questions' } = Astro.props;
+
+const defaultFaqs = [
+  { q: 'What makes CodePro.io different from other institutes?', a: 'We focus on practical, project-based learning with mentor-led sessions. Every course ends with a real portfolio project, and we provide placement support including mock interviews.' },
+  { q: 'Do I need prior coding experience?', a: 'Not always. Many courses start from fundamentals. Check the course level on the course page, and we’ll guide you to the right path.' },
+  { q: 'Do you provide certificates?', a: 'Yes. You receive a course completion certificate after finishing the program requirements.' },
+  { q: 'How does placement support work?', a: 'After completion, we help with resume building, LinkedIn optimisation, mock interviews, and guidance for interviews. Results depend on your effort and market conditions.' },
+];
+
+const items = (faqs && faqs.length) ? faqs : defaultFaqs;
+---
+<section class="py-20 bg-[var(--color-surface-alt-val)] border-t border-[var(--color-border-val)]">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="reveal">
+      <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)]">{title}</h2>
+      <p class="mt-3 text-[var(--color-muted-val)]">Quick answers to common questions about our training and process.</p>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-4">
+      {items.map((item, i) => (
+        <div class={`card p-5 reveal delay-${Math.min(5, i + 1)}`}>
+          <button class="faq-trigger w-full text-left flex items-center justify-between gap-4" aria-expanded="false">
+            <span class="font-semibold text-[var(--color-ink-val)]">{item.q}</span>
+            <span class="text-[var(--color-primary-val)]" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-panel hidden mt-3 text-sm text-[var(--color-muted-val)]">
+            {item.a}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.faq-trigger').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const btn = trigger;
+      const card = btn.closest('.card');
+      const panel = card?.querySelector('.faq-panel');
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      if (panel) panel.classList.toggle('hidden', expanded);
+    });
+  });
+</script>

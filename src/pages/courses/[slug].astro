@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Badge from '../../components/Badge.astro';
 import CourseCard from '../../components/CourseCard.astro';
 import EnquiryForm from '../../components/EnquiryForm.astro';
+import StickyCtaBar from '../../components/StickyCtaBar.astro';
 import BreadcrumbNav from '../../components/BreadcrumbNav.astro';
 import PlaceholderImage from '../../components/PlaceholderImage.astro';
 import { Clock, MonitorPlay, BarChart, ChevronRight, CheckCircle2, Briefcase, Target, PhoneCall, ChevronDown } from 'lucide-react';
@@ -99,7 +100,7 @@ const breadcrumbItems = [
 
         {/* Right: Sticky Enrollment Card (Desktop) */}
         <div class="lg:col-span-1 relative">
-          <div class="card p-8 lg:absolute lg:top-0 lg:w-full lg:shadow-2xl border-t-4 border-t-[var(--color-primary)] z-20">
+          <div class="card p-8 lg:absolute lg:top-0 lg:w-full lg:shadow-2xl border-t-4 border-t-[var(--color-primary)] z-20 card-lift">
             <div class="text-4xl font-bold text-[var(--color-ink)] mb-6 font-heading">
               {course.data.price}
             </div>
@@ -141,11 +142,11 @@ const breadcrumbItems = [
       <div class="lg:col-span-2 flex flex-col gap-16">
         
         {/* 2. COURSE HIGHLIGHTS */}
-        <section>
+        <section class="reveal">
           <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">What you’ll get</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {highlights.map(highlight => (
-              <div class="flex items-center gap-3 p-4 rounded-xl bg-[var(--color-surface-alt)] border border-[var(--color-border)]">
+            {highlights.map((highlight, i) => (
+              <div class={`flex items-center gap-3 p-4 rounded-xl bg-[var(--color-surface-alt)] border border-[var(--color-border)] reveal delay-${Math.min(5, i + 1)}`}>
                 <highlight.icon class="w-6 h-6 text-[var(--color-primary)] shrink-0" />
                 <span class="font-medium text-[var(--color-ink)]">{highlight.text}</span>
               </div>
@@ -154,7 +155,7 @@ const breadcrumbItems = [
         </section>
 
         {/* 3. CURRICULUM SECTION */}
-        <section id="curriculum">
+        <section id="curriculum" class="reveal">
           <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">Curriculum</h2>
           <div class="flex flex-col gap-4 mb-8">
             {course.data.curriculum.map((module, index) => (
@@ -184,12 +185,12 @@ const breadcrumbItems = [
         </section>
 
         {/* 4. COURSE CONTENT (MDX) */}
-        <section class="prose prose-lg dark:prose-invert max-w-none prose-headings:font-heading prose-a:text-[var(--color-primary)]">
+        <section class="prose prose-lg dark:prose-invert max-w-none prose-headings:font-heading prose-a:text-[var(--color-primary)] reveal">
           <Content />
         </section>
 
         {/* 5. TRAINER SECTION */}
-        <section>
+        <section class="reveal">
           <h2 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Your Instructor</h2>
           <div class="card p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden shrink-0">
@@ -210,7 +211,7 @@ const breadcrumbItems = [
         </section>
 
         {/* 6. FAQ SECTION */}
-        <section>
+        <section class="reveal">
           <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">FAQs</h2>
           <div class="flex flex-col gap-4">
             {faqs.map((faq) => (
@@ -238,7 +239,7 @@ const breadcrumbItems = [
   </div>
 
   {/* 7. RELATED COURSES */}
-  <section class="py-16 bg-[var(--color-surface-alt)] border-t border-[var(--color-border)]">
+  <section class="py-16 bg-[var(--color-surface-alt)] border-t border-[var(--color-border)] reveal">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-10">Related courses</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -260,7 +261,7 @@ const breadcrumbItems = [
   </section>
 
   {/* Hidden Enquiry Form Target for smooth scroll */}
-  <div id="enquiry-form-section" class="py-16">
+  <div id="enquiry-form-section" class="py-16 reveal">
     <div class="max-w-3xl mx-auto px-4">
       <div class="card p-8">
         <h2 class="text-3xl font-bold font-heading text-[var(--color-ink)] mb-2 text-center">Enquire about this course</h2>
@@ -270,35 +271,37 @@ const breadcrumbItems = [
     </div>
   </div>
 
-</BaseLayout>
+  <StickyCtaBar courseName={course.data.title} />
 
-<script>
-  // Accordion Logic
-  const accordionHeaders = document.querySelectorAll('.accordion-header');
-  
-  accordionHeaders.forEach(header => {
-    header.addEventListener('click', () => {
-      const content = /** @type {HTMLElement} */ (header.nextElementSibling);
-      const icon = header.querySelector('.accordion-icon');
-      
-      // Close all other accordions
-      accordionHeaders.forEach(otherHeader => {
-        if (otherHeader !== header) {
-          const otherContent = /** @type {HTMLElement} */ (otherHeader.nextElementSibling);
-          const otherIcon = otherHeader.querySelector('.accordion-icon');
-          otherContent.style.maxHeight = '0px';
-          if(otherIcon) otherIcon.classList.remove('rotate-180');
+  <script>
+    // Accordion Logic
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    
+    accordionHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const content = /** @type {HTMLElement} */ (header.nextElementSibling);
+        const icon = header.querySelector('.accordion-icon');
+        
+        // Close all other accordions
+        accordionHeaders.forEach(otherHeader => {
+          if (otherHeader !== header) {
+            const otherContent = /** @type {HTMLElement} */ (otherHeader.nextElementSibling);
+            const otherIcon = otherHeader.querySelector('.accordion-icon');
+            otherContent.style.maxHeight = '0px';
+            if(otherIcon) otherIcon.classList.remove('rotate-180');
+          }
+        });
+
+        // Toggle current
+        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+          content.style.maxHeight = '0px';
+          if(icon) icon.classList.remove('rotate-180');
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          if(icon) icon.classList.add('rotate-180');
         }
       });
-
-      // Toggle current
-      if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-        content.style.maxHeight = '0px';
-        if(icon) icon.classList.remove('rotate-180');
-      } else {
-        content.style.maxHeight = content.scrollHeight + 'px';
-        if(icon) icon.classList.add('rotate-180');
-      }
     });
-  });
-</script>
+  </script>
+
+</BaseLayout>

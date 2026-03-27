@@ -1,0 +1,38 @@
+---
+import SectionHeader from './SectionHeader.astro';
+
+const testimonials = [
+  { name: 'Learner A.', role: 'Frontend Track', company: 'Chennai', text: 'Sessions were structured and practical. Mentor feedback on my code made a huge difference.', rating: 5 },
+  { name: 'Learner B.', role: 'Python Track', company: 'Chennai', text: 'The projects helped me understand concepts deeply. I feel confident building real apps now.', rating: 5 },
+  { name: 'Learner C.', role: 'Testing Track', company: 'Chennai', text: 'Clear explanations, lots of practice, and interview-focused guidance. Great learning pace.', rating: 5 },
+  { name: 'Learner D.', role: 'Tally Prime', company: 'Chennai', text: 'Very practical sessions with real scenarios. I learned reports and GST workflows well.', rating: 5 },
+  { name: 'Learner E.', role: 'Full Stack', company: 'Chennai', text: 'The roadmap kept me consistent. Building a portfolio project was the best part.', rating: 5 },
+  { name: 'Learner F.', role: 'Java Track', company: 'Chennai', text: 'Strong fundamentals + hands-on practice. The mock interviews were really helpful.', rating: 5 },
+];
+---
+<section class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="reveal">
+      <SectionHeader
+        eyebrow="Testimonials"
+        title="Learners who’ve leveled up with us"
+        description="Real outcomes come from consistent practice. Here’s what learners say about the experience."
+      />
+    </div>
+
+    <div class="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-6">
+      {testimonials.map((t, i) => (
+        <div class={`card p-6 mb-6 break-inside-avoid card-lift reveal delay-${Math.min(5, i + 1)}`}>
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="font-bold text-[var(--color-ink-val)]">{t.name}</div>
+              <div class="text-xs text-[var(--color-muted-val)]">{t.role} • {t.company}</div>
+            </div>
+            <div class="text-sm text-[var(--color-primary-val)]">{'★'.repeat(t.rating)}</div>
+          </div>
+          <p class="text-sm text-[var(--color-muted-val)]">{t.text}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

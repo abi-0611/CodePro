@@ -1,5 +1,4 @@
 ---
-import { Rocket, Menu, X } from 'lucide-react';
 import { INSTITUTE_NAME, CONTACT_PHONE } from '../utils/consts';
 import ThemeToggle from './ThemeToggle.astro';
 
@@ -23,6 +22,7 @@ const logoSrc = withBase('logo.png');
 ---
 
 <header id="main-header" class="fixed top-[var(--banner-offset)] left-0 right-0 z-50 transition-all duration-300 bg-[var(--color-surface-val)]/80 backdrop-blur-md border-b border-[var(--color-border-val)]">
+  <div id="scroll-progress" class="h-[3px] bg-gradient-to-r from-[var(--color-primary-val)] to-amber-400 fixed top-[var(--banner-offset)] left-0 z-[51] transition-none" style="width: 0%"></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
     
     {/* Logo */}
@@ -57,9 +57,15 @@ const logoSrc = withBase('logo.png');
     {/* Mobile Menu Toggle */}
     <div class="flex items-center gap-4 md:hidden">
       <ThemeToggle />
-      <button id="mobile-menu-btn" class="p-2 text-[var(--color-ink-val)]" aria-label="Toggle menu">
-        <Menu className="w-6 h-6" id="menu-icon" />
-        <X className="w-6 h-6 hidden" id="close-icon" />
+      <button 
+        id="mobile-menu-btn"
+        class="flex flex-col justify-center items-center gap-1.5 w-10 h-10 md:hidden rounded-lg hover:bg-[var(--color-surface-alt-val)] transition-colors p-2"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        <span class="ham-line" id="ham-1"></span>
+        <span class="ham-line" id="ham-2"></span>
+        <span class="ham-line" id="ham-3"></span>
       </button>
     </div>
   </div>
@@ -91,22 +97,45 @@ const logoSrc = withBase('logo.png');
   const header = document.getElementById('main-header');
   const mobileBtn = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
-  const menuIcon = document.getElementById('menu-icon');
-  const closeIcon = document.getElementById('close-icon');
+  const ham1 = document.getElementById('ham-1');
+  const ham2 = document.getElementById('ham-2');
+  const ham3 = document.getElementById('ham-3');
+  const progressBar = document.getElementById('scroll-progress');
 
-  // Scroll effect
+  // Scroll effect + progress bar
   window.addEventListener('scroll', () => {
     if (window.scrollY > 80) {
       header?.classList.add('shadow-md');
     } else {
       header?.classList.remove('shadow-md');
     }
-  });
+
+    if (progressBar) {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+      progressBar.style.width = `${progress}%`;
+    }
+  }, { passive: true });
 
   // Mobile menu toggle
   mobileBtn?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('hidden');
-    menuIcon?.classList.toggle('hidden');
-    closeIcon?.classList.toggle('hidden');
+    const isOpen = !mobileMenu?.classList.contains('hidden');
+    if (!mobileMenu) return;
+
+    mobileMenu.classList.toggle('hidden');
+    mobileBtn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+
+    if (ham1 && ham2 && ham3) {
+      if (!isOpen) {
+        ham1.style.transform = 'translateY(5.5px) rotate(45deg)';
+        ham2.style.opacity = '0';
+        ham3.style.transform = 'translateY(-5.5px) rotate(-45deg)';
+      } else {
+        ham1.style.transform = '';
+        ham2.style.opacity = '1';
+        ham3.style.transform = '';
+      }
+    }
   });
 </script>

@@ -17,9 +17,14 @@ const { title, shortDescription, duration, mode, level, slug, badge, icon, categ
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+
+const durationNumber = typeof duration === 'string' ? Number.parseInt(duration, 10) : Number.NaN;
+const durationScale = Number.isFinite(durationNumber)
+  ? Math.min(1, Math.max(0.25, durationNumber / 12))
+  : 0.66;
 ---
-<a href={slug ? `${baseUrl}courses/${slug}/` : '#'} class="block group h-full course-card" data-category={category}>
-  <div class="card p-6 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-primary)]/30 relative overflow-hidden border-t-4 border-t-[var(--color-primary)]">
+<a href={slug ? `${baseUrl}courses/${slug}/` : '#'} class="block group h-full course-card card-lift" data-category={category}>
+  <div class="card p-6 h-full flex flex-col relative overflow-hidden border-t-4 border-t-[var(--color-primary)]">
 
     {icon && (
       <div class="text-4xl mb-2">{icon}</div>
@@ -46,6 +51,14 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
     <div class="mt-auto pt-4 border-t border-[var(--color-border)] flex items-center text-[var(--color-primary)] font-medium text-sm group-hover:underline underline-offset-4">
       Know More <span class="ml-1 transition-transform group-hover:translate-x-1">→</span>
+    </div>
+
+    <div class="absolute bottom-0 left-0 right-0 h-1 bg-[var(--color-border-val)] rounded-b-[var(--radius-card)]">
+      <div
+        class="h-full rounded-b-[var(--radius-card)] skill-bar-fill"
+        style={`--target-scale: ${durationScale};`}
+        aria-hidden="true"
+      ></div>
     </div>
   </div>
 </a>

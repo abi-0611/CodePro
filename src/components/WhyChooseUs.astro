@@ -1,0 +1,92 @@
+---
+import SectionHeader from './SectionHeader.astro';
+
+const tabs = [
+  {
+    key: 'mentorship',
+    label: 'Mentorship',
+    title: 'Learn with real guidance',
+    desc: 'Mentor-led sessions with feedback on your code and projects so you don’t get stuck.'
+  },
+  {
+    key: 'projects',
+    label: 'Projects',
+    title: 'Build a portfolio, not just notes',
+    desc: 'Every program includes hands-on practice and a portfolio project you can show recruiters.'
+  },
+  {
+    key: 'placements',
+    label: 'Placement Support',
+    title: 'Get job-ready support',
+    desc: 'Resume help, mock interviews, and guidance to apply confidently.'
+  },
+  {
+    key: 'flexible',
+    label: 'Flexible Learning',
+    title: 'Online, offline, or hybrid',
+    desc: 'Pick the mode that fits your schedule and stay consistent with a structured plan.'
+  },
+];
+---
+<section class="py-24 bg-[var(--color-surface-alt-val)] border-y border-[var(--color-border-val)]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="reveal">
+      <SectionHeader
+        eyebrow="Why choose us"
+        title="A training experience designed for outcomes"
+        description="Strong fundamentals, practical projects, and consistent mentorship to help you build skills that employers value."
+      />
+    </div>
+
+    <div class="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div class="lg:col-span-4 reveal delay-1">
+        <div class="card p-5">
+          <div class="flex lg:flex-col gap-3 lg:gap-4">
+            {tabs.map((t, i) => (
+              <button
+                type="button"
+                class={`tab-btn text-sm font-semibold px-4 py-3 rounded-xl border border-[var(--color-border-val)] bg-[var(--color-surface-val)] text-[var(--color-muted-val)] hover:text-[var(--color-ink-val)] ${i === 0 ? 'active' : ''}`}
+                data-tab={t.key}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-8 reveal delay-2">
+        <div id="tab-panel" class="card p-8 card-lift">
+          <h3 id="tab-title" class="text-2xl font-bold font-heading text-[var(--color-ink-val)]">{tabs[0].title}</h3>
+          <p id="tab-desc" class="mt-3 text-[var(--color-muted-val)]">{tabs[0].desc}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const tabBtns = document.querySelectorAll('.tab-btn[data-tab]');
+  const titleEl = document.getElementById('tab-title');
+  const descEl = document.getElementById('tab-desc');
+
+  const data = {
+    mentorship: { title: 'Learn with real guidance', desc: 'Mentor-led sessions with feedback on your code and projects so you don\'t get stuck.' },
+    projects: { title: 'Build a portfolio, not just notes', desc: 'Every program includes hands-on practice and a portfolio project you can show recruiters.' },
+    placements: { title: 'Get job-ready support', desc: 'Resume help, mock interviews, and guidance to apply confidently.' },
+    flexible: { title: 'Online, offline, or hybrid', desc: 'Pick the mode that fits your schedule and stay consistent with a structured plan.' },
+  };
+
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const key = btn.getAttribute('data-tab');
+      if (!key) return;
+      const item = data[key];
+      if (!item) return;
+      if (titleEl) titleEl.textContent = item.title;
+      if (descEl) descEl.textContent = item.desc;
+    });
+  });
+</script>

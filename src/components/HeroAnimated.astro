@@ -1,0 +1,89 @@
+---
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const stats = [
+  { value: '500+', label: 'Students Trained' },
+  { value: '8+', label: 'Expert Courses' },
+  { value: '95%', label: 'Satisfaction Rate' },
+  { value: '100%', label: 'Placement Support' },
+];
+
+const techBadges = ['React', 'Python', 'Java', 'Angular', 'Full Stack', 'Testing', 'Tally', 'Web Design'];
+---
+<section class="noise-overlay relative min-h-[92vh] flex items-center overflow-hidden bg-gradient-to-br from-[var(--hero-gradient-from-val)] via-[var(--color-surface-val)] to-[var(--hero-gradient-to-val)] pt-24 pb-16">
+  <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] opacity-20 bg-amber-400 -translate-y-1/3 translate-x-1/3 float-anim-slow"></div>
+    <div class="absolute bottom-0 left-0 w-[520px] h-[520px] rounded-full blur-[120px] opacity-15 bg-blue-500 translate-y-1/3 -translate-x-1/3 float-anim-offset"></div>
+    <div class="absolute top-1/2 left-1/2 w-[300px] h-[300px] rounded-full blur-[80px] opacity-10 bg-[var(--color-primary-val)] -translate-x-1/2 -translate-y-1/2 float-anim"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border-val)] bg-[var(--glass-bg-val)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-primary-val)] animate-pulse" aria-hidden="true"></span>
+          <span class="text-xs font-semibold tracking-widest text-[var(--color-muted-val)] uppercase">Job-focused training</span>
+        </div>
+
+        <h1 class="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-[var(--color-ink-val)] leading-[1.05]">
+          Become <span class="gradient-text">job-ready</span> with mentor-led tech programs
+        </h1>
+
+        <p class="mt-6 text-lg text-[var(--color-muted-val)] max-w-xl">
+          Hands-on sessions, structured curriculum, and portfolio projects — built to help you learn faster and perform confidently in interviews.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+          <a href={`${baseUrl}courses/`} class="button primary button-shimmer">Explore Courses</a>
+          <a href="#home-courses" class="button secondary">View Highlights</a>
+        </div>
+
+        <div class="mt-10 flex flex-wrap gap-2">
+          {techBadges.map((t) => (
+            <span class="px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-border-val)] bg-[var(--color-surface-val)] text-[var(--color-muted-val)]">{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <div class="hidden lg:flex flex-col gap-6 reveal delay-2">
+        <div class="glass rounded-[var(--radius-card)] p-8">
+          <div class="grid grid-cols-2 gap-6">
+            {stats.map((s, i) => (
+              <div class={`p-5 rounded-2xl border border-[var(--color-border-val)] bg-[var(--color-surface-val)]/60 backdrop-blur-md ${i % 2 === 0 ? 'reveal-scale delay-1' : 'reveal-scale delay-2'}`}>
+                <div class="text-3xl font-extrabold font-heading text-[var(--color-ink-val)]">{s.value}</div>
+                <div class="mt-1 text-xs font-semibold tracking-widest uppercase text-[var(--color-muted-val)]">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="glass rounded-[var(--radius-card)] p-8">
+          <div class="text-sm font-semibold text-[var(--color-ink-val)]">What you get</div>
+          <ul class="mt-4 space-y-3 text-sm text-[var(--color-muted-val)]">
+            <li class="flex gap-2"><span class="text-[var(--color-primary-val)]">✓</span> Mentor-led classes</li>
+            <li class="flex gap-2"><span class="text-[var(--color-primary-val)]">✓</span> Hands-on assignments</li>
+            <li class="flex gap-2"><span class="text-[var(--color-primary-val)]">✓</span> Portfolio project</li>
+            <li class="flex gap-2"><span class="text-[var(--color-primary-val)]">✓</span> Placement support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
+      const a = anchor;
+      const href = a.getAttribute('href');
+      if (!href) return;
+      if (href.length < 2) return;
+      const el = document.querySelector(href);
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
