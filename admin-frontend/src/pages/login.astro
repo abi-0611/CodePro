@@ -1,0 +1,360 @@
+---
+import { isAuthenticated } from '../lib/auth';
+
+if (isAuthenticated(Astro.cookies)) {
+  return Astro.redirect('/admin/dashboard');
+}
+
+const errorParam = Astro.url.searchParams.get('error') || '';
+const redirectParam = Astro.url.searchParams.get('redirect') || '/admin/dashboard';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Login — CodePro Admin</title>
+    <link rel="stylesheet" href="/admin/src/styles/admin.css" />
+    <style>
+      .login-page {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      @media (max-width: 768px) {
+        .login-page { grid-template-columns: 1fr; }
+        .login-left { display: none; }
+      }
+
+      .login-left {
+        background: linear-gradient(135deg, #b45309, #92400e);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 3rem;
+        color: white;
+      }
+      .login-left::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/></svg>');
+        pointer-events: none;
+      }
+
+      .login-left-content {
+        position: relative;
+        text-align: center;
+        z-index: 1;
+      }
+      .login-left-logo {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      .login-left-tagline {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 3rem;
+      }
+      .login-float-cards {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .login-float-card {
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .login-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: var(--bg-page);
+      }
+      .login-card {
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-card);
+        border: 1px solid var(--border-color);
+        padding: 2.5rem;
+      }
+      .login-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+      .login-subtitle {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+      }
+
+      .login-field {
+        margin-bottom: 1.25rem;
+      }
+      .login-field label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-bottom: 0.35rem;
+        color: var(--text-primary);
+      }
+      .login-field .input-wrap {
+        position: relative;
+      }
+      .login-field .input-wrap .icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.9rem;
+        opacity: 0.5;
+      }
+      .login-field input {
+        width: 100%;
+        padding: 0.625rem 0.875rem 0.625rem 2.25rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-input);
+        font-size: 0.875rem;
+        background: white;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        box-sizing: border-box;
+      }
+      .login-field input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12);
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: background 0.15s;
+      }
+      .login-btn:hover { background: var(--color-primary-dark); }
+      .login-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+      .login-error {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        color: #dc2626;
+        font-size: 0.8rem;
+        display: none;
+      }
+      .login-error.visible { display: block; }
+
+      .login-footer {
+        margin-top: 2rem;
+        text-align: center;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.8rem;
+        opacity: 0.5;
+      }
+
+      .remember-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+      }
+      .remember-row input[type="checkbox"] {
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--color-primary);
+        cursor: pointer;
+      }
+      .remember-row label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-8px); }
+        40%, 80% { transform: translateX(8px); }
+      }
+      .shake { animation: shake 0.4s ease; }
+    </style>
+  </head>
+  <body>
+    <div class="login-page">
+      <div class="login-left">
+        <div class="login-left-content">
+          <div class="login-left-logo">⚡ CodePro.io</div>
+          <div class="login-left-tagline">Admin Control Center</div>
+          <div class="login-float-cards">
+            <div class="login-float-card">📚 8 Courses</div>
+            <div class="login-float-card">🔄 Live Updates</div>
+            <div class="login-float-card">🔒 Secure CMS</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-right">
+        <div class="login-card" id="login-card">
+          <h1 class="login-title">Welcome back</h1>
+          <p class="login-subtitle">Sign in to manage your content</p>
+
+          <form id="login-form" autocomplete="on">
+            <div class="login-field">
+              <label for="username">Username</label>
+              <div class="input-wrap">
+                <span class="icon">👤</span>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  autocomplete="username"
+                  placeholder="Enter your username"
+                  required
+                  minlength="3"
+                />
+              </div>
+            </div>
+
+            <div class="login-field">
+              <label for="password">Password</label>
+              <div class="input-wrap">
+                <span class="icon">🔒</span>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  autocomplete="current-password"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button type="button" class="toggle-password" id="toggle-pw" aria-label="Toggle password visibility">
+                  👁
+                </button>
+              </div>
+            </div>
+
+            <div class="remember-row">
+              <input type="checkbox" id="remember" name="remember" />
+              <label for="remember">Remember me for 7 days</label>
+            </div>
+
+            <button type="submit" class="login-btn" id="login-btn">
+              Sign In
+            </button>
+
+            <div class="login-error" id="login-error"></div>
+          </form>
+
+          <div class="login-footer">CodePro.io Admin &bull; v1.0</div>
+        </div>
+      </div>
+    </div>
+
+    <script define:vars={{ errorParam, redirectParam }}>
+      const form = document.getElementById('login-form');
+      const btn = document.getElementById('login-btn');
+      const errorEl = document.getElementById('login-error');
+      const card = document.getElementById('login-card');
+      const togglePw = document.getElementById('toggle-pw');
+      const pwInput = document.getElementById('password');
+
+      // Show initial error from query param
+      if (errorParam) {
+        errorEl.textContent = errorParam;
+        errorEl.classList.add('visible');
+      }
+
+      // Toggle password visibility
+      togglePw?.addEventListener('click', () => {
+        const type = pwInput.type === 'password' ? 'text' : 'password';
+        pwInput.type = type;
+        togglePw.textContent = type === 'password' ? '👁' : '🙈';
+      });
+
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = form.username.value.trim();
+        const password = form.password.value;
+        const remember = document.getElementById('remember')?.checked || false;
+
+        if (username.length < 3) {
+          showError('Username must be at least 3 characters');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="admin-spinner"></span> Signing in…';
+        errorEl.classList.remove('visible');
+
+        try {
+          const res = await fetch('/admin/api/admin-auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, remember }),
+          });
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            window.location.href = redirectParam || '/admin/dashboard';
+          } else {
+            showError(data.error || 'Invalid credentials');
+            form.password.value = '';
+            card.classList.add('shake');
+            setTimeout(() => card.classList.remove('shake'), 400);
+          }
+        } catch {
+          showError('Network error. Please try again.');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = 'Sign In';
+        }
+      });
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.add('visible');
+      }
+    </script>
+  </body>
+</html>

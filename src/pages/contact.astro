@@ -4,19 +4,9 @@ import SectionHeader from '../components/SectionHeader.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
 import { MapPin, Phone, Mail, Instagram, Facebook, Youtube, Linkedin, Calendar, Download, MessageCircle } from 'lucide-react';
-import {
-  ADDRESS_PLACEHOLDER,
-  CONTACT_PHONE,
-  CONTACT_EMAIL,
-  GOOGLE_MAPS_URL,
-  SOCIAL_INSTAGRAM_URL,
-  SOCIAL_FACEBOOK_URL,
-  SOCIAL_YOUTUBE_URL,
-  SOCIAL_LINKEDIN_URL,
-  WORKING_HOURS,
-  BROCHURE_PDF_URL,
-  WHATSAPP_URL,
-} from '../utils/consts';
+import { getLiveConsts } from '../utils/consts';
+
+const lc = await getLiveConsts();
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -25,19 +15,19 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 const isUsableUrl = (value: unknown) =>
   typeof value === 'string' && /^https?:\/\//.test(value.trim());
 
-const phone = typeof CONTACT_PHONE === 'string' && CONTACT_PHONE.trim() ? CONTACT_PHONE : null;
-const email = typeof CONTACT_EMAIL === 'string' && CONTACT_EMAIL.trim() ? CONTACT_EMAIL : null;
-const address = typeof ADDRESS_PLACEHOLDER === 'string' && ADDRESS_PLACEHOLDER.trim() ? ADDRESS_PLACEHOLDER : null;
+const phone = typeof lc.CONTACT_PHONE === 'string' && lc.CONTACT_PHONE.trim() ? lc.CONTACT_PHONE : null;
+const email = typeof lc.CONTACT_EMAIL === 'string' && lc.CONTACT_EMAIL.trim() ? lc.CONTACT_EMAIL : null;
+const address = typeof lc.ADDRESS_PLACEHOLDER === 'string' && lc.ADDRESS_PLACEHOLDER.trim() ? lc.ADDRESS_PLACEHOLDER : null;
 
-const mapsUrl = isUsableUrl(GOOGLE_MAPS_URL) ? GOOGLE_MAPS_URL : null;
-const brochureUrl = isUsableUrl(BROCHURE_PDF_URL) ? BROCHURE_PDF_URL : null;
-const whatsappUrl = isUsableUrl(WHATSAPP_URL) ? WHATSAPP_URL : null;
+const mapsUrl = isUsableUrl(lc.GOOGLE_MAPS_URL) ? lc.GOOGLE_MAPS_URL : null;
+const brochureUrl = isUsableUrl(lc.BROCHURE_PDF_URL) ? lc.BROCHURE_PDF_URL : null;
+const whatsappUrl = isUsableUrl(lc.WHATSAPP_URL) ? lc.WHATSAPP_URL : null;
 
 const socials = [
-  { label: 'Instagram', icon: Instagram, href: isUsableUrl(SOCIAL_INSTAGRAM_URL) ? SOCIAL_INSTAGRAM_URL : null },
-  { label: 'Facebook', icon: Facebook, href: isUsableUrl(SOCIAL_FACEBOOK_URL) ? SOCIAL_FACEBOOK_URL : null },
-  { label: 'YouTube', icon: Youtube, href: isUsableUrl(SOCIAL_YOUTUBE_URL) ? SOCIAL_YOUTUBE_URL : null },
-  { label: 'LinkedIn', icon: Linkedin, href: isUsableUrl(SOCIAL_LINKEDIN_URL) ? SOCIAL_LINKEDIN_URL : null },
+  { label: 'Instagram', icon: Instagram, href: isUsableUrl(lc.SOCIAL_INSTAGRAM_URL) ? lc.SOCIAL_INSTAGRAM_URL : null },
+  { label: 'Facebook', icon: Facebook, href: isUsableUrl(lc.SOCIAL_FACEBOOK_URL) ? lc.SOCIAL_FACEBOOK_URL : null },
+  { label: 'YouTube', icon: Youtube, href: isUsableUrl(lc.SOCIAL_YOUTUBE_URL) ? lc.SOCIAL_YOUTUBE_URL : null },
+  { label: 'LinkedIn', icon: Linkedin, href: isUsableUrl(lc.SOCIAL_LINKEDIN_URL) ? lc.SOCIAL_LINKEDIN_URL : null },
 ].filter((s) => s.href);
 ---
 
@@ -102,7 +92,7 @@ const socials = [
 
           <div class="card p-6 reveal">
             <h4 class="font-bold text-[var(--color-ink-val)] mb-2">Working hours</h4>
-            <p class="text-[var(--color-muted-val)]">{WORKING_HOURS || 'Contact us to confirm batch timings and availability.'}</p>
+            <p class="text-[var(--color-muted-val)]">{lc.WORKING_HOURS || 'Contact us to confirm batch timings and availability.'}</p>
           </div>
         </div>
 

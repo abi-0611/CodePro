@@ -1,0 +1,528 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+
+let courses: any[] = [];
+let total = 0;
+let error = '';
+
+try {
+  const res = await fetch(`${API_BASE}/api/courses/?limit=100`);
+  if (res.ok) {
+    const data = await res.json();
+    courses = data.courses || [];
+    total = data.total || 0;
+  }
+} catch {
+  error = 'Failed to load courses from API';
+}
+
+const published = courses.filter((c: any) => c.is_published).length;
+const draft = total - published;
+const categories = [...new Set(courses.map((c: any) => c.category).filter(Boolean))];
+---
+
+<AdminLayout title="Courses">
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;margin:0">Courses</h1>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.25rem">Manage your course catalog</p>
+      </div>
+      <a href="/admin/dashboard/courses/new" class="admin-btn-primary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.625rem 1.25rem;text-decoration:none;border-radius:8px;font-weight:600;font-size:0.875rem">
+        + Add New Course
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:flex;gap:1rem;flex-wrap:wrap">
+      <div class="admin-card" style="padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.75rem;flex:1;min-width:120px">
+        <span style="font-size:1.25rem">📚</span>
+        <div>
+          <div style="font-size:1.25rem;font-weight:700">{total}</div>
+          <div style="font-size:0.7rem;color:var(--text-secondary)">Total</div>
+        </div>
+      </div>
+      <div class="admin-card" style="padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.75rem;flex:1;min-width:120px">
+        <span style="font-size:1.25rem">✅</span>
+        <div>
+          <div style="font-size:1.25rem;font-weight:700">{published}</div>
+          <div style="font-size:0.7rem;color:var(--text-secondary)">Published</div>
+        </div>
+      </div>
+      <div class="admin-card" style="padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.75rem;flex:1;min-width:120px">
+        <span style="font-size:1.25rem">📝</span>
+        <div>
+          <div style="font-size:1.25rem;font-weight:700">{draft}</div>
+          <div style="font-size:0.7rem;color:var(--text-secondary)">Draft</div>
+        </div>
+      </div>
+    </div>
+
+    {error && (
+      <div style="padding:0.75rem;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#dc2626;font-size:0.85rem">
+        {error}
+      </div>
+    )}
+
+    <!-- Filter Tabs -->
+    <div id="filter-tabs" style="display:flex;gap:0.25rem;overflow-x:auto;padding-bottom:0.25rem">
+      <button class="filter-tab active" data-category="all">All</button>
+      {categories.map(cat => (
+        <button class="filter-tab" data-category={cat}>{cat}</button>
+      ))}
+    </div>
+
+    {courses.length === 0 && !error ? (
+      <!-- Empty State -->
+      <div class="admin-card" style="padding:4rem 2rem;text-align:center">
+        <div style="font-size:4rem;margin-bottom:1rem">📚</div>
+        <h2 style="font-size:1.25rem;font-weight:600;margin-bottom:0.5rem">No courses yet</h2>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem">Add your first course to get started</p>
+        <a href="/admin/dashboard/courses/new" class="admin-btn-primary" style="display:inline-flex;padding:0.625rem 1.5rem;text-decoration:none;border-radius:8px;font-weight:600;font-size:0.875rem">
+          Add Course
+        </a>
+      </div>
+    ) : (
+      <!-- Course Table -->
+      <div class="admin-card" style="padding:0;overflow:hidden">
+        <!-- Bulk action bar -->
+        <div id="bulk-bar" style="display:none;padding:0.75rem 1rem;background:#fef3c7;border-bottom:1px solid #fde68a;font-size:0.85rem;align-items:center;gap:0.75rem">
+          <span id="bulk-count">0 selected</span>
+          <button class="bulk-action-btn" data-action="publish" style="padding:0.3rem 0.75rem;border:1px solid #22c55e;border-radius:6px;background:#f0fdf4;color:#16a34a;cursor:pointer;font-size:0.8rem;font-weight:500">Publish All</button>
+          <button class="bulk-action-btn" data-action="unpublish" style="padding:0.3rem 0.75rem;border:1px solid var(--border-color);border-radius:6px;background:white;cursor:pointer;font-size:0.8rem;font-weight:500">Unpublish All</button>
+          <button class="bulk-action-btn" data-action="delete" style="padding:0.3rem 0.75rem;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;color:#dc2626;cursor:pointer;font-size:0.8rem;font-weight:500">Delete Selected</button>
+        </div>
+
+        <!-- Desktop Table -->
+        <div class="course-table-wrap">
+          <table id="course-table" style="width:100%;border-collapse:collapse;font-size:0.85rem">
+            <thead>
+              <tr style="background:var(--bg-page);border-bottom:1px solid var(--border-color)">
+                <th style="padding:0.75rem 0.5rem;width:2rem;text-align:center">
+                  <input type="checkbox" id="select-all" style="cursor:pointer" />
+                </th>
+                <th style="padding:0.75rem 0.5rem;width:2.5rem;text-align:center;cursor:grab">⠿</th>
+                <th style="padding:0.75rem 0.5rem;width:2rem;text-align:center">Icon</th>
+                <th style="padding:0.75rem 0.5rem;text-align:left">Title</th>
+                <th style="padding:0.75rem 0.5rem;text-align:left">Category</th>
+                <th style="padding:0.75rem 0.5rem;text-align:left">Level</th>
+                <th style="padding:0.75rem 0.5rem;text-align:left">Duration</th>
+                <th style="padding:0.75rem 0.5rem;text-align:center">Badge</th>
+                <th style="padding:0.75rem 0.5rem;text-align:center">Status</th>
+                <th style="padding:0.75rem 0.5rem;text-align:center;width:3rem">Order</th>
+                <th style="padding:0.75rem 0.5rem;text-align:center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="course-tbody">
+              {courses.map((course: any, idx: number) => (
+                <tr class="course-row" data-slug={course.slug} data-category={course.category || ''} data-idx={idx}
+                  draggable="true"
+                  style="border-bottom:1px solid var(--border-color);transition:opacity 0.3s,background 0.15s"
+                >
+                  <td style="padding:0.6rem 0.5rem;text-align:center">
+                    <input type="checkbox" class="row-check" data-slug={course.slug} style="cursor:pointer" />
+                  </td>
+                  <td style="padding:0.6rem 0.5rem;text-align:center;cursor:grab;user-select:none" class="drag-handle">⠿</td>
+                  <td style="padding:0.6rem 0.5rem;text-align:center;font-size:1.25rem">{course.icon || '📚'}</td>
+                  <td style="padding:0.6rem 0.5rem">
+                    <div style="font-weight:600">{course.title}</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{course.short_description || ''}</div>
+                  </td>
+                  <td style="padding:0.6rem 0.5rem">
+                    {course.category && (
+                      <span class="category-pill" data-cat={course.category}>{course.category}</span>
+                    )}
+                  </td>
+                  <td style="padding:0.6rem 0.5rem;font-size:0.8rem">{course.level || '—'}</td>
+                  <td style="padding:0.6rem 0.5rem;font-size:0.8rem">{course.duration || '—'}</td>
+                  <td style="padding:0.6rem 0.5rem;text-align:center">
+                    {course.badge ? (
+                      <span style="background:var(--color-primary);color:white;padding:0.15rem 0.5rem;border-radius:999px;font-size:0.65rem;font-weight:600">{course.badge}</span>
+                    ) : (
+                      <span style="color:var(--text-secondary)">—</span>
+                    )}
+                  </td>
+                  <td style="padding:0.6rem 0.5rem;text-align:center">
+                    <label class="toggle-switch" data-slug={course.slug}>
+                      <input type="checkbox" checked={course.is_published} class="publish-toggle" data-slug={course.slug} />
+                      <span class="toggle-track"></span>
+                    </label>
+                  </td>
+                  <td style="padding:0.6rem 0.5rem;text-align:center">
+                    <input type="number" class="order-input" data-slug={course.slug}
+                      value={course.order ?? idx + 1} min="1" max="99"
+                      style="width:3rem;text-align:center;padding:0.25rem;border:1px solid var(--border-color);border-radius:4px;font-size:0.8rem" />
+                  </td>
+                  <td style="padding:0.6rem 0.5rem;text-align:center">
+                    <div style="display:flex;gap:0.35rem;justify-content:center">
+                      <a href={`/admin/dashboard/courses/${course.slug}/edit`}
+                        style="padding:0.35rem 0.6rem;border:1px solid var(--border-color);border-radius:6px;background:white;cursor:pointer;font-size:0.75rem;text-decoration:none;color:var(--text-primary)"
+                        title="Edit">✏️</a>
+                      <button class="delete-btn" data-slug={course.slug} data-title={course.title}
+                        style="padding:0.35rem 0.6rem;border:1px solid var(--border-color);border-radius:6px;background:white;cursor:pointer;font-size:0.75rem"
+                        title="Delete">🗑️</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Cards (shown <768px) -->
+        <div class="course-mobile-cards">
+          {courses.map((course: any) => (
+            <div class="course-mobile-card" data-slug={course.slug} data-category={course.category || ''}
+              style="padding:1rem;border-bottom:1px solid var(--border-color);display:flex;align-items:center;gap:0.75rem">
+              <span style="font-size:1.5rem">{course.icon || '📚'}</span>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600;font-size:0.9rem">{course.title}</div>
+                <div style="display:flex;gap:0.4rem;align-items:center;margin-top:0.25rem">
+                  {course.category && <span class="category-pill" data-cat={course.category} style="font-size:0.6rem">{course.category}</span>}
+                  <span style={`font-size:0.65rem;padding:0.1rem 0.4rem;border-radius:4px;${course.is_published ? 'background:#f0fdf4;color:#16a34a' : 'background:#f3f4f6;color:#6b7280'}`}>
+                    {course.is_published ? 'Published' : 'Draft'}
+                  </span>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.35rem;flex-shrink:0">
+                <a href={`/admin/dashboard/courses/${course.slug}/edit`}
+                  style="padding:0.4rem;border:1px solid var(--border-color);border-radius:6px;background:white;text-decoration:none;font-size:0.8rem">✏️</a>
+                <button class="delete-btn" data-slug={course.slug} data-title={course.title}
+                  style="padding:0.4rem;border:1px solid var(--border-color);border-radius:6px;background:white;cursor:pointer;font-size:0.8rem">🗑️</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Save Order button (hidden by default) -->
+    <div id="save-order-bar" style="display:none;position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:50">
+      <button id="save-order-btn" class="admin-btn-primary" style="padding:0.75rem 2rem;border-radius:999px;font-weight:600;font-size:0.9rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;align-items:center;gap:0.5rem">
+        💾 Save Order
+      </button>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:100;padding:0.75rem 1.25rem;border-radius:8px;font-size:0.85rem;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:opacity 0.3s"></div>
+
+    <!-- Confirm Dialog -->
+    <div id="confirm-dialog" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
+      <div style="background:white;border-radius:12px;padding:2rem;max-width:400px;width:90%;box-shadow:0 8px 24px rgba(0,0,0,0.2)">
+        <h3 id="confirm-title" style="font-size:1.1rem;font-weight:600;margin-bottom:0.5rem"></h3>
+        <p id="confirm-message" style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem"></p>
+        <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+          <button id="confirm-cancel" style="padding:0.5rem 1rem;border:1px solid var(--border-color);border-radius:8px;background:white;cursor:pointer;font-weight:500;font-size:0.85rem">Cancel</button>
+          <button id="confirm-ok" style="padding:0.5rem 1rem;border:none;border-radius:8px;background:#dc2626;color:white;cursor:pointer;font-weight:600;font-size:0.85rem">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .course-table-wrap { display:block; }
+    .course-mobile-cards { display:none; }
+    @media (max-width: 768px) {
+      .course-table-wrap { display:none; }
+      .course-mobile-cards { display:block; }
+    }
+
+    .filter-tab {
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .filter-tab.active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    .category-pill {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    .category-pill[data-cat="Frontend"] { background: #dbeafe; color: #1d4ed8; }
+    .category-pill[data-cat="Full Stack"] { background: #f3e8ff; color: #7c3aed; }
+    .category-pill[data-cat="Programming"] { background: #dcfce7; color: #16a34a; }
+    .category-pill[data-cat="Testing"] { background: #fef3c7; color: #b45309; }
+    .category-pill[data-cat="Business"] { background: #fce7f3; color: #be185d; }
+    .category-pill[data-cat="Design"] { background: #e0f2fe; color: #0284c7; }
+
+    .toggle-switch { position:relative;display:inline-block;width:2.5rem;height:1.35rem;cursor:pointer; }
+    .toggle-switch input { display:none; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      border-radius: 999px;
+      background: #d1d5db;
+      transition: background 0.2s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      width: 1rem; height: 1rem;
+      border-radius: 999px;
+      background: white;
+      top: 0.175rem; left: 0.175rem;
+      transition: left 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle-switch input:checked + .toggle-track { background: #22c55e; }
+    .toggle-switch input:checked + .toggle-track::after { left: 1.325rem; }
+
+    .course-row.dragging { opacity: 0.4; background: #fef3c7; }
+    .course-row.drag-over { border-top: 2px solid var(--color-primary); }
+
+    .delete-btn:hover { background: #fef2f2 !important; border-color: #fecaca !important; }
+  </style>
+
+  <script>
+    // --- Category Filter ---
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const cat = tab.getAttribute('data-category');
+        document.querySelectorAll('.course-row, .course-mobile-card').forEach(row => {
+          const rowCat = row.getAttribute('data-category');
+          (row as HTMLElement).style.display = (cat === 'all' || rowCat === cat) ? '' : 'none';
+        });
+      });
+    });
+
+    // --- Select All / Bulk Actions ---
+    const selectAll = document.getElementById('select-all') as HTMLInputElement;
+    const bulkBar = document.getElementById('bulk-bar')!;
+    const bulkCount = document.getElementById('bulk-count')!;
+
+    function updateBulkBar() {
+      const checked = document.querySelectorAll('.row-check:checked');
+      if (checked.length > 0) {
+        bulkBar.style.display = 'flex';
+        bulkCount.textContent = `${checked.length} selected`;
+      } else {
+        bulkBar.style.display = 'none';
+      }
+    }
+
+    selectAll?.addEventListener('change', () => {
+      document.querySelectorAll<HTMLInputElement>('.row-check').forEach(cb => {
+        cb.checked = selectAll.checked;
+      });
+      updateBulkBar();
+    });
+
+    document.querySelectorAll('.row-check').forEach(cb => {
+      cb.addEventListener('change', updateBulkBar);
+    });
+
+    // --- Bulk Action buttons ---
+    document.querySelectorAll('.bulk-action-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const action = btn.getAttribute('data-action');
+        const slugs = Array.from(document.querySelectorAll<HTMLInputElement>('.row-check:checked'))
+          .map(cb => cb.getAttribute('data-slug')!);
+        if (!slugs.length) return;
+
+        if (action === 'delete') {
+          showConfirm('Delete selected courses?', `This will permanently delete ${slugs.length} course(s). This cannot be undone.`, async () => {
+            for (const slug of slugs) {
+              await fetch(`/admin/api/proxy/courses/${slug}`, { method: 'DELETE' });
+            }
+            showToast(`${slugs.length} course(s) deleted`, 'success');
+            setTimeout(() => location.reload(), 800);
+          });
+          return;
+        }
+
+        // publish/unpublish
+        for (const slug of slugs) {
+          const row = document.querySelector(`.course-row[data-slug="${slug}"]`);
+          const toggle = row?.querySelector<HTMLInputElement>('.publish-toggle');
+          const wantPublished = action === 'publish';
+          if (toggle && toggle.checked !== wantPublished) {
+            await fetch(`/admin/api/proxy/courses/${slug}/toggle-publish`, { method: 'POST' });
+            toggle.checked = wantPublished;
+          }
+        }
+        showToast(`${slugs.length} course(s) ${action === 'publish' ? 'published' : 'unpublished'}`, 'success');
+      });
+    });
+
+    // --- Publish Toggle ---
+    document.querySelectorAll('.publish-toggle').forEach(toggle => {
+      toggle.addEventListener('change', async (e) => {
+        const input = e.target as HTMLInputElement;
+        const slug = input.getAttribute('data-slug');
+        const prevState = !input.checked; // it already toggled
+        try {
+          const res = await fetch(`/admin/api/proxy/courses/${slug}/toggle-publish`, { method: 'POST' });
+          if (!res.ok) {
+            input.checked = prevState;
+            showToast('Failed to toggle publish status', 'error');
+          } else {
+            showToast(`Course ${input.checked ? 'published' : 'unpublished'}`, 'success');
+          }
+        } catch {
+          input.checked = prevState;
+          showToast('Network error', 'error');
+        }
+      });
+    });
+
+    // --- Drag and Drop Reorder ---
+    let dragSrcIdx: number | null = null;
+    let orderChanged = false;
+    const tbody = document.getElementById('course-tbody')!;
+
+    tbody?.querySelectorAll('.course-row').forEach(row => {
+      row.addEventListener('dragstart', (e) => {
+        dragSrcIdx = parseInt(row.getAttribute('data-idx')!);
+        (row as HTMLElement).classList.add('dragging');
+        (e as DragEvent).dataTransfer!.effectAllowed = 'move';
+      });
+      row.addEventListener('dragend', () => {
+        (row as HTMLElement).classList.remove('dragging');
+        tbody.querySelectorAll('.course-row').forEach(r => (r as HTMLElement).classList.remove('drag-over'));
+      });
+      row.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        (e as DragEvent).dataTransfer!.dropEffect = 'move';
+        tbody.querySelectorAll('.course-row').forEach(r => (r as HTMLElement).classList.remove('drag-over'));
+        (row as HTMLElement).classList.add('drag-over');
+      });
+      row.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const targetIdx = parseInt(row.getAttribute('data-idx')!);
+        if (dragSrcIdx !== null && dragSrcIdx !== targetIdx) {
+          const rows = Array.from(tbody.querySelectorAll('.course-row'));
+          const srcRow = rows[dragSrcIdx];
+          if (dragSrcIdx < targetIdx) {
+            row.after(srcRow);
+          } else {
+            row.before(srcRow);
+          }
+          // Re-index
+          tbody.querySelectorAll('.course-row').forEach((r, i) => r.setAttribute('data-idx', String(i)));
+          orderChanged = true;
+          document.getElementById('save-order-bar')!.style.display = 'block';
+        }
+        dragSrcIdx = null;
+      });
+    });
+
+    // --- Save Order ---
+    document.getElementById('save-order-btn')?.addEventListener('click', async () => {
+      const rows = Array.from(tbody.querySelectorAll('.course-row'));
+      const order = rows.map((r, i) => ({
+        slug: r.getAttribute('data-slug')!,
+        order: i + 1,
+      }));
+      try {
+        const res = await fetch('/admin/api/proxy/courses/reorder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order }),
+        });
+        if (res.ok) {
+          showToast('Order saved!', 'success');
+          document.getElementById('save-order-bar')!.style.display = 'none';
+          orderChanged = false;
+        } else {
+          showToast('Failed to save order', 'error');
+        }
+      } catch {
+        showToast('Network error', 'error');
+      }
+    });
+
+    // --- Delete ---
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-slug')!;
+        const title = btn.getAttribute('data-title')!;
+        showConfirm(`Delete "${title}"?`, 'This cannot be undone.', async () => {
+          try {
+            const res = await fetch(`/admin/api/proxy/courses/${slug}`, { method: 'DELETE' });
+            if (res.ok) {
+              // Fade out and remove row
+              const row = document.querySelector(`.course-row[data-slug="${slug}"]`) as HTMLElement;
+              const mobileCard = document.querySelector(`.course-mobile-card[data-slug="${slug}"]`) as HTMLElement;
+              if (row) { row.style.opacity = '0'; setTimeout(() => row.remove(), 300); }
+              if (mobileCard) { mobileCard.style.opacity = '0'; setTimeout(() => mobileCard.remove(), 300); }
+              showToast('Course deleted', 'success');
+            } else {
+              showToast('Failed to delete course', 'error');
+            }
+          } catch {
+            showToast('Network error', 'error');
+          }
+        });
+      });
+    });
+
+    // --- Confirm Dialog ---
+    let confirmCallback: (() => Promise<void>) | null = null;
+
+    function showConfirm(title: string, message: string, onConfirm: () => Promise<void>) {
+      document.getElementById('confirm-title')!.textContent = title;
+      document.getElementById('confirm-message')!.textContent = message;
+      confirmCallback = onConfirm;
+      const dialog = document.getElementById('confirm-dialog')!;
+      dialog.style.display = 'flex';
+    }
+
+    document.getElementById('confirm-cancel')?.addEventListener('click', () => {
+      document.getElementById('confirm-dialog')!.style.display = 'none';
+      confirmCallback = null;
+    });
+
+    document.getElementById('confirm-ok')?.addEventListener('click', async () => {
+      document.getElementById('confirm-dialog')!.style.display = 'none';
+      if (confirmCallback) await confirmCallback();
+      confirmCallback = null;
+    });
+
+    // Close on backdrop
+    document.getElementById('confirm-dialog')?.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('confirm-dialog')) {
+        document.getElementById('confirm-dialog')!.style.display = 'none';
+        confirmCallback = null;
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('confirm-dialog')!.style.display === 'flex') {
+        document.getElementById('confirm-dialog')!.style.display = 'none';
+        confirmCallback = null;
+      }
+    });
+
+    // --- Toast ---
+    function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
+      const toast = document.getElementById('toast')!;
+      toast.textContent = message;
+      toast.style.display = 'block';
+      toast.style.opacity = '1';
+      toast.style.background = type === 'success' ? '#f0fdf4' : type === 'error' ? '#fef2f2' : '#f0f9ff';
+      toast.style.color = type === 'success' ? '#16a34a' : type === 'error' ? '#dc2626' : '#0369a1';
+      toast.style.border = `1px solid ${type === 'success' ? '#bbf7d0' : type === 'error' ? '#fecaca' : '#bae6fd'}`;
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.style.display = 'none', 300); }, 3000);
+    }
+  </script>
+</AdminLayout>

@@ -1,0 +1,33 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getTokenFromCookies, verifyTokenWithAPI } from '../../lib/auth';
+import SecuritySettings from '../../components/content/SecuritySettings';
+
+const token = getTokenFromCookies(Astro.cookies);
+if (!token) return Astro.redirect('/admin/login');
+
+let user = { username: 'admin', created_at: new Date().toISOString() };
+
+try {
+  const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+  const res = await fetch(`${API_BASE}/api/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (res.ok) user = await res.json();
+} catch { /* fallback to defaults */ }
+---
+
+<AdminLayout title="Security">
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <nav style="font-size:0.8rem;color:var(--text-secondary)">
+      <a href="/admin/dashboard" style="color:var(--color-primary);text-decoration:none">Dashboard</a>
+      <span style="margin:0 0.5rem">›</span>
+      <span>Security</span>
+    </nav>
+
+    <h1 style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;margin:0">Security Settings</h1>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:-0.75rem">Manage your password and account security</p>
+
+    <SecuritySettings client:load user={user} />
+  </div>
+</AdminLayout>

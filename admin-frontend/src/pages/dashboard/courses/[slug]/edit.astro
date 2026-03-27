@@ -1,0 +1,72 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import CourseForm from '../../../../components/courses/CourseForm';
+import CoursePreview from '../../../../components/courses/CoursePreview';
+
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const { slug } = Astro.params;
+
+let course: any = null;
+let error = '';
+
+try {
+  const res = await fetch(`${API_BASE}/api/courses/${slug}`);
+  if (res.ok) {
+    course = await res.json();
+  } else {
+    return Astro.redirect('/admin/dashboard/courses');
+  }
+} catch {
+  error = 'Failed to load course data';
+}
+
+if (!course && !error) {
+  return Astro.redirect('/admin/dashboard/courses');
+}
+---
+
+<AdminLayout title={`Edit ${course?.title || 'Course'}`}>
+  <div style="display:flex;flex-direction:column;gap:1.5rem;max-width:960px">
+    <!-- Breadcrumb -->
+    <nav style="font-size:0.8rem;color:var(--text-secondary)">
+      <a href="/admin/dashboard/courses" style="color:var(--color-primary);text-decoration:none">Courses</a>
+      <span style="margin:0 0.5rem">›</span>
+      <span>Edit: {course?.title || slug}</span>
+    </nav>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <h1 style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;margin:0">
+        Edit Course
+      </h1>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <span style={`font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:999px;font-weight:500;${course?.is_published ? 'background:#f0fdf4;color:#16a34a' : 'background:#f3f4f6;color:#6b7280'}`}>
+          {course?.is_published ? '● Published' : '● Draft'}
+        </span>
+      </div>
+    </div>
+
+    {error && (
+      <div style="padding:0.75rem;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#dc2626;font-size:0.85rem">
+        {error}
+      </div>
+    )}
+
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
+      <div class="admin-card" style="padding:1.5rem">
+        <CourseForm client:load mode="edit" initialData={course} />
+      </div>
+      <div class="course-preview-sidebar">
+        <CoursePreview client:load course={course} />
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @media (max-width: 1024px) {
+      .course-preview-sidebar { display: none; }
+      div[style*="grid-template-columns:1fr 340px"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</AdminLayout>

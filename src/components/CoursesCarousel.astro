@@ -1,10 +1,9 @@
 ---
 import CourseCard from './CourseCard.astro';
-import { getCollection } from 'astro:content';
+import { getAllCourses } from '../lib/api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const courses = (await getCollection('courses'))
-  .sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+const courses = await getAllCourses();
 ---
 <div class="relative group/carousel reveal">
   <button
@@ -26,18 +25,18 @@ const courses = (await getCollection('courses'))
     id="carousel-track"
     class="scroll-track pb-6 cursor-grab active:cursor-grabbing"
   >
-    {courses.map((course) => (
+    {courses.map((course: any) => (
       <div class="w-[320px] md:w-[360px]">
         <CourseCard
-          title={course.data.title}
-          shortDescription={course.data.shortDescription}
-          duration={course.data.duration}
-          mode={course.data.mode}
-          level={course.data.level}
-          slug={course.id}
-          badge={course.data.badge}
-          icon={course.data.icon}
-          category={course.data.category}
+          title={course.title}
+          shortDescription={course.short_description}
+          duration={course.duration}
+          mode={course.mode}
+          level={course.level}
+          slug={course.slug}
+          badge={course.badge}
+          icon={course.icon}
+          category={course.category}
         />
       </div>
     ))}

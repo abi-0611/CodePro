@@ -1,16 +1,28 @@
 ---
+import { getSiteConfig, getContent, getContentJson } from '../lib/api';
+
+const config = await getSiteConfig();
+
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 
-const stats = [
-  { value: '500+', label: 'Students Trained' },
-  { value: '8+', label: 'Expert Courses' },
-  { value: '95%', label: 'Satisfaction Rate' },
-  { value: '100%', label: 'Placement Support' },
-];
+const heroHeadline = getContent(config, 'home', 'hero_headline', 'Become job-ready with mentor-led tech programs');
+const heroSubheadline = getContent(config, 'home', 'hero_subheadline', 'Hands-on sessions, structured curriculum, and portfolio projects — built to help you learn faster and perform confidently in interviews.');
+const heroCta = getContent(config, 'home', 'hero_cta_text', 'Explore Courses');
+const heroCtaLink = getContent(config, 'home', 'hero_cta_link', `${baseUrl}courses/`);
+const heroBadge = getContent(config, 'home', 'hero_badge_text', 'Job-focused training');
+const heroCtaSecondary = getContent(config, 'home', 'hero_cta_secondary_text', 'View Highlights');
+const heroCtaSecondaryLink = getContent(config, 'home', 'hero_cta_secondary_link', '#home-courses');
 
-const techBadges = ['React', 'Python', 'Java', 'Angular', 'Full Stack', 'Testing', 'Tally', 'Web Design'];
+const techBadges = getContentJson<string[]>(config, 'home', 'tech_badges', ['React', 'Python', 'Java', 'Angular', 'Full Stack', 'Testing', 'Tally', 'Web Design']);
+
+const stats = [
+  { value: getContent(config, 'home', 'stat1_value', '500+'), label: getContent(config, 'home', 'stat1_label', 'Students Trained') },
+  { value: getContent(config, 'home', 'stat2_value', '8+'), label: getContent(config, 'home', 'stat2_label', 'Expert Courses') },
+  { value: getContent(config, 'home', 'stat3_value', '95%'), label: getContent(config, 'home', 'stat3_label', 'Satisfaction Rate') },
+  { value: getContent(config, 'home', 'stat4_value', '100%'), label: getContent(config, 'home', 'stat4_label', 'Placement Support') },
+];
 ---
 <section class="noise-overlay relative min-h-[92vh] flex items-center overflow-hidden bg-gradient-to-br from-[var(--hero-gradient-from-val)] via-[var(--color-surface-val)] to-[var(--hero-gradient-to-val)] pt-24 pb-16">
   <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
@@ -24,20 +36,18 @@ const techBadges = ['React', 'Python', 'Java', 'Angular', 'Full Stack', 'Testing
       <div class="reveal">
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border-val)] bg-[var(--glass-bg-val)]">
           <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-primary-val)] animate-pulse" aria-hidden="true"></span>
-          <span class="text-xs font-semibold tracking-widest text-[var(--color-muted-val)] uppercase">Job-focused training</span>
+          <span class="text-xs font-semibold tracking-widest text-[var(--color-muted-val)] uppercase">{heroBadge}</span>
         </div>
 
-        <h1 class="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-[var(--color-ink-val)] leading-[1.05]">
-          Become <span class="gradient-text">job-ready</span> with mentor-led tech programs
-        </h1>
+        <h1 class="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-[var(--color-ink-val)] leading-[1.05]" set:html={heroHeadline.replace(/\*\*(.*?)\*\*/g, '<span class="gradient-text">$1</span>')} />
 
         <p class="mt-6 text-lg text-[var(--color-muted-val)] max-w-xl">
-          Hands-on sessions, structured curriculum, and portfolio projects — built to help you learn faster and perform confidently in interviews.
+          {heroSubheadline}
         </p>
 
         <div class="mt-8 flex flex-col sm:flex-row gap-4">
-          <a href={`${baseUrl}courses/`} class="button primary button-shimmer">Explore Courses</a>
-          <a href="#home-courses" class="button secondary">View Highlights</a>
+          <a href={heroCtaLink} class="button primary button-shimmer">{heroCta}</a>
+          <a href={heroCtaSecondaryLink} class="button secondary">{heroCtaSecondary}</a>
         </div>
 
         <div class="mt-10 flex flex-wrap gap-2">

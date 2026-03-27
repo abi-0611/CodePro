@@ -1,0 +1,149 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getTokenFromCookies } from '../../lib/auth';
+
+const token = getTokenFromCookies(Astro.cookies);
+if (!token) return Astro.redirect('/admin/login');
+
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+
+// Fetch stats from API
+let totalCourses = 0;
+let publishedCourses = 0;
+let draftCourses = 0;
+let totalSections = 0;
+let hasSections: Record<string, boolean> = { home: false, about: false, contact: false, meta: false };
+let hasContactInfo = false;
+
+try {
+  const coursesRes = await fetch(`${API_BASE}/api/courses/?limit=100`);
+  if (coursesRes.ok) {
+    const data = await coursesRes.json();
+    const courses = data.courses || [];
+    totalCourses = data.total || courses.length;
+    publishedCourses = courses.filter((c: any) => c.is_published).length;
+    draftCourses = totalCourses - publishedCourses;
+  }
+} catch { /* API down — show zeros */ }
+
+try {
+  const sectionsRes = await fetch(`${API_BASE}/api/content/`);
+  if (sectionsRes.ok) {
+    const data = await sectionsRes.json();
+    const sections: string[] = data.sections || [];
+    totalSections = sections.length;
+    for (const s of sections) {
+      if (s in hasSections) hasSections[s] = true;
+    }
+  }
+} catch { /* API down */ }
+
+try {
+  const contactRes = await fetch(`${API_BASE}/api/contact/`);
+  if (contactRes.ok) hasContactInfo = true;
+} catch { /* API down */ }
+---
+
+<AdminLayout title="Dashboard" activeNav="dashboard">
+  <!-- Stats Row -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-bottom:2rem">
+    <div class="admin-stat-card">
+      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Total Courses</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--color-primary)">{totalCourses}</div>
+    </div>
+    <div class="admin-stat-card">
+      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Published</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:#22c55e">{publishedCourses}</div>
+    </div>
+    <div class="admin-stat-card">
+      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Drafts</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:#6b7280">{draftCourses}</div>
+    </div>
+    <div class="admin-stat-card">
+      <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.25rem">Content Sections</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--color-primary)">{totalSections}</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">Quick Actions</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem">
+    <a href="/admin/dashboard/courses/new" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+      <span style="font-size:1.5rem">📚</span>
+      <div>
+        <div style="font-weight:600;color:var(--text-primary)">Add New Course</div>
+        <div style="font-size:0.75rem;color:var(--text-secondary)">Create a new training program</div>
+      </div>
+    </a>
+    <a href="/admin/dashboard/home-content" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+      <span style="font-size:1.5rem">🏠</span>
+      <div>
+        <div style="font-weight:600;color:var(--text-primary)">Edit Homepage</div>
+        <div style="font-size:0.75rem;color:var(--text-secondary)">Update hero, stats, and content</div>
+      </div>
+    </a>
+    <a href="/admin/dashboard/contact" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+      <span style="font-size:1.5rem">📞</span>
+      <div>
+        <div style="font-weight:600;color:var(--text-primary)">Update Contact Info</div>
+        <div style="font-size:0.75rem;color:var(--text-secondary)">Phone, email, social links</div>
+      </div>
+    </a>
+    <a href="/" target="_blank" rel="noopener" class="admin-card" style="text-decoration:none;display:flex;align-items:center;gap:0.75rem;transition:box-shadow 0.15s">
+      <span style="font-size:1.5rem">🌐</span>
+      <div>
+        <div style="font-weight:600;color:var(--text-primary)">View Live Site</div>
+        <div style="font-size:0.75rem;color:var(--text-secondary)">Open the public website</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Recent Activity -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+    <div>
+      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">Recent Activity</h2>
+      <div class="admin-card">
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
+            <span style="color:var(--color-primary);font-size:0.75rem">●</span>
+            <span>Dashboard initialized — Welcome to CodePro Admin</span>
+            <span style="margin-left:auto;font-size:0.7rem;color:var(--text-secondary)">Just now</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem;opacity:0.6">
+            <span style="font-size:0.75rem">●</span>
+            <span>Activity history coming soon</span>
+            <span style="margin-left:auto;font-size:0.6rem;background:var(--color-primary-light);color:var(--color-primary);padding:0.15rem 0.5rem;border-radius:4px">Soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">Content Health</h2>
+      <div class="admin-card">
+        <div style="display:flex;flex-direction:column;gap:0.625rem">
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
+            <span style={`color:${hasSections.home ? '#22c55e' : '#eab308'}`}>{hasSections.home ? '✓' : '⚠'}</span>
+            <span>Homepage Content</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
+            <span style={`color:${hasSections.about ? '#22c55e' : '#eab308'}`}>{hasSections.about ? '✓' : '⚠'}</span>
+            <span>About Page Content</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
+            <span style={`color:${hasContactInfo ? '#22c55e' : '#eab308'}`}>{hasContactInfo ? '✓' : '⚠'}</span>
+            <span>Contact Info</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
+            <span style={`color:${totalCourses > 0 ? '#22c55e' : '#eab308'}`}>{totalCourses > 0 ? '✓' : '⚠'}</span>
+            <span>Courses ({totalCourses} total)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem">
+            <span style={`color:${hasSections.meta ? '#22c55e' : '#eab308'}`}>{hasSections.meta ? '✓' : '⚠'}</span>
+            <span>Site Meta / SEO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>

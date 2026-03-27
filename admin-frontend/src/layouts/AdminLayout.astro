@@ -1,0 +1,126 @@
+---
+import { getTokenFromCookies } from '../lib/auth';
+
+interface Props {
+  title: string;
+  activeNav?: string;
+}
+
+const { title, activeNav } = Astro.props;
+const token = getTokenFromCookies(Astro.cookies);
+if (!token) return Astro.redirect('/admin/login');
+
+const navItems = [
+  { section: 'OVERVIEW', items: [
+    { icon: '🏠', label: 'Dashboard', href: '/admin/dashboard', key: 'dashboard' },
+  ]},
+  { section: 'CONTENT', items: [
+    { icon: '📚', label: 'Courses', href: '/admin/dashboard/courses', key: 'courses' },
+    { icon: '🏠', label: 'Homepage', href: '/admin/dashboard/home-content', key: 'home-content' },
+    { icon: 'ℹ️', label: 'About Page', href: '/admin/dashboard/about-content', key: 'about-content' },
+    { icon: '📞', label: 'Contact Info', href: '/admin/dashboard/contact', key: 'contact' },
+  ]},
+  { section: 'ADMIN', items: [
+    { icon: '🔐', label: 'Security', href: '/admin/dashboard/security', key: 'security' },
+  ]},
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} — CodePro Admin</title>
+    <link rel="stylesheet" href="/admin/src/styles/admin.css" />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-sidebar-logo">
+        <span style="font-size:1.25rem">⚡</span>
+        <div>
+          <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:1.1rem">
+            CodePro Admin
+          </span>
+          <span style="font-size:0.6rem;background:var(--color-primary);color:#fff;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.5rem">
+            v1.0
+          </span>
+        </div>
+      </div>
+
+      <nav class="admin-sidebar-nav">
+        {navItems.map(group => (
+          <div>
+            <div class="admin-sidebar-section">{group.section}</div>
+            {group.items.map(item => (
+              <a
+                href={item.href}
+                class:list={['admin-sidebar-link', { active: activeNav === item.key }]}
+              >
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
+              </a>
+            ))}
+          </div>
+        ))}
+      </nav>
+
+      <div class="admin-sidebar-user">
+        <span style="font-size:0.8rem;color:var(--text-sidebar)">Admin</span>
+        <button
+          id="admin-logout-btn"
+          style="font-size:0.75rem;color:#ef4444;background:none;border:none;cursor:pointer"
+        >
+          🚪 Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main area -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:1rem">
+          <button
+            id="sidebar-toggle"
+            style="display:none;background:none;border:none;font-size:1.25rem;cursor:pointer"
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
+          <h1 style="font-size:1.25rem;font-weight:600;margin:0">{title}</h1>
+        </div>
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener"
+          style="font-size:0.8rem;color:var(--color-primary);text-decoration:none;font-weight:500"
+        >
+          View Live Site →
+        </a>
+      </header>
+
+      <main class="admin-content">
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      // Logout
+      document.getElementById('admin-logout-btn')?.addEventListener('click', async () => {
+        await fetch('/admin/api/admin-auth/logout', { method: 'POST' });
+        window.location.href = '/admin/login';
+      });
+
+      // Mobile sidebar toggle
+      const sidebar = document.getElementById('admin-sidebar');
+      const toggle = document.getElementById('sidebar-toggle');
+      if (window.innerWidth <= 768 && toggle) {
+        toggle.style.display = 'block';
+      }
+      toggle?.addEventListener('click', () => {
+        sidebar?.classList.toggle('open');
+      });
+    </script>
+  </body>
+</html>

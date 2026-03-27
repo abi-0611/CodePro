@@ -1,6 +1,6 @@
 ---
 import { BookOpen, Handshake, UserCheck, Users } from 'lucide-react';
-import { getCollection } from 'astro:content';
+import { getAllCourses } from '../lib/api';
 import AnimatedCounter from './AnimatedCounter.astro';
 
 export interface Props {
@@ -13,7 +13,8 @@ export interface Props {
   wrapperClass?: string;
 }
 
-const courseCount = (await getCollection('courses')).length;
+const courses = await getAllCourses();
+const courseCount = courses.length;
 
 const defaultStats = [
   { value: courseCount, suffix: '', label: 'Courses', icon: BookOpen },

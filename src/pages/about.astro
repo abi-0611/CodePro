@@ -5,6 +5,31 @@ import StatBar from '../components/StatBar.astro';
 import BreadcrumbNav from '../components/BreadcrumbNav.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
 import { Target, Award, Linkedin, Rocket } from 'lucide-react';
+import { getSiteConfig, getContent, getContentJson } from '../lib/api';
+
+const config = await getSiteConfig();
+
+const aboutEyebrow = getContent(config, 'about', 'about_eyebrow', 'About');
+const aboutH1 = getContent(config, 'about', 'about_h1', 'Built for practical learning');
+const aboutTagline = getContent(config, 'about', 'about_tagline', 'Mentor-led training that focuses on fundamentals, hands-on practice, and a clear path from learning to confidence.');
+
+const storyPara1 = getContent(config, 'about', 'story_para_1', 'CodePro.io was created to make learning feel simple, practical, and achievable — especially for students who want real skills, not just theory.');
+const storyPara2 = getContent(config, 'about', 'story_para_2', 'Our trainers are B.Tech graduates with 3 years of teaching experience, so sessions stay structured, beginner-friendly, and focused on what matters most.');
+const storyPara3 = getContent(config, 'about', 'story_para_3', 'We teach through guided practice, clear explanations, and consistent feedback — helping learners build confidence step-by-step.');
+
+const missionText = getContent(config, 'about', 'mission_text', 'Deliver mentor-led learning with real exercises, clear feedback, and practical guidance — so students can build skills that translate directly into projects and interviews.');
+const visionText = getContent(config, 'about', 'vision_text', 'To help learners become confident, job-ready professionals through structured training, strong fundamentals, and consistent practice.');
+
+const teamEyebrow = getContent(config, 'about', 'team_eyebrow', 'Our team');
+const teamTitle = getContent(config, 'about', 'team_title', 'Mentors who teach with clarity');
+const teamDescription = getContent(config, 'about', 'team_description', 'Our trainers are B.Tech graduates with 3 years of teaching experience — focused on fundamentals, practice, and consistent guidance.');
+
+const trainers = getContentJson<any[]>(config, 'about', 'trainers', [
+  { name: 'Mentor 1', designation: 'B.Tech Graduate', exp: '3 years teaching experience', linkedin: '', photo_url: '' },
+  { name: 'Mentor 2', designation: 'B.Tech Graduate', exp: '3 years teaching experience', linkedin: '', photo_url: '' },
+  { name: 'Mentor 3', designation: 'B.Tech Graduate', exp: '3 years teaching experience', linkedin: '', photo_url: '' },
+  { name: 'Mentor 4', designation: 'B.Tech Graduate', exp: '3 years teaching experience', linkedin: '', photo_url: '' },
+]);
 
 const breadcrumbItems = [
   { label: 'About' }
@@ -17,10 +42,10 @@ const breadcrumbItems = [
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <BreadcrumbNav items={breadcrumbItems} />
       <div class="text-center mt-8">
-        <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">About</span>
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Built for practical learning</h1>
+        <span class="text-[var(--color-primary-val)] font-semibold tracking-wider uppercase text-sm mb-4 block">{aboutEyebrow}</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-[var(--color-ink-val)] mb-6">{aboutH1}</h1>
         <p class="text-xl text-[var(--color-muted-val)] max-w-3xl mx-auto leading-relaxed">
-          Mentor-led training that focuses on fundamentals, hands-on practice, and a clear path from learning to confidence.
+          {aboutTagline}
         </p>
       </div>
     </div>
@@ -32,9 +57,9 @@ const breadcrumbItems = [
       <div>
         <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mb-6">Our story</h2>
         <div class="space-y-4 text-lg text-[var(--color-muted-val)] leading-relaxed mb-8">
-          <p>CodePro.io was created to make learning feel simple, practical, and achievable — especially for students who want real skills, not just theory.</p>
-          <p>Our trainers are B.Tech graduates with 3 years of teaching experience, so sessions stay structured, beginner-friendly, and focused on what matters most.</p>
-          <p>We teach through guided practice, clear explanations, and consistent feedback — helping learners build confidence step-by-step.</p>
+          <p>{storyPara1}</p>
+          <p>{storyPara2}</p>
+          <p>{storyPara3}</p>
         </div>
         <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[var(--color-surface-alt-val)] border border-[var(--color-border-val)] text-[var(--color-ink-val)] font-semibold">
           <Award class="w-5 h-5 text-[var(--color-primary-val)]" />
@@ -55,22 +80,28 @@ const breadcrumbItems = [
   {/* SECTION 4 — OUR TEAM / TRAINERS */}
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 reveal">
     <SectionHeader 
-      eyebrow="Our team"
-      title="Mentors who teach with clarity"
-      description="Our trainers are B.Tech graduates with 3 years of teaching experience — focused on fundamentals, practice, and consistent guidance."
+      eyebrow={teamEyebrow}
+      title={teamTitle}
+      description={teamDescription}
     />
     
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
-      {[1, 2, 3, 4].map((i) => (
-        <div class={`reveal delay-${i} card-lift card overflow-hidden group`}>
-          <PlaceholderImage label={`Trainer photo ${i}`} width={600} height={600} className="aspect-square !rounded-none !border-0 !border-b border-[var(--color-border-val)]" />
+      {trainers.map((trainer: any, i: number) => (
+        <div class={`reveal delay-${i+1} card-lift card overflow-hidden group`}>
+          {trainer.photo_url ? (
+            <img src={trainer.photo_url} alt={trainer.name} class="aspect-square object-cover w-full" loading="lazy" />
+          ) : (
+            <PlaceholderImage label={`Trainer photo ${i+1}`} width={600} height={600} className="aspect-square !rounded-none !border-0 !border-b border-[var(--color-border-val)]" />
+          )}
           <div class="p-6 text-center">
-            <h4 class="text-xl font-bold font-heading text-[var(--color-ink-val)] mb-1">Mentor {i}</h4>
-            <p class="text-[var(--color-primary-val)] font-medium mb-2 text-sm">B.Tech Graduate</p>
-            <p class="text-xs text-[var(--color-muted-val)] mb-4">3 years teaching experience</p>
-            <a href="#" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#0077b5]/10 text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-colors" aria-label="LinkedIn Profile">
-              <Linkedin class="w-4 h-4" />
-            </a>
+            <h4 class="text-xl font-bold font-heading text-[var(--color-ink-val)] mb-1">{trainer.name}</h4>
+            <p class="text-[var(--color-primary-val)] font-medium mb-2 text-sm">{trainer.designation}</p>
+            <p class="text-xs text-[var(--color-muted-val)] mb-4">{trainer.exp}</p>
+            {trainer.linkedin && (
+              <a href={trainer.linkedin} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#0077b5]/10 text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-colors" aria-label="LinkedIn Profile">
+                <Linkedin class="w-4 h-4" />
+              </a>
+            )}
           </div>
         </div>
       ))}
@@ -99,7 +130,7 @@ const breadcrumbItems = [
           </div>
           <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-4">🎯 Our Vision</h3>
           <p class="text-[var(--color-muted-val)] text-lg leading-relaxed">
-            To help learners become confident, job-ready professionals through structured training, strong fundamentals, and consistent practice.
+            {visionText}
           </p>
         </div>
         <div class="card p-10 bg-white dark:bg-[var(--color-surface-val)] reveal delay-2 card-lift">
@@ -108,7 +139,7 @@ const breadcrumbItems = [
           </div>
           <h3 class="text-2xl font-bold font-heading text-[var(--color-ink-val)] mb-4">🚀 Our Mission</h3>
           <p class="text-[var(--color-muted-val)] text-lg leading-relaxed">
-            Deliver mentor-led learning with real exercises, clear feedback, and practical guidance — so students can build skills that translate directly into projects and interviews.
+            {missionText}
           </p>
         </div>
       </div>

@@ -1,8 +1,8 @@
 ---
-import { getCollection } from 'astro:content';
+import { getAllCourses } from '../lib/api';
 import { randomUUID } from 'node:crypto';
 
-const courses = await getCollection('courses');
+const courses = await getAllCourses();
 const uid = randomUUID();
 ---
 <div class="relative" data-enquiry-root={uid}>
@@ -29,8 +29,8 @@ const uid = randomUUID();
       <label for={`${uid}-course`} class="text-sm font-semibold text-[var(--color-ink)]">Course Interested <span class="text-red-500">*</span></label>
       <select id={`${uid}-course`} name="course" required class="w-full px-4 py-3 rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all appearance-none">
         <option value="" disabled selected>Select a course</option>
-        {courses.map(course => (
-          <option value={course.id}>{course.data.title}</option>
+        {courses.map((course: any) => (
+          <option value={course.slug}>{course.title}</option>
         ))}
       </select>
       <span class="error-message text-red-500 text-xs hidden">Please select a course.</span>

@@ -10,10 +10,28 @@ import ProcessSteps from '../components/ProcessSteps.astro';
 import TestimonialsGrid from '../components/TestimonialsGrid.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
-import { getCollection } from 'astro:content';
+import { getAllCourses, getSiteConfig, getContent, getContentJson } from '../lib/api';
 
-const allCourses = await getCollection('courses');
-const featuredCourses = allCourses.sort((a, b) => (a.data.order || 99) - (b.data.order || 99)).slice(0, 3);
+const [allCourses, config] = await Promise.all([getAllCourses(), getSiteConfig()]);
+const featuredCourses = allCourses.slice(0, 3);
+
+const section1Eyebrow = getContent(config, 'home', 'section1_eyebrow', 'Top Courses');
+const section1Title = getContent(config, 'home', 'section1_title', 'Start with our most popular programs');
+const section1Description = getContent(config, 'home', 'section1_description', 'Hands-on, mentor-led courses designed for beginners and working professionals.');
+const section1Cta = getContent(config, 'home', 'section1_cta_text', 'View All Courses');
+
+const section2Eyebrow = getContent(config, 'home', 'section2_eyebrow', 'All Programs');
+const section2Title = getContent(config, 'home', 'section2_title', 'Explore every course');
+
+const enquiryHeadline = getContent(config, 'home', 'enquiry_headline', 'Not sure which course is right for you?');
+const enquiryDescription = getContent(config, 'home', 'enquiry_description', 'Talk to our mentors for free. We\'ll help you pick the right course, explain the syllabus, and plan a roadmap based on your goals and current level.');
+const enquiryBullets = getContentJson<string[]>(config, 'home', 'enquiry_bullets', [
+  'Free 15-minute consultation call',
+  'No pushy sales — just honest guidance',
+  'Get a learning roadmap tailored for you',
+  'Flexible batch options explained clearly',
+]);
+
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
@@ -29,24 +47,24 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="reveal">
         <SectionHeader
-          eyebrow="Top Courses"
-          title="Start with our most popular programs"
-          description="Hands-on, mentor-led courses designed for beginners and working professionals."
+          eyebrow={section1Eyebrow}
+          title={section1Title}
+          description={section1Description}
         />
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-2">
-        {featuredCourses.map((course, i) => (
+        {featuredCourses.map((course: any, i: number) => (
           <div class={`reveal delay-${i+1} card-lift`}>
             <CourseCard
-              title={course.data.title}
-              shortDescription={course.data.shortDescription}
-              duration={course.data.duration}
-              mode={course.data.mode}
-              level={course.data.level}
-              slug={course.id}
-              badge={course.data.badge}
-              icon={course.data.icon}
-              category={course.data.category}
+              title={course.title}
+              shortDescription={course.short_description}
+              duration={course.duration}
+              mode={course.mode}
+              level={course.level}
+              slug={course.slug}
+              badge={course.badge}
+              icon={course.icon}
+              category={course.category}
             />
           </div>
         ))}
@@ -59,10 +77,10 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-8 reveal">
         <div>
-          <span class="eyebrow">✦ All Programs</span>
-          <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mt-2">Explore every course</h2>
+          <span class="eyebrow">✦ {section2Eyebrow}</span>
+          <h2 class="text-3xl font-bold font-heading text-[var(--color-ink-val)] mt-2">{section2Title}</h2>
         </div>
-        <a href={`${baseUrl}courses/`} class="button secondary hidden sm:inline-flex">View All →</a>
+        <a href={`${baseUrl}courses/`} class="button secondary hidden sm:inline-flex">{section1Cta} →</a>
       </div>
       <CoursesCarousel />
       <div class="text-center mt-8 sm:hidden">
@@ -94,13 +112,13 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
         <div class="text-white reveal">
           <span class="text-white/70 font-semibold uppercase tracking-wider text-sm">✦ Free Consultation</span>
           <h2 class="text-4xl md:text-5xl font-bold font-heading mt-3 mb-6 leading-tight">
-            Not sure which course is right for you?
+            {enquiryHeadline}
           </h2>
           <p class="text-white/80 text-lg leading-relaxed mb-8">
-            Talk to our mentors for free. We'll help you pick the right course, explain the syllabus, and plan a roadmap based on your goals and current level.
+            {enquiryDescription}
           </p>
           <ul class="space-y-3">
-            {['Free 15-minute consultation call', 'No pushy sales — just honest guidance', 'Get a learning roadmap tailored for you', 'Flexible batch options explained clearly'].map(item => (
+            {enquiryBullets.map(item => (
               <li class="flex items-center gap-3 text-white/90">
                 <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs">✓</span>
                 {item}

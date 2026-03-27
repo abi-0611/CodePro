@@ -1,6 +1,8 @@
 ---
-import { INSTITUTE_NAME, CONTACT_PHONE } from '../utils/consts';
+import { getLiveConsts } from '../utils/consts';
 import ThemeToggle from './ThemeToggle.astro';
+
+const liveConsts = await getLiveConsts();
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -27,8 +29,8 @@ const logoSrc = withBase('logo.png');
     
     {/* Logo */}
     <a href={homeHref} class="flex items-center gap-2 text-xl font-bold font-heading text-[var(--color-ink-val)]">
-      <img src={logoSrc} alt={INSTITUTE_NAME} width="128" height="128" class="h-9 w-auto" loading="eager" decoding="async" />
-      <span class="hidden sm:inline">{INSTITUTE_NAME}</span>
+      <img src={logoSrc} alt={liveConsts.INSTITUTE_NAME} width="128" height="128" class="h-9 w-auto" loading="eager" decoding="async" />
+      <span class="hidden sm:inline">{liveConsts.INSTITUTE_NAME}</span>
     </a>
 
     {/* Desktop Nav */}
@@ -47,7 +49,7 @@ const logoSrc = withBase('logo.png');
     <div class="hidden md:flex items-center gap-4">
       <ThemeToggle />
       <div class="text-sm font-medium text-[var(--color-ink-val)] hidden lg:block">
-        {CONTACT_PHONE}
+        {liveConsts.CONTACT_PHONE}
       </div>
       <a href={withBase('contact/')} class="button primary text-sm py-2 px-4">
         Enquire Now
@@ -83,7 +85,7 @@ const logoSrc = withBase('logo.png');
       ))}
       <div class="pt-4 border-t border-[var(--color-border-val)] flex flex-col gap-4">
         <div class="text-sm font-medium text-[var(--color-ink-val)]">
-          {CONTACT_PHONE}
+          {liveConsts.CONTACT_PHONE}
         </div>
         <a href={withBase('contact/')} class="button primary text-center w-full">
           Enquire Now

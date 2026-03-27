@@ -1,0 +1,39 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getTokenFromCookies } from '../../lib/auth';
+import ContactInfoEditor from '../../components/content/ContactInfoEditor';
+
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const token = getTokenFromCookies(Astro.cookies);
+if (!token) return Astro.redirect('/admin/login');
+
+let contactInfo: Record<string, any> = {};
+let promoBannerText = '';
+
+try {
+  const [contactRes, contentRes] = await Promise.all([
+    fetch(`${API_BASE}/api/contact/`),
+    fetch(`${API_BASE}/api/content/all`),
+  ]);
+  if (contactRes.ok) contactInfo = await contactRes.json();
+  if (contentRes.ok) {
+    const data = await contentRes.json();
+    promoBannerText = data.meta?.promo_text || '';
+  }
+} catch { /* fallback to empty */ }
+---
+
+<AdminLayout title="Contact Info">
+  <div style="display:flex;flex-direction:column;gap:1.5rem;max-width:860px">
+    <nav style="font-size:0.8rem;color:var(--text-secondary)">
+      <a href="/admin/dashboard" style="color:var(--color-primary);text-decoration:none">Dashboard</a>
+      <span style="margin:0 0.5rem">›</span>
+      <span>Contact Info</span>
+    </nav>
+
+    <h1 style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;margin:0">Contact Information</h1>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:-0.75rem">Edit contact details, social links, and promo banner</p>
+
+    <ContactInfoEditor client:load initialData={contactInfo} promoBannerText={promoBannerText} />
+  </div>
+</AdminLayout>

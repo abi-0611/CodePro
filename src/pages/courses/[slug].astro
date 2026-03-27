@@ -1,5 +1,4 @@
 ---
-import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Badge from '../../components/Badge.astro';
 import CourseCard from '../../components/CourseCard.astro';
@@ -8,33 +7,29 @@ import StickyCtaBar from '../../components/StickyCtaBar.astro';
 import BreadcrumbNav from '../../components/BreadcrumbNav.astro';
 import PlaceholderImage from '../../components/PlaceholderImage.astro';
 import { Clock, MonitorPlay, BarChart, ChevronRight, CheckCircle2, Briefcase, Target, PhoneCall, ChevronDown } from 'lucide-react';
+import { getCourseBySlug, getAllCourses } from '../../lib/api';
 
-export async function getStaticPaths() {
-  const courses = await getCollection('courses');
-  return courses.map(course => ({
-    params: { slug: course.id },
-    props: { course },
-  }));
-}
-
-const { course } = Astro.props;
-const { Content } = await render(course);
+const { slug } = Astro.params;
+const [course, allCourses] = await Promise.all([
+  getCourseBySlug(slug as string),
+  getAllCourses(),
+]);
+if (!course) return Astro.redirect('/courses/');
 
 // Get related courses (same category, excluding current)
-const allCourses = await getCollection('courses');
 const relatedCourses = allCourses
-  .filter(c => c.data.category === course.data.category && c.id !== course.id)
+  .filter((c: any) => c.category === course.category && c.slug !== course.slug)
   .slice(0, 3);
 
 // If not enough related in category, just grab some others
 if (relatedCourses.length < 3) {
-  const otherCourses = allCourses.filter(c => c.id !== course.id && !relatedCourses.find(rc => rc.id === c.id));
+  const otherCourses = allCourses.filter((c: any) => c.slug !== course.slug && !relatedCourses.find((rc: any) => rc.slug === c.slug));
   relatedCourses.push(...otherCourses.slice(0, 3 - relatedCourses.length));
 }
 
 const highlightIcons = [CheckCircle2, Briefcase, Target, PhoneCall];
-const highlights = (course.data.highlights?.length
-  ? course.data.highlights
+const highlights = (course.highlights?.length
+  ? course.highlights
   : [
       'Mentor-led sessions with hands-on practice',
       'Interview-focused learning path',
@@ -46,8 +41,8 @@ const highlights = (course.data.highlights?.length
   text,
 }));
 
-const faqs = course.data.faqs?.length
-  ? course.data.faqs
+const faqs = course.faqs?.length
+  ? course.faqs
   : [
       { q: 'Do I need prior experience?', a: 'No. We start from fundamentals and build up step-by-step. If you already know the basics, you can move faster through the early modules.' },
       { q: 'Is this course project-based?', a: 'Yes. You’ll work on guided exercises and at least one portfolio-style project to reinforce each major topic.' },
@@ -55,7 +50,7 @@ const faqs = course.data.faqs?.length
       { q: 'What if I miss a class?', a: 'You can catch up using session notes and practice tasks. If you’re learning live, ask the mentor for the next steps to stay on track.' },
     ];
 
-const nextBatchText = course.data.nextBatch || 'Enquire for next batch';
+const nextBatchText = course.next_batch || 'Enquire for next batch';
 
 const curriculumTopicsFallback = ['Core concepts & patterns', 'Hands-on lab exercises', 'Mini assignment to practice'];
 
@@ -65,11 +60,11 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
 const breadcrumbItems = [
   { label: 'Courses', href: `${baseUrl}courses/` },
-  { label: course.data.title }
+  { label: course.title }
 ];
 ---
 
-<BaseLayout title={course.data.title} description={course.data.shortDescription}>
+<BaseLayout title={course.title} description={course.short_description}>
   
   {/* 1. COURSE HEADER */}
   <div class="grid-overlay relative overflow-visible bg-gradient-to-b from-[var(--course-hero-from-val)] to-[var(--course-hero-to-val)] pt-32 pb-16 border-b border-[var(--color-border-val)]">
@@ -86,15 +81,15 @@ const breadcrumbItems = [
         <div class="lg:col-span-2">
           <div class="flex items-center gap-6 mb-6">
             <div class="w-16 h-16 rounded-2xl bg-white dark:bg-[var(--color-surface-alt)] border border-[var(--color-border)] shadow-sm flex items-center justify-center text-3xl shrink-0">
-              {course.data.icon}
+              {course.icon}
             </div>
             <div>
-              {course.data.badge && <div class="mb-2"><Badge text={course.data.badge} variant="primary" /></div>}
-              <h1 class="text-4xl md:text-5xl font-bold font-heading text-[var(--color-ink)]">{course.data.title}</h1>
+              {course.badge && <div class="mb-2"><Badge text={course.badge} variant="primary" /></div>}
+              <h1 class="text-4xl md:text-5xl font-bold font-heading text-[var(--color-ink)]">{course.title}</h1>
             </div>
           </div>
           <p class="text-xl text-[var(--color-muted)] leading-relaxed max-w-3xl">
-            {course.data.shortDescription}
+            {course.short_description}
           </p>
         </div>
 
@@ -102,21 +97,21 @@ const breadcrumbItems = [
         <div class="lg:col-span-1 relative">
           <div class="card p-8 lg:absolute lg:top-0 lg:w-full lg:shadow-2xl border-t-4 border-t-[var(--color-primary)] z-20 card-lift">
             <div class="text-4xl font-bold text-[var(--color-ink)] mb-6 font-heading">
-              {course.data.price}
+              {course.price}
             </div>
             
             <div class="flex flex-col gap-4 mb-8">
               <div class="flex items-center gap-3 text-[var(--color-ink)]">
                 <Clock class="w-5 h-5 text-[var(--color-primary)]" />
-                <span class="font-medium">Duration:</span> <span class="text-[var(--color-muted)]">{course.data.duration}</span>
+                <span class="font-medium">Duration:</span> <span class="text-[var(--color-muted)]">{course.duration}</span>
               </div>
               <div class="flex items-center gap-3 text-[var(--color-ink)]">
                 <MonitorPlay class="w-5 h-5 text-[var(--color-primary)]" />
-                <span class="font-medium">Mode:</span> <span class="text-[var(--color-muted)]">{course.data.mode}</span>
+                <span class="font-medium">Mode:</span> <span class="text-[var(--color-muted)]">{course.mode}</span>
               </div>
               <div class="flex items-center gap-3 text-[var(--color-ink)]">
                 <BarChart class="w-5 h-5 text-[var(--color-primary)]" />
-                <span class="font-medium">Level:</span> <span class="text-[var(--color-muted)]">{course.data.level}</span>
+                <span class="font-medium">Level:</span> <span class="text-[var(--color-muted)]">{course.level}</span>
               </div>
             </div>
 
@@ -158,7 +153,7 @@ const breadcrumbItems = [
         <section id="curriculum" class="reveal">
           <h2 class="text-2xl font-bold font-heading text-[var(--color-ink)] mb-6">Curriculum</h2>
           <div class="flex flex-col gap-4 mb-8">
-            {course.data.curriculum.map((module, index) => (
+            {course.curriculum.map((module, index) => (
               <div class="accordion-item border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-surface)]">
                 <button class="accordion-header w-full flex items-center justify-between p-5 text-left hover:bg-[var(--color-surface-alt)] transition-colors focus:outline-none">
                   <div class="flex items-center gap-4">
@@ -172,7 +167,7 @@ const breadcrumbItems = [
                 <div class="accordion-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-[var(--color-surface-alt)]/50">
                   <div class="p-5 pl-17 border-t border-[var(--color-border)]">
                     <ul class="list-disc list-inside text-[var(--color-muted)] space-y-2">
-                      {(course.data.curriculumTopics?.[index] || curriculumTopicsFallback).slice(0, 3).map((topic) => (
+                      {(course.curriculum_topics?.[index] || curriculumTopicsFallback).slice(0, 3).map((topic) => (
                         <li>{topic}</li>
                       ))}
                     </ul>
@@ -184,10 +179,12 @@ const breadcrumbItems = [
           <button class="button secondary flex items-center gap-2">Download full syllabus</button>
         </section>
 
-        {/* 4. COURSE CONTENT (MDX) */}
+        {/* 4. COURSE CONTENT */}
+        {course.description && (
         <section class="prose prose-lg dark:prose-invert max-w-none prose-headings:font-heading prose-a:text-[var(--color-primary)] reveal">
-          <Content />
+          <div set:html={course.description} />
         </section>
+        )}
 
         {/* 5. TRAINER SECTION */}
         <section class="reveal">
@@ -245,15 +242,15 @@ const breadcrumbItems = [
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         {relatedCourses.map(rc => (
           <CourseCard 
-            title={rc.data.title}
-            shortDescription={rc.data.shortDescription}
-            duration={rc.data.duration}
-            mode={rc.data.mode}
-            level={rc.data.level}
-            slug={rc.id}
-            badge={rc.data.badge}
-            icon={rc.data.icon}
-            category={rc.data.category}
+            title={rc.title}
+            shortDescription={rc.short_description}
+            duration={rc.duration}
+            mode={rc.mode}
+            level={rc.level}
+            slug={rc.slug}
+            badge={rc.badge}
+            icon={rc.icon}
+            category={rc.category}
           />
         ))}
       </div>
@@ -271,7 +268,7 @@ const breadcrumbItems = [
     </div>
   </div>
 
-  <StickyCtaBar courseName={course.data.title} />
+  <StickyCtaBar courseName={course.title} />
 
   <script>
     // Accordion Logic

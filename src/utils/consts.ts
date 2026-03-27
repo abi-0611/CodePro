@@ -21,3 +21,48 @@ export const BROCHURE_PDF_URL = '';
 export const WORKING_HOURS = '9:00 AM - 6:00 PM IST, Monday to Saturday';
 
 export const PROMO_TEXT = '';
+
+// Live data overlay: fetches from backend API and falls back to static consts above
+import { getContactInfo } from '../lib/api';
+
+export async function getLiveConsts() {
+  const info = await getContactInfo();
+  if (!info) {
+    return {
+      INSTITUTE_NAME,
+      CONTACT_PHONE,
+      CONTACT_EMAIL,
+      ADDRESS_PLACEHOLDER,
+      GOOGLE_MAPS_URL,
+      WHATSAPP_URL,
+      SOCIAL_INSTAGRAM_URL,
+      SOCIAL_FACEBOOK_URL,
+      SOCIAL_YOUTUBE_URL,
+      SOCIAL_LINKEDIN_URL,
+      WORKING_HOURS,
+      BROCHURE_PDF_URL,
+      PROMO_TEXT,
+      SITE_TAGLINE,
+      DEFAULT_META_DESCRIPTION,
+    };
+  }
+  return {
+    INSTITUTE_NAME: info.institute_name || INSTITUTE_NAME,
+    CONTACT_PHONE: info.phone || CONTACT_PHONE,
+    CONTACT_EMAIL: info.email || CONTACT_EMAIL,
+    ADDRESS_PLACEHOLDER: info.address || ADDRESS_PLACEHOLDER,
+    GOOGLE_MAPS_URL: info.google_maps_url || GOOGLE_MAPS_URL,
+    WHATSAPP_URL: info.whatsapp_url || WHATSAPP_URL,
+    SOCIAL_INSTAGRAM_URL: info.instagram_url || SOCIAL_INSTAGRAM_URL,
+    SOCIAL_FACEBOOK_URL: info.facebook_url || SOCIAL_FACEBOOK_URL,
+    SOCIAL_YOUTUBE_URL: info.youtube_url || SOCIAL_YOUTUBE_URL,
+    SOCIAL_LINKEDIN_URL: info.linkedin_url || SOCIAL_LINKEDIN_URL,
+    WORKING_HOURS: info.working_hours || WORKING_HOURS,
+    BROCHURE_PDF_URL: info.brochure_pdf_url || BROCHURE_PDF_URL,
+    PROMO_TEXT: info.promo_text || PROMO_TEXT,
+    SITE_TAGLINE: info.site_tagline || SITE_TAGLINE,
+    DEFAULT_META_DESCRIPTION: info.institute_name
+      ? `${info.institute_name} - ${info.site_tagline || SITE_TAGLINE}`
+      : DEFAULT_META_DESCRIPTION,
+  };
+}

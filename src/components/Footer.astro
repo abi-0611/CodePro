@@ -1,17 +1,8 @@
 ---
 import { Instagram, Facebook, Youtube, Linkedin, MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
-import {
-  INSTITUTE_NAME,
-  SITE_TAGLINE,
-  ADDRESS_PLACEHOLDER,
-  CONTACT_PHONE,
-  CONTACT_EMAIL,
-  SOCIAL_INSTAGRAM_URL,
-  SOCIAL_FACEBOOK_URL,
-  SOCIAL_YOUTUBE_URL,
-  SOCIAL_LINKEDIN_URL,
-  WHATSAPP_URL,
-} from '../utils/consts';
+import { getLiveConsts } from '../utils/consts';
+
+const lc = await getLiveConsts();
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -25,18 +16,18 @@ const isBracketPlaceholder = (value: unknown) =>
 const safeText = (value: unknown, fallback: string) =>
   typeof value === 'string' && value.trim() && !isBracketPlaceholder(value) ? value : fallback;
 
-const instituteName = safeText(INSTITUTE_NAME, 'CodePro');
-const siteTagline = safeText(SITE_TAGLINE, 'Practical training for modern careers.');
+const instituteName = safeText(lc.INSTITUTE_NAME, 'CodePro');
+const siteTagline = safeText(lc.SITE_TAGLINE, 'Practical training for modern careers.');
 
-const address = !isBracketPlaceholder(ADDRESS_PLACEHOLDER) ? ADDRESS_PLACEHOLDER : null;
-const phone = !isBracketPlaceholder(CONTACT_PHONE) ? CONTACT_PHONE : null;
-const email = !isBracketPlaceholder(CONTACT_EMAIL) ? CONTACT_EMAIL : null;
+const address = !isBracketPlaceholder(lc.ADDRESS_PLACEHOLDER) ? lc.ADDRESS_PLACEHOLDER : null;
+const phone = !isBracketPlaceholder(lc.CONTACT_PHONE) ? lc.CONTACT_PHONE : null;
+const email = !isBracketPlaceholder(lc.CONTACT_EMAIL) ? lc.CONTACT_EMAIL : null;
 
-const instagramUrl = !isBracketPlaceholder(SOCIAL_INSTAGRAM_URL) ? SOCIAL_INSTAGRAM_URL : null;
-const facebookUrl = !isBracketPlaceholder(SOCIAL_FACEBOOK_URL) ? SOCIAL_FACEBOOK_URL : null;
-const youtubeUrl = !isBracketPlaceholder(SOCIAL_YOUTUBE_URL) ? SOCIAL_YOUTUBE_URL : null;
-const linkedinUrl = !isBracketPlaceholder(SOCIAL_LINKEDIN_URL) ? SOCIAL_LINKEDIN_URL : null;
-const whatsappUrl = !isBracketPlaceholder(WHATSAPP_URL) ? WHATSAPP_URL : null;
+const instagramUrl = !isBracketPlaceholder(lc.SOCIAL_INSTAGRAM_URL) ? lc.SOCIAL_INSTAGRAM_URL : null;
+const facebookUrl = !isBracketPlaceholder(lc.SOCIAL_FACEBOOK_URL) ? lc.SOCIAL_FACEBOOK_URL : null;
+const youtubeUrl = !isBracketPlaceholder(lc.SOCIAL_YOUTUBE_URL) ? lc.SOCIAL_YOUTUBE_URL : null;
+const linkedinUrl = !isBracketPlaceholder(lc.SOCIAL_LINKEDIN_URL) ? lc.SOCIAL_LINKEDIN_URL : null;
+const whatsappUrl = !isBracketPlaceholder(lc.WHATSAPP_URL) ? lc.WHATSAPP_URL : null;
 
 const contactHref = withBase('contact/');
 const links = {

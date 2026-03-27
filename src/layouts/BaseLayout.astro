@@ -9,16 +9,12 @@ import FloatingEnquiryButton from '../components/FloatingEnquiryButton.astro';
 import ScrollToTop from '../components/ScrollToTop.astro';
 import ScrollReveal from '../components/ScrollReveal.astro';
 import {
-  ADDRESS_PLACEHOLDER,
-  CONTACT_PHONE,
-  DEFAULT_META_DESCRIPTION,
-  INSTITUTE_NAME,
-  SITE_TAGLINE,
   SITE_TITLE,
   SITE_URL,
-  SOCIAL_FACEBOOK_URL,
-  SOCIAL_INSTAGRAM_URL,
+  getLiveConsts,
 } from '../utils/consts';
+
+const lc = await getLiveConsts();
 
 import interLatin400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
 import interLatin600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
@@ -37,28 +33,28 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 
 const { 
   title,
-  description = DEFAULT_META_DESCRIPTION,
+  description = lc.DEFAULT_META_DESCRIPTION,
   image = `${baseUrl}logo.png`,
 } = Astro.props;
 
 const siteOrigin = (Astro.site?.toString() ?? SITE_URL).replace(/\/$/, '');
 const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
-const formattedTitle = title ? `${title} | ${INSTITUTE_NAME}` : SITE_TITLE;
+const formattedTitle = title ? `${title} | ${lc.INSTITUTE_NAME}` : SITE_TITLE;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
   "name": SITE_TITLE,
   "url": siteOrigin,
-  "telephone": CONTACT_PHONE,
+  "telephone": lc.CONTACT_PHONE,
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": ADDRESS_PLACEHOLDER,
+    "streetAddress": lc.ADDRESS_PLACEHOLDER,
   },
-  "description": SITE_TAGLINE,
+  "description": lc.SITE_TAGLINE,
   "sameAs": [
-    SOCIAL_FACEBOOK_URL,
-    SOCIAL_INSTAGRAM_URL,
+    lc.SOCIAL_FACEBOOK_URL,
+    lc.SOCIAL_INSTAGRAM_URL,
   ]
 };
 ---

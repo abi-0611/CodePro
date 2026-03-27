@@ -1,0 +1,36 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getTokenFromCookies } from '../../lib/auth';
+import HomeContentEditor from '../../components/content/HomeContentEditor';
+
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const token = getTokenFromCookies(Astro.cookies);
+if (!token) return Astro.redirect('/admin/login');
+
+let homeContent: Record<string, string> = {};
+let metaContent: Record<string, string> = {};
+
+try {
+  const res = await fetch(`${API_BASE}/api/content/all`);
+  if (res.ok) {
+    const data = await res.json();
+    homeContent = data.home || {};
+    metaContent = data.meta || {};
+  }
+} catch { /* fallback to empty */ }
+---
+
+<AdminLayout title="Homepage Content">
+  <div style="display:flex;flex-direction:column;gap:1.5rem;max-width:860px">
+    <nav style="font-size:0.8rem;color:var(--text-secondary)">
+      <a href="/admin/dashboard" style="color:var(--color-primary);text-decoration:none">Dashboard</a>
+      <span style="margin:0 0.5rem">›</span>
+      <span>Homepage Content</span>
+    </nav>
+
+    <h1 style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;margin:0">Homepage Content</h1>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:-0.75rem">Edit hero text, stats, sections, and promo banner</p>
+
+    <HomeContentEditor client:load initialData={{ home: homeContent, meta: metaContent }} />
+  </div>
+</AdminLayout>

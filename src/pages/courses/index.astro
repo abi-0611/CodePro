@@ -2,12 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import CourseCard from '../../components/CourseCard.astro';
-import { getCollection } from 'astro:content';
+import { getAllCourses } from '../../lib/api';
 
-const allCourses = await getCollection('courses');
-const sortedCourses = allCourses.sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+const sortedCourses = await getAllCourses();
 
-const categories = ['All', ...Array.from(new Set(sortedCourses.map((course) => course.data.category)))];
+const categories = ['All', ...Array.from(new Set(sortedCourses.map((course: any) => course.category)))];
 ---
 
 <BaseLayout title="Courses | CodePro.io" description="Browse our job-focused courses in development, testing, design, and business tools." >
@@ -39,17 +38,17 @@ const categories = ['All', ...Array.from(new Set(sortedCourses.map((course) => c
     {/* Course Grid */}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="course-grid">
       {sortedCourses.map((course, i) => (
-        <div class={`course-item transition-all duration-500 reveal delay-${Math.min(5, i + 1)} card-lift`} data-category={course.data.category}>
+        <div class={`course-item transition-all duration-500 reveal delay-${Math.min(5, i + 1)} card-lift`} data-category={course.category}>
           <CourseCard 
-            title={course.data.title}
-            shortDescription={course.data.shortDescription}
-            duration={course.data.duration}
-            mode={course.data.mode}
-            level={course.data.level}
-            slug={course.id}
-            badge={course.data.badge}
-            icon={course.data.icon}
-            category={course.data.category}
+            title={course.title}
+            shortDescription={course.short_description}
+            duration={course.duration}
+            mode={course.mode}
+            level={course.level}
+            slug={course.slug}
+            badge={course.badge}
+            icon={course.icon}
+            category={course.category}
           />
         </div>
       ))}

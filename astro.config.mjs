@@ -2,10 +2,12 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
-
 import sitemap from '@astrojs/sitemap';
+import node from '@astrojs/node';
 
 export default defineConfig({
+  output: 'server',
+  adapter: node({ mode: 'standalone' }),
   // Used for canonical URLs + sitemap generation.
   // Set `SITE_URL` in your deployment environment (e.g. https://edulaunch.edu).
   site: process.env.SITE_URL ?? 'http://localhost:3000',
