@@ -17,16 +17,27 @@ _pool: redis.Redis | None = None
 
 
 async def get_redis() -> redis.Redis | None:
-    """Return a shared async Redis connection, or None if unavailable."""
+    """Return a shared async Redis connection, or None if unavailable.
+
+    Re-attempts connection every call when previously failed, so recovery
+    is automatic once Redis becomes available.
+    """
     global _pool
     if _pool is not None:
-        return _pool
+        try:
+            await _pool.ping()
+            return _pool
+        except Exception:
+            # Connection dropped — close and reconnect below
+            await _pool.aclose()
+            _pool = None
+
     try:
         _pool = redis.from_url(
             settings.REDIS_URL,
             decode_responses=True,
-            socket_connect_timeout=2,
-            socket_timeout=2,
+            socket_connect_timeout=5,
+            socket_timeout=5,
         )
         await _pool.ping()
         logger.info("Redis connected: %s", settings.REDIS_URL)
