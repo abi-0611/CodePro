@@ -15,13 +15,10 @@ from app.schemas.contact_info import (
 router = APIRouter(prefix="/api/contact", tags=["contact"])
 
 
-@router.get("/", response_model=ContactInfoOut)
+@router.get("/", response_model=ContactInfoOut | None)
 async def get_contact(db: AsyncSession = Depends(get_db)):
-    """Get contact info (public)."""
-    contact = await get_contact_info(db)
-    if not contact:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Contact info not configured yet")
-    return contact
+    """Get contact info (public). Returns null if not yet configured."""
+    return await get_contact_info(db)
 
 
 @router.put("/", response_model=ContactInfoOut)
