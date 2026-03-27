@@ -8,3 +8,12 @@ coverage/
 *.zip
 .env*
 !.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+venv/
+.venv/
