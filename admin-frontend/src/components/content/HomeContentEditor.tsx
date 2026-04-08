@@ -27,8 +27,16 @@ export default function HomeContentEditor({ initialData }: HomeContentEditorProp
     hero_badge_text: getVal(initialData.home, 'hero_badge_text', 'Job-focused training'),
     hero_cta_text: getVal(initialData.home, 'hero_cta_text', 'Explore Courses'),
     hero_cta_link: getVal(initialData.home, 'hero_cta_link', '/courses/'),
-    hero_cta2_text: getVal(initialData.home, 'hero_cta2_text', 'View Highlights'),
-    hero_cta2_link: getVal(initialData.home, 'hero_cta2_link', '#home-courses'),
+    hero_cta_secondary_text: getVal(
+      initialData.home,
+      'hero_cta_secondary_text',
+      getVal(initialData.home, 'hero_cta2_text', 'View Highlights'),
+    ),
+    hero_cta_secondary_link: getVal(
+      initialData.home,
+      'hero_cta_secondary_link',
+      getVal(initialData.home, 'hero_cta2_link', '#home-courses'),
+    ),
     stat1_value: getVal(initialData.home, 'stat1_value', '500+'),
     stat1_label: getVal(initialData.home, 'stat1_label', 'Students Trained'),
     stat2_value: getVal(initialData.home, 'stat2_value', '8+'),
@@ -153,8 +161,8 @@ export default function HomeContentEditor({ initialData }: HomeContentEditorProp
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <Field label="Primary CTA Text" value={home.hero_cta_text} onChange={v => updateHome('hero_cta_text', v)} />
           <Field label="Primary CTA Link" value={home.hero_cta_link} onChange={v => updateHome('hero_cta_link', v)} />
-          <Field label="Secondary CTA Text" value={home.hero_cta2_text} onChange={v => updateHome('hero_cta2_text', v)} />
-          <Field label="Secondary CTA Link" value={home.hero_cta2_link} onChange={v => updateHome('hero_cta2_link', v)} />
+          <Field label="Secondary CTA Text" value={home.hero_cta_secondary_text} onChange={v => updateHome('hero_cta_secondary_text', v)} />
+          <Field label="Secondary CTA Link" value={home.hero_cta_secondary_link} onChange={v => updateHome('hero_cta_secondary_link', v)} />
         </div>
       </SectionCard>
 

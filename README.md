@@ -150,6 +150,8 @@ CACHE_BUST_SECRET=<random secret — generate with: openssl rand -hex 32>
 docker compose up --build
 ```
 
+For a Kubernetes/kind deployment instead of Docker Compose, see [k8s/README.md](k8s/README.md).
+
 All 5 services start automatically: Nginx, API (4 workers), main site, admin dashboard, Redis.
 
 | Access Point | URL |

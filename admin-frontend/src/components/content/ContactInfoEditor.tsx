@@ -8,7 +8,7 @@ interface ContactInfoEditorProps {
 export default function ContactInfoEditor({ initialData, promoBannerText = '' }: ContactInfoEditorProps) {
   const [form, setForm] = useState({
     institute_name: initialData.institute_name || '',
-    tagline: initialData.tagline || '',
+    site_tagline: initialData.site_tagline || '',
     phone: initialData.phone || '',
     email: initialData.email || '',
     address: initialData.address || '',
@@ -67,6 +67,14 @@ export default function ContactInfoEditor({ initialData, promoBannerText = '' }:
         throw new Error(data.detail || 'Failed to save contact info');
       }
 
+      if (form.website_url !== (initialData.website_url || '')) {
+        await fetch('/admin/api/proxy/content/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ updates: [{ section: 'meta', key: 'website_url', value: form.website_url, content_type: 'url' }] }),
+        });
+      }
+
       // Save promo text separately (meta section)
       if (promoText !== promoBannerText) {
         await fetch('/admin/api/proxy/content/bulk', {
@@ -114,7 +122,7 @@ export default function ContactInfoEditor({ initialData, promoBannerText = '' }:
       {/* Section A: Core Contact */}
       <SectionCard title="📍 Institute Information">
         <Field label="Institute Name" value={form.institute_name} onChange={v => update('institute_name', v)} required error={errors.institute_name} />
-        <Field label="Site Tagline" value={form.tagline} onChange={v => update('tagline', v)} />
+        <Field label="Site Tagline" value={form.site_tagline} onChange={v => update('site_tagline', v)} />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <Field label="Phone Number" value={form.phone} onChange={v => update('phone', v)} help="+91 prefix recommended" />
           <Field label="Email Address" value={form.email} onChange={v => update('email', v)} error={errors.email} />

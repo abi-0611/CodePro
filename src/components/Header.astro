@@ -3,6 +3,7 @@ import { getLiveConsts } from '../utils/consts';
 import ThemeToggle from './ThemeToggle.astro';
 
 const liveConsts = await getLiveConsts();
+const backendLogoUrl = (liveConsts as any).LOGO_URL || '';
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -20,7 +21,7 @@ const navLinks = [
 
 const currentPath = Astro.url.pathname;
 const homeHref = withBase('');
-const logoSrc = withBase('logo.png');
+const logoSrc = backendLogoUrl || withBase('logo.png');
 ---
 
 <header id="main-header" class="fixed top-[var(--banner-offset)] left-0 right-0 z-50 transition-all duration-300 bg-[var(--color-surface-val)]/80 backdrop-blur-md border-b border-[var(--color-border-val)]">

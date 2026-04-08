@@ -19,6 +19,12 @@ try {
   if (contentRes.ok) {
     const data = await contentRes.json();
     promoBannerText = data.meta?.promo_text || '';
+    contactInfo = {
+      ...contactInfo,
+      institute_name: contactInfo.institute_name || data.meta?.site_name || '',
+      site_tagline: contactInfo.site_tagline || data.meta?.site_tagline || '',
+      website_url: contactInfo.website_url || data.meta?.website_url || '',
+    };
   }
 } catch { /* fallback to empty */ }
 ---

@@ -15,6 +15,7 @@ import {
 } from '../utils/consts';
 
 const lc = await getLiveConsts();
+const backendLogoUrl = (lc as any).LOGO_URL || '';
 
 import interLatin400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
 import interLatin600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
@@ -34,17 +35,17 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
 const { 
   title,
   description = lc.DEFAULT_META_DESCRIPTION,
-  image = `${baseUrl}logo.png`,
+  image = backendLogoUrl || `${baseUrl}logo.png`,
 } = Astro.props;
 
 const siteOrigin = (Astro.site?.toString() ?? SITE_URL).replace(/\/$/, '');
 const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
-const formattedTitle = title ? `${title} | ${lc.INSTITUTE_NAME}` : SITE_TITLE;
+const formattedTitle = title ? `${title} | ${lc.INSTITUTE_NAME}` : lc.INSTITUTE_NAME || SITE_TITLE;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "name": SITE_TITLE,
+  "name": lc.INSTITUTE_NAME || SITE_TITLE,
   "url": siteOrigin,
   "telephone": lc.CONTACT_PHONE,
   "address": {

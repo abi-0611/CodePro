@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codepro-config
+data:
+  APP_ENV: development
+  API_URL: http://api:8000
+  PUBLIC_API_URL: http://api:8000
+  PUBLIC_CACHE_TTL_SECONDS: "600"
+  MAIN_SITE_URL: http://main-site:3000
+  SITE_URL: http://localhost:3000
+  REDIS_URL: redis://redis:6379/0
+  CORS_ORIGINS: '["http://localhost:3000","http://localhost:4322","http://localhost:8000"]'

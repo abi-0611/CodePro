@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.API_URL || process.env.API_URL || 'http://localhost:8000';
 
 // In-memory cache with stale-while-revalidate strategy
 const cache = new Map<string, { data: unknown; fetchedAt: number; ttl: number }>();

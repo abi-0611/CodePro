@@ -1,0 +1,143 @@
+apiVersion: slo.optipilot.ai/v1alpha1
+kind: ServiceObjective
+metadata:
+  name: codepro-api-slo
+  namespace: codepro
+  labels:
+    app: codepro-api
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  objectives:
+    - metric: availability
+      target: "99.9%"
+      window: "5m"
+      customQuery: '1 - ((sum(rate(http_requests_total{namespace="codepro",service="api",status=~"5.."}[5m])) or vector(0)) / clamp_min((sum(rate(http_requests_total{namespace="codepro",service="api"}[5m])) or vector(0)), 1))'
+    - metric: latency_p99
+      target: "500ms"
+      window: "5m"
+      customQuery: '(histogram_quantile(0.99, sum(rate(http_request_duration_highr_seconds_bucket{namespace="codepro",service="api"}[5m])) by (le)) or vector(0))'
+  evaluationInterval: "30s"
+  errorBudget:
+    total: "0.1%"
+---
+apiVersion: policy.optipilot.ai/v1alpha1
+kind: OptimizationPolicy
+metadata:
+  name: codepro-api-policy
+  namespace: codepro
+spec:
+  selector:
+    matchLabels:
+      app: codepro-api
+  objectives:
+    - name: slo_compliance
+      direction: maximize
+      weight: 0.7
+    - name: cost
+      direction: minimize
+      weight: 0.3
+  scalingBehavior:
+    scaleUp:
+      maxPercent: 100
+      cooldownSeconds: 180
+    scaleDown:
+      maxPercent: 50
+      cooldownSeconds: 300
+  dryRun: false
+---
+# ─── main-site ServiceObjective ───────────────────────────────────────────────
+apiVersion: slo.optipilot.ai/v1alpha1
+kind: ServiceObjective
+metadata:
+  name: codepro-main-site-slo
+  namespace: codepro
+  labels:
+    app: codepro-main-site
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: main-site
+  objectives:
+    - metric: availability
+      target: "99.9%"
+      window: "5m"
+      customQuery: 'clamp_min(kube_deployment_status_replicas_available{namespace="codepro",deployment="main-site"}, 0) / clamp_min(kube_deployment_spec_replicas{namespace="codepro",deployment="main-site"}, 1)'
+  evaluationInterval: "30s"
+  errorBudget:
+    total: "0.1%"
+---
+apiVersion: policy.optipilot.ai/v1alpha1
+kind: OptimizationPolicy
+metadata:
+  name: codepro-main-site-policy
+  namespace: codepro
+spec:
+  selector:
+    matchLabels:
+      app: codepro-main-site
+  objectives:
+    - name: slo_compliance
+      direction: maximize
+      weight: 0.6
+    - name: cost
+      direction: minimize
+      weight: 0.4
+  scalingBehavior:
+    scaleUp:
+      maxPercent: 100
+      cooldownSeconds: 180
+    scaleDown:
+      maxPercent: 50
+      cooldownSeconds: 300
+  dryRun: false
+---
+# ─── admin-frontend ServiceObjective ──────────────────────────────────────────
+apiVersion: slo.optipilot.ai/v1alpha1
+kind: ServiceObjective
+metadata:
+  name: codepro-admin-frontend-slo
+  namespace: codepro
+  labels:
+    app: codepro-admin-frontend
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: admin-frontend
+  objectives:
+    - metric: availability
+      target: "99.9%"
+      window: "5m"
+      customQuery: 'clamp_min(kube_deployment_status_replicas_available{namespace="codepro",deployment="admin-frontend"}, 0) / clamp_min(kube_deployment_spec_replicas{namespace="codepro",deployment="admin-frontend"}, 1)'
+  evaluationInterval: "30s"
+  errorBudget:
+    total: "0.1%"
+---
+apiVersion: policy.optipilot.ai/v1alpha1
+kind: OptimizationPolicy
+metadata:
+  name: codepro-admin-frontend-policy
+  namespace: codepro
+spec:
+  selector:
+    matchLabels:
+      app: codepro-admin-frontend
+  objectives:
+    - name: slo_compliance
+      direction: maximize
+      weight: 0.6
+    - name: cost
+      direction: minimize
+      weight: 0.4
+  scalingBehavior:
+    scaleUp:
+      maxPercent: 100
+      cooldownSeconds: 180
+    scaleDown:
+      maxPercent: 50
+      cooldownSeconds: 300
+  dryRun: false

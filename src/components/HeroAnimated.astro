@@ -12,8 +12,18 @@ const heroSubheadline = getContent(config, 'home', 'hero_subheadline', 'Hands-on
 const heroCta = getContent(config, 'home', 'hero_cta_text', 'Explore Courses');
 const heroCtaLink = getContent(config, 'home', 'hero_cta_link', `${baseUrl}courses/`);
 const heroBadge = getContent(config, 'home', 'hero_badge_text', 'Job-focused training');
-const heroCtaSecondary = getContent(config, 'home', 'hero_cta_secondary_text', 'View Highlights');
-const heroCtaSecondaryLink = getContent(config, 'home', 'hero_cta_secondary_link', '#home-courses');
+const heroCtaSecondary = getContent(
+  config,
+  'home',
+  'hero_cta_secondary_text',
+  getContent(config, 'home', 'hero_cta2_text', 'View Highlights'),
+);
+const heroCtaSecondaryLink = getContent(
+  config,
+  'home',
+  'hero_cta_secondary_link',
+  getContent(config, 'home', 'hero_cta2_link', '#home-courses'),
+);
 
 const techBadges = getContentJson<string[]>(config, 'home', 'tech_badges', ['React', 'Python', 'Java', 'Angular', 'Full Stack', 'Testing', 'Tally', 'Web Design']);
 

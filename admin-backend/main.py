@@ -71,7 +71,9 @@ class CacheHeaderMiddleware(BaseHTTPMiddleware):
             and response.status_code == 200
             and any(request.url.path.startswith(p) for p in self.CACHEABLE_PREFIXES)
         ):
-            response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
+            response.headers["Cache-Control"] = (
+                f"public, max-age={settings.PUBLIC_CACHE_TTL_SECONDS}, stale-while-revalidate=300"
+            )
         return response
 
 
@@ -188,6 +190,21 @@ Instrumentator(
 ).instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
 
+_STARTUP_SEED_LOCK_KEY = 24040601
+
+
+async def _acquire_startup_seed_lock(db):
+    import sqlalchemy as sa
+
+    await db.execute(sa.text("SELECT pg_advisory_lock(:key)"), {"key": _STARTUP_SEED_LOCK_KEY})
+
+
+async def _release_startup_seed_lock(db):
+    import sqlalchemy as sa
+
+    await db.execute(sa.text("SELECT pg_advisory_unlock(:key)"), {"key": _STARTUP_SEED_LOCK_KEY})
+
+
 # ── Startup / Shutdown ───────────────────────────────
 @app.on_event("startup")
 async def seed_admin_user():
@@ -201,14 +218,137 @@ async def seed_admin_user():
         return
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with async_session() as db:
-        result = await db.execute(
-            __import__("sqlalchemy").select(AdminUser).where(AdminUser.username == settings.ADMIN_USERNAME)
-        )
-        if not result.scalars().first():
-            hashed = _bcrypt.hashpw(settings.ADMIN_PASSWORD.encode(), _bcrypt.gensalt(12)).decode()
-            db.add(AdminUser(username=settings.ADMIN_USERNAME, hashed_password=hashed, is_active=True))
+        await _acquire_startup_seed_lock(db)
+        try:
+            result = await db.execute(
+                __import__("sqlalchemy").select(AdminUser).where(AdminUser.username == settings.ADMIN_USERNAME)
+            )
+            if not result.scalars().first():
+                hashed = _bcrypt.hashpw(settings.ADMIN_PASSWORD.encode(), _bcrypt.gensalt(12)).decode()
+                db.add(AdminUser(username=settings.ADMIN_USERNAME, hashed_password=hashed, is_active=True))
+                await db.commit()
+                logger.info("Seeded admin user: %s", settings.ADMIN_USERNAME)
+        finally:
+            await _release_startup_seed_lock(db)
+
+
+@app.on_event("startup")
+async def seed_contact_info():
+    """Create a default contact record so the public site can read from the DB."""
+    from sqlalchemy import select
+    from sqlalchemy.ext.asyncio import AsyncSession
+    from sqlalchemy.orm import sessionmaker
+
+    from app.models.contact_info import ContactInfo
+
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    async with async_session() as db:
+        await _acquire_startup_seed_lock(db)
+        try:
+            result = await db.execute(select(ContactInfo).limit(1))
+            if result.scalars().first():
+                return
+
+            db.add(
+                ContactInfo(
+                    institute_name="CodePro.io",
+                    site_tagline="Master the code, Become a pro",
+                    phone="+91 91762 41244",
+                    email="humairasiraj0985@gmail.com",
+                    address="Madambakkam, Chennai, Tamil Nadu, India",
+                    city="Chennai",
+                    state="Tamil Nadu",
+                    pincode="600126",
+                    google_maps_url="https://www.google.com/maps/search/?api=1&query=Madambakkam%2C%20Chennai%2C%20Tamil%20Nadu%2C%20India",
+                    whatsapp_url="https://wa.me/919176241244",
+                    facebook_url="https://facebook.com/",
+                    instagram_url="https://instagram.com/",
+                    youtube_url="https://youtube.com/",
+                    linkedin_url="https://linkedin.com/",
+                    working_hours="9:00 AM - 6:00 PM IST, Monday to Saturday",
+                )
+            )
             await db.commit()
-            logger.info("Seeded admin user: %s", settings.ADMIN_USERNAME)
+            logger.info("Seeded default contact info")
+        finally:
+            await _release_startup_seed_lock(db)
+
+
+@app.on_event("startup")
+async def seed_courses():
+    """Create default published courses so the public site can read them from the DB."""
+    from sqlalchemy import select
+    from sqlalchemy.ext.asyncio import AsyncSession
+    from sqlalchemy.orm import sessionmaker
+
+    from app.models.course import Course
+
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    async with async_session() as db:
+        await _acquire_startup_seed_lock(db)
+        try:
+            result = await db.execute(select(Course.id).limit(1))
+            if result.first():
+                return
+
+            db.add_all(
+                [
+                    Course(
+                        slug="react",
+                        title="React Development",
+                        short_description="Build modern web apps with React.",
+                        description="Build modern frontend applications with React, components, state, routing, and real projects.",
+                        duration="8 weeks",
+                        mode="Online / Offline",
+                        level="Beginner → Intermediate",
+                        icon="⚛️",
+                        price="Contact for pricing",
+                        badge="Popular",
+                        order=1,
+                        category="Frontend",
+                        curriculum=["JavaScript refresher", "React fundamentals"],
+                        featured=True,
+                        is_published=True,
+                    ),
+                    Course(
+                        slug="angular",
+                        title="Angular Development",
+                        short_description="Build scalable frontend apps with Angular.",
+                        description="Learn TypeScript, Angular architecture, components, services, routing, and production-ready patterns.",
+                        duration="8 weeks",
+                        mode="Online / Offline",
+                        level="Intermediate",
+                        icon="🅰️",
+                        price="Contact for pricing",
+                        order=2,
+                        category="Frontend",
+                        curriculum=["TypeScript essentials", "Angular fundamentals"],
+                        featured=False,
+                        is_published=True,
+                    ),
+                    Course(
+                        slug="fullstack-development",
+                        title="Full Stack Development",
+                        short_description="Build complete web apps frontend to backend.",
+                        description="Go end to end across frontend, APIs, databases, deployment, and project delivery.",
+                        duration="12 weeks",
+                        mode="Online / Offline",
+                        level="Beginner → Intermediate",
+                        icon="🧩",
+                        price="Contact for pricing",
+                        badge="Best Value",
+                        order=3,
+                        category="Full Stack",
+                        curriculum=["Web fundamentals", "Frontend development"],
+                        featured=False,
+                        is_published=True,
+                    ),
+                ]
+            )
+            await db.commit()
+            logger.info("Seeded default courses")
+        finally:
+            await _release_startup_seed_lock(db)
 
 
 @app.on_event("shutdown")

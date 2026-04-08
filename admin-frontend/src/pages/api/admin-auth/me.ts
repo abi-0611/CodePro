@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getTokenFromCookies } from '../../../lib/auth';
 
-const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.PUBLIC_API_URL || process.env.PUBLIC_API_URL || 'http://localhost:8000';
 
 export const GET: APIRoute = async ({ cookies }) => {
   const token = getTokenFromCookies(cookies);

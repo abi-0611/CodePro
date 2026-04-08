@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: codepro-api
+  labels:
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - codepro
+  selector:
+    matchLabels:
+      app: codepro-api
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s

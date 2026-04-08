@@ -11,7 +11,7 @@
   "dependencies": {
     "astro": "^6.1.0",
     "@astrojs/react": "^5.0.2",
-    "@astrojs/node": "^9.1.0",
+    "@astrojs/node": "^10.0.4",
     "@tailwindcss/vite": "^4.1.14",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

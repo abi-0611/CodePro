@@ -1,4 +1,5 @@
 ---
+import '../styles/admin.css';
 import { isAuthenticated } from '../lib/auth';
 
 if (isAuthenticated(Astro.cookies)) {
@@ -14,8 +15,8 @@ const redirectParam = Astro.url.searchParams.get('redirect') || '/admin/dashboar
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.ico" />
     <title>Login — CodePro Admin</title>
-    <link rel="stylesheet" href="/admin/src/styles/admin.css" />
     <style>
       /* ── Page layout ── */
       .login-page {

@@ -79,6 +79,8 @@ npm run dev
 docker compose up -d --build
 ```
 
+For a Kubernetes/kind deployment path, see [k8s/README.md](k8s/README.md).
+
 Services:
 - **api** → http://localhost:8000
 - **main-site** → http://localhost:3000

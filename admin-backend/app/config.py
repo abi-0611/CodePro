@@ -5,6 +5,7 @@ _ENV_FILE = Path(__file__).parent.parent / ".env"
 
 class Settings(BaseSettings):
     DATABASE_URL: str
+    DB_POOL_PRE_PING: bool = False
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
@@ -13,6 +14,7 @@ class Settings(BaseSettings):
     ADMIN_PASSWORD: str = ""
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:4322"]
     APP_ENV: str = "development"
+    PUBLIC_CACHE_TTL_SECONDS: int = 60
     REDIS_URL: str = "redis://localhost:6379/0"
 
     model_config = SettingsConfigDict(env_file=_ENV_FILE, env_file_encoding="utf-8")
